@@ -1,4 +1,4 @@
-# Electron 桌面开发核心技能
+## Electron 桌面开发核心技能
 
 技术基础栈：HTML、CSS、JavaScript；掌握现代前端框架：Vue/React；熟悉CSS预处理器sass/less；了解进程之间通信（IPC）；
 
