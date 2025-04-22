@@ -16,9 +16,11 @@
 
 electron典型应用有：开发工具、IM客户端、数据可视化平台等。
 
+有以下安全注意事项：永远不要直接暴露fs模块给渲染进程，使用contextBridge进行完全通信，验证来自渲染进程的所有输入，限制文件系统访问范围，考虑使用沙箱模式增强安全性。
+
 ## Electron的底层逻辑，优化方法及原理：
 
-Electeon采用三层架构模型：1、Chromium负责UI渲染；2、Node.js提供系统级API访问能力；3、Electron胶合层，整合Chromium和node.js,实现进程通信。
+Electeon采用三层架构模型：1、Chromium负责UI渲染（V8 JavaScript引擎 + Blink渲染引擎）；2、Node.js提供系统级API访问能力；3、Electron胶合层，整合Chromium和node.js,实现进程通信。
 
 关键线程模型：主线程管理窗口生命周期，负责IPC； IO线程处理文件系统，网络等异步操作；UI线程：每个渲染进程有自己的线程。
 
