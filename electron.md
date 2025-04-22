@@ -8,9 +8,9 @@
 
 主进程(Main Process)与渲染进程(Renderer Process)，主进程是electron的入口点，运行在node.js环境中，有且只有一个主进程，可以创建和管理多个渲染进程，完全访问node.js和操作系统底层的能力，负责应用生命周期管理；渲染进程，是可以展示网页内容的进程，每个electron窗口都是一个独立的渲染进程。
 
-进程间通信采用：1、IPCMain和ipcRender;2、remote模块（Electron14+ 已废弃）；3、contextBridge;
+进程间通信采用：1、IPCMain和ipcRender;2、remote模块（Electron14+ 已废弃）；3、contextBridge（主进程preload.js）;
 
-electron使用原生API操作系统文件，1、在主进程中操作文件（fs.readFile,fs.writeFile），2、通过IPC暴露给渲染进程。
+使用原生API操作系统文件，1、在主进程中操作文件（fs.readFile,fs.writeFile），2、通过IPC暴露给渲染进程(preload.js，主进程ipcMain.handle, 渲染进程ipcRenderer.invoke)。
 
 - 进阶技能：1、性能优化（启动速度优化）；2、安全防护（源码保护(asar/代码混淆)）；3、打包与分发（掌握electron-builder/webpack配置）。
 
