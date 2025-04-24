@@ -10,3 +10,6 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+使用React，你不用直接从代码层面修改UI，例如 不用编写“显式成功消息”这种命令；相反，只需要描述组件在不同状态（‘初始化状态’，‘输入状态’，‘成功状态’）下希望展示的UI，然后根据用户输入触发状态更改。
