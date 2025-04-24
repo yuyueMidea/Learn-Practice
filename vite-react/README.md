@@ -19,3 +19,9 @@ If you are developing a production application, we recommend using TypeScript wi
 3、在React中，渲染逻辑和标签共同存在于一个地方--组件。每个react组件都是一个JavaScript函数，它会返回一些标签，react会将这些标签渲染到浏览器上。
 
 JSX规则：只能返回一个根元素，原因是：JSX虽然看起来很像HTML，但在底层其实被转化为了JavaScript对象，你不能在一个函数中返回多个对象，除非用一个数组把它们包装起来。所以多个JSX标签必须要用一个父元素或Fragment来包裹。
+
+在JSX的大括号内：引用变量、调用函数、使用js对象。
+
+React中，每个父组件通过props给子组件传值，可以是对象、数组或函数。
+
+快捷表达式：（1）在 JSX 中，{cond ? <A /> : <B />} 表示 “当 cond 为真值时, 渲染 <A />，否则 <B />”。 （2）在 JSX 中，{cond && <A />} 表示 “当 cond 为真值时, 渲染 <A />，否则不进行渲染”。
