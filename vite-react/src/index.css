@@ -11,6 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0; margin: 0 !important;
 }
 
 a {
@@ -65,4 +66,60 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.perWrapper {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 3px;
+  padding: 11px;
+  text-align: left;
+  .name {
+    display: inline-block;
+    min-width: 144px;
+    text-align: left;
+  }
+  .age {
+    text-align: right;
+    color: grey;
+    min-width: 30px;
+  }
+  .age:hover {
+    cursor: pointer;
+  }
+  .gender {
+    display: inline-block;
+    color: blanchedalmond;
+    min-width: 60px;
+  }
+}
+
+.navbar {
+  display: flex;
+  background-color: #333;
+  padding: 10px;
+}
+
+.nav-item {
+  font-size: 18px;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+/* .nav-item:hover {
+  background-color: #575757;
+} */
+.nav-item:hover {
+  color: #f44;
+  text-decoration: underline;
+}
+
+/* 活动链接样式 */
+.nav-item.active {
+  background-color: #4CAF50;
+  font-weight: bold;
 }

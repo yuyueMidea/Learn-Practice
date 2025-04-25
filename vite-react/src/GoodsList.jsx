@@ -11,20 +11,15 @@ function MyButton({btncount, btnClick}) {
         <button onClick={btnClick}>点了 {btncount} 次</button>
     )
 }
-import PersonObj from "./PersonInfo";
+
+
 function ShoopingList() {
     const products = [
         { title: '卷心菜', isFruit: false, id: 1 },
         { title: '大蒜', isFruit: false, id: 2 },
         { title: '苹果', isFruit: true, id: 3 },
     ];
-    const perList = [
-        {name: 'zhangsna', age: 33, gender:'male'},
-        {name: 'lili', age: 44, gender:'female'},
-        {name: 'wangwu', age: 25, gender:'male'},
-        {name: 'rohanna', age: 54, gender:'female'},
-    ]
-    const [perFilterList, setperFilterList] = useState(perList);
+    
     const [count, setCount] = useState(0);
     function handleClick() {
         setCount(count+1)
@@ -32,12 +27,7 @@ function ShoopingList() {
     function handleClick2() {
         setCount(count-1)
     }
-    function handleChkChange(val) {
-        let chked =  val.target.checked
-        let tmep = chked ? perList.filter(v=>v.gender=='male') : perList
-        console.warn('chked: ', chked, 'listt: ', tmep)
-        setperFilterList(tmep)
-    }
+    
     return (
         <>
             <p>商品列表</p>
@@ -50,10 +40,6 @@ function ShoopingList() {
             <h4>独立更新的计数器:{count}</h4>
             <p>(+)<MyButton btncount={count} btnClick={handleClick}></MyButton></p>
             <p>(-)<MyButton btncount={count} btnClick={handleClick2}></MyButton></p>
-            <h4>开始引用子组件，人物信息, <input type="checkbox" onChange={handleChkChange} />male</h4>
-            {perFilterList.map(it=>
-                <PersonObj name={it.name} age={it.age} gender={it.gender} key={it.age}></PersonObj>
-            )}
             
         </>
     )
