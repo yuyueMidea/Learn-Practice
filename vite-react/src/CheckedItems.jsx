@@ -30,8 +30,8 @@ export default function CheckedItems() {
             <ul>
                 {items.map(it=>
                     <li key={it.id}>
-                        <input type="text" value={it.title} onChange={e=>handleChange(it.id, e)}/>
-                        <button onClick={()=>setSelectid(it.id)}>choose</button>
+                        <input type="text" value={it.title} onChange={e=>handleChange(it.id, e)} className="input" />
+                        <button onClick={()=>setSelectid(it.id)} className="btn" >choose</button>
                     </li>
                 )}
             </ul>

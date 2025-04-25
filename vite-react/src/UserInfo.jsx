@@ -61,23 +61,23 @@ export default function UserInfo() {
             <div className="perWrapper">
                 <label htmlFor="name">
                     firstName:
-                    <input type="text" id="name" value={person.firstName} onChange={handleFirstNameChange}/>
+                    <input className="input" type="text" id="name" value={person.firstName} onChange={handleFirstNameChange}/>
                 </label>
                 <label htmlFor="name2">
                     lastName:
-                    <input type="text" id="name2" value={person.lastName} onChange={handleLastNameChange}/>
+                    <input className="input" type="text" id="name2" value={person.lastName} onChange={handleLastNameChange}/>
                 </label>
                 <label htmlFor="email">
                     email:
-                    <input type="text" id="email" value={person.email} onChange={handleEmailChange}/>
+                    <input className="input" type="text" id="email" value={person.email} onChange={handleEmailChange}/>
                 </label>
                 <p>{person.firstName}--{person.lastName}---{person.email}</p>
                 <p>fullName: {fullName}</p>
             </div>
             <div className="perWrapper">
-                <input type="text" value={uname} onChange={e=>setname(e.target.value)} />
-                <button onClick={handleAddone}>pushOne</button>
-                <button onClick={handleAddone2}>unshiftOne</button>
+                <input className="input" type="text" value={uname} onChange={e=>setname(e.target.value)} />
+                <button className="btn" onClick={handleAddone}>pushOne</button>
+                <button className="btn" onClick={handleAddone2}>unshiftOne</button>
                 <ul>
                     {namelist.map(item=>(
                         <li key={item.id}>{item.name}</li>
