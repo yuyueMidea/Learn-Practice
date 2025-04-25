@@ -14,6 +14,8 @@ import Test from './Test.jsx'
 import Test2 from './Test2.jsx'
 import Score from "./Score.jsx";
 import Toolbar from "./Toolbar.jsx";
+import Movingdot from './Movingdot'
+import CheckedItems from './CheckedItems.jsx'
 export default function AppCopy() {
     return(
         <BrowserRouter>
@@ -26,6 +28,8 @@ export default function AppCopy() {
                 <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/signup">signup</NavLink>
                 <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/score">測試渲染</NavLink>
                 <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/toolbar">事件傳播</NavLink>
+                <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/movingdot">Movingdot</NavLink>
+                <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/checkedItems">CheckedItems</NavLink>
             </nav>
             <Routes>
                 <Route path="/" element={<Home />} />
@@ -36,6 +40,8 @@ export default function AppCopy() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/score" element={<Score />} />
                 <Route path="/toolbar" element={<Toolbar />} />
+                <Route path="/movingdot" element={<Movingdot />} />
+                <Route path="/checkedItems" element={<CheckedItems />} />
             </Routes>
         </BrowserRouter>
     )
