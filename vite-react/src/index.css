@@ -93,6 +93,11 @@ button:focus-visible {
     min-width: 60px;
   }
 }
+.perWrapper:hover {
+  box-shadow: 
+    0 10px 20px rgba(0,0,0,0.1),
+    0 6px 6px rgba(0,0,0,0.05);
+}
 
 .navbar {
   display: flex;
@@ -173,4 +178,19 @@ button:focus-visible {
   box-shadow: 
     0 10px 20px rgba(0,0,0,0.1),
     0 6px 6px rgba(0,0,0,0.05);
+}
+
+.listWrapper {
+  list-style: none;
+  li {
+    margin: 5px;
+  }
+  .showInput {
+    min-width: 300px;
+  }
+  .showTxt {
+    display: inline-block;
+    min-width: 300px;
+    text-align: left;
+  }
 }
