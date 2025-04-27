@@ -92,6 +92,10 @@ state中可以保存任何类型的JavaScript值，包括对象；但是你不�
 
 2、选择state结构一些注意项：（1）如果两个state变量总是一起更新，请考虑将它们合成一个；（2）对于选择类型的UI模式，请在state中保存ID或索引而不是对象本身；（3）如果深度嵌套state更新很复杂，请尝试将其展开扁平化。
 
+**迁移状态逻辑至reducer中**
+
+把useState 转化为 useReducer：（1）通过事件处理函数（dispatch actions）；（2）编写一个reducer函数，它接收传入的state和一个action，并返回一个新的state；（3）使用reducer替换useState。注意：reducer必须是纯净的，每个action描述了一个单一的用户交互。
+
 
 
 
