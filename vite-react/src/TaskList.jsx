@@ -64,7 +64,7 @@ export default function TaskList() {
         }))
     }
     return(
-        <>
+        <div className="perWrapper">
             <h2>To do list</h2>
             <p style={{margin:5,padding:5}}>
                 <input className="input showInput" type="text" value={inputtext} onChange={e=>settext(e.target.value)} />
@@ -72,7 +72,7 @@ export default function TaskList() {
                 <button className="btn" onClick={generateTask} disabled={task.length==0}>生成已经勾选的任务</button>
                 <span className="showTxt">{showFlag ? task.filter(v=>v.done).map(v=>v.text).join(', ') :''}</span>
             </p>
-            <ul className="listWrapper">
+            <ul className="listWrapper perWrapper">
                 {task.map(item=>
                     <li key={item.id}>
                         <input type="checkbox" id={item.id} checked={item.done} onChange={e=>handleChkChange(item.id, e)} />
@@ -82,6 +82,6 @@ export default function TaskList() {
                     </li>
                 )}
             </ul>
-        </>
+        </div>
     )
 }

@@ -18,7 +18,8 @@ import Score from "./Score.jsx";
 import Toolbar from "./Toolbar.jsx";
 import Movingdot from './Movingdot'
 import CheckedItems from './CheckedItems.jsx'
-import TaskList from './TaskList'
+import TaskList from './TaskList.jsx'
+import GrandSon from './GrandSon.jsx'
 export default function AppCopy() {
     return(
         <BrowserRouter>
@@ -35,6 +36,7 @@ export default function AppCopy() {
                     <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/movingdot" title='设置对象state'>Movingdot</NavLink>
                     <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/checkedItems">CheckedItems</NavLink>
                     <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/tasklist">TaskList</NavLink>
+                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/grandson">GrandSon</NavLink>
                 </nav>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -48,6 +50,7 @@ export default function AppCopy() {
                     <Route path="/movingdot" element={<Movingdot />} />
                     <Route path="/checkedItems" element={<CheckedItems />} />
                     <Route path="/tasklist" element={<TaskList />} />
+                    <Route path="/grandson" element={<GrandSon />} />
                 </Routes>
             </AliveScope>
         </BrowserRouter>
