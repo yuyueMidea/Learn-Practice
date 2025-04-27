@@ -20,6 +20,7 @@ import Movingdot from './Movingdot'
 import CheckedItems from './CheckedItems.jsx'
 import TaskList from './TaskList.jsx'
 import GrandSon from './GrandSon.jsx'
+import ToggleSize from './ToggleSize.jsx'
 export default function AppCopy() {
     return(
         <BrowserRouter>
@@ -37,6 +38,7 @@ export default function AppCopy() {
                     <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/checkedItems">CheckedItems</NavLink>
                     <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/tasklist">TaskList</NavLink>
                     <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/grandson">GrandSon</NavLink>
+                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/toggleSize">ToggleSize</NavLink>
                 </nav>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -51,6 +53,7 @@ export default function AppCopy() {
                     <Route path="/checkedItems" element={<CheckedItems />} />
                     <Route path="/tasklist" element={<TaskList />} />
                     <Route path="/grandson" element={<GrandSon />} />
+                    <Route path="/toggleSize" element={<ToggleSize />} />
                 </Routes>
             </AliveScope>
         </BrowserRouter>
