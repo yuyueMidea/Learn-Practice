@@ -96,7 +96,9 @@ state中可以保存任何类型的JavaScript值，包括对象；但是你不�
 
 把useState 转化为 useReducer：（1）通过事件处理函数（dispatch actions）；（2）编写一个reducer函数，它接收传入的state和一个action，并返回一个新的state；（3）使用reducer替换useState。注意：reducer必须是纯净的，每个action描述了一个单一的用户交互。
 
+**使用Context深层传递参数**
 
+Context让你可以编写“适应周围环境”的组件，并根据在哪个context中 来渲染它们不同的样子；用context替代逐层props，在最下面一层组件中使用 useContext(ImageSizeContext) 来读取它。
 
 
 
