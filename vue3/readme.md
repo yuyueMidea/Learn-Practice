@@ -40,10 +40,10 @@
 - 与vue2保持一致，原始数据变化，依赖原始数据的变量也会自动发生变化；不同之处是vue3通过引入computed计算函数创建计算属性，该函数接受一个getter函数作为参数，并返回一个只读的响应式引用。
 
 - **第五章，watch监听器**
-- 1、watch介绍：
-- 2、侦听单个数据
-- 3、侦听多个数据
-- 4、immediate
-- 5、deep深度侦听
+- 1、watch介绍：侦听响应式数据的变化，变化时执行回调函数。
+- 2、侦听单个数据，`watch(param, (newval, oldval)) =>{}`.
+- 3、侦听多个数据, `watch(param1,param2, ([newval, oldval], [newval, oldval])) =>{}`.
+- 4、immediate：可以在组件加载时立即执行，语法格式：`immediate：true`
+- 5、deep深度侦听：对象或数组内部属性发生变化时 触发回调函数。
 
 
