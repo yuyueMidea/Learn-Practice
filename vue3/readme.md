@@ -46,4 +46,14 @@
 - 4、immediate：可以在组件加载时立即执行，语法格式：`immediate：true`
 - 5、deep深度侦听：对象或数组内部属性发生变化时 触发回调函数。
 
+- **第六章，生命周期函数**
+- 1、选项式API 对比 组合式API
+- 2、组合式API
+   - （1）setup，组件逻辑入口，替代data，methods 等选项
+   - （2）onBeforeMount：组件挂载前调用
+   - （3）onMounted：组件挂载后调用，可访问dom
+   - （4）onBeforeUpdate：组件更新前调用
+- 3、组合式API基本使用
+
+
 
