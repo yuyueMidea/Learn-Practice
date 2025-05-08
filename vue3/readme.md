@@ -53,6 +53,9 @@
    - （2）onBeforeMount：组件挂载前调用
    - （3）onMounted：组件挂载后调用，可访问dom
    - （4）onBeforeUpdate：组件更新前调用
+   - （5）onUpdate：组件更新后调用，dom更新完成
+   - （6）onBeforeUnmount：组件卸载前调用，可执行清理工作
+   - （7）onUnmounted:组件卸载后调用，完成清理
 - 3、组合式API基本使用
 
 
