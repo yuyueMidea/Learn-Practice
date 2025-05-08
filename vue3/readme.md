@@ -105,6 +105,7 @@
 - 1、类型问题：
    - （1）动态类型问题：JavaScript运行时才能确定变量的具体类型，容易出现类型错误导致程序崩溃
    - （2）Typescript静态类型的优势：在代码运行之前确定变量类型，可以减少运行时出现类型错误。
+- 2、Typescript类型：字符串类型 string，数字类型 number，布尔类型boolean， 数组类型 number[], string[], boolean[]， 任意类型any，复杂类型 type 与 interface，函数类型 ()=>void， 字面类型 "a"|"b"|"c", nullsh类型 null与undefined， 泛型<T> <T extends父类型>。
 
 
 
