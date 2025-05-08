@@ -82,6 +82,24 @@
 - 3、跨层传递响应式数据：顶层组件使用provide函数提供数据，底层组件使用inject函数获取数据
 - 4、跨层传递方法：顶层组件使用provide函数提供数据（参数1是方法名称，参数2也是方法名称），底层组件使用inject函数获取数据
 
+- **第十章，defineOptions**
+- 1、背景说明：使用setup选项，无法在<script setup>内部声明一些传统的optionsAPI；defineProps 和 defineEmits 只解决了props 和 eimts 这两个属性。
+- 2、defineOptions宏 允许开发者在 <script setup>内部声明一些传统的optionsAPI。
+
+- **第十一章，Pinia状态管理**
+- Pinia是vue的状态管理库，专为vue3设计。
+- Pinia优势是 简化API（去除了vuex中的mutations）和独立模块（摒弃了vuex中的modules）
+- Pinia基础使用：
+   - （1）定义store：通过defineStore函数定义store
+   - （2）getter：getter依赖的state发生变化时，getter会自动重新计算
+   - （3）Action异步实现：类似vue组件中的methods，可以修改state
+   - （4）Pinia持久化：安装持久化插件，结合sessionStorage 或 localStorage使用。
+ 
+- 登录业务实战：
+   - （1）定义store公共数据源；
+   - （2）登录成功后将用户信息存储到store中；
+   - （3）发送请求时 从Pinia获取用户Token 添加到请求头中；
+   - （4）使用token作为身份认证。
 
 
 
