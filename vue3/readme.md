@@ -71,6 +71,10 @@
 - **第八章，模板引用**
 - 1、模板引用介绍：访问dom元素，访问子组件实例
 - 2、ref获取dom元素，语法格式：`对象名.value.textContent`, textContent 是dom元素的一个属性
+- 3、defineExpose
+   - （1）使用defineExpose可以将组件内部状态暴露给外部组件使用
+   - （2）语法格式：defineExpose({属性名，方法名})
+   - （3）应用案例：子组件通过defineExpose暴露内部状态，父组件通过`this.$refs.ref`属性名访问子组件实例
 
 
 
