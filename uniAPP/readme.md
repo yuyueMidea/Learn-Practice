@@ -87,5 +87,8 @@ uni.switchTab({
 <view>仅H5显示</view>
 <!-- #endif -->
 ```
-
+**三、UI组件库**
+- 1、基础组件：视图容器；表单组件；
+- 2、扩展组件：
+- （1）安装uni-ui; ```npm install @dcloudio/uni-ui```
 
