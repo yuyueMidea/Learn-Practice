@@ -192,3 +192,34 @@ export default {
   }
 }
 ```
+
+**六、跨平台适配**
+- 1、平台判断：
+```
+// 方式1：条件编译
+// #ifdef H5
+console.log('当前是H5平台')
+// #endif
+
+// 方式2：运行时判断
+if (uni.getSystemInfoSync().platform === 'android') {
+  console.log('当前是Android平台')
+}
+```
+- 2、平台特定代码：
+```
+// utils/platform.js
+export function getPlatformApi() {
+  // #ifdef MP-WEIXIN
+  return wx
+  // #endif
+  
+  // #ifdef H5
+  return window
+  // #endif
+  
+  // #ifdef APP-PLUS
+  return plus
+  // #endif
+}
+```
