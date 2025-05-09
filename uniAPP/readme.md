@@ -2,7 +2,7 @@
 - uniAPP是一个使用vue.js开发所有前端应用的框架，开发者编写一套代码，可以发布到iOS、Android、web（响应式），以及各种小程序、快应用等多个平台。
 
 - 核心概念与语法
-- 应用生命周期(APP.vue)
+- 1、应用生命周期(APP.vue)
 ```
 export default {
   onLaunch(options) {
@@ -34,5 +34,26 @@ export default {
   onUnload() {
     // 页面卸载
   }
+}
+```
+
+**二、路由与页面跳转**
+页面配置（pages.json）
+```
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/detail/detail",
+      "style": {
+        "navigationBarTitleText": "详情页"
+      }
+    }
+  ]
 }
 ```
