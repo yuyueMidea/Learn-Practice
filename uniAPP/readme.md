@@ -1,7 +1,7 @@
 ## uniAPP开发指南
 - uniAPP是一个使用vue.js开发所有前端应用的框架，开发者编写一套代码，可以发布到iOS、Android、web（响应式），以及各种小程序、快应用等多个平台。
 
-- 核心概念与语法
+**一、核心概念与语法**
 - 1、应用生命周期(APP.vue)
 ```
 export default {
@@ -16,7 +16,7 @@ export default {
   }
 }
 ```
-2、页面生命周期（页面.vue）
+- 2、页面生命周期（页面.vue）
 ```
 export default {
   onLoad(options) {
@@ -77,3 +77,15 @@ uni.switchTab({
   url: '/pages/tabbar/home'
 })
 ```
+- 3、条件编译
+```
+<!-- #ifdef MP-WEIXIN -->
+<view>仅微信小程序显示</view>
+<!-- #endif -->
+
+<!-- #ifdef H5 -->
+<view>仅H5显示</view>
+<!-- #endif -->
+```
+
+
