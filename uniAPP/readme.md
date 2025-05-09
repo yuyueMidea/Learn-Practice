@@ -226,3 +226,27 @@ export function getPlatformApi() {
 
 **七、插件与扩展**
 - 1、常用插件推荐：图标插件uCharts, ```npm install @qiun/ucharts```
+
+**八、性能优化**
+- 1、图片优化：
+```
+<!-- 使用webp格式（H5支持） -->
+<image src="/static/logo.webp" webp></image>
+
+<!-- 懒加载 -->
+<image lazy-load src="/static/banner.jpg"></image>
+```
+- 2、列表优化
+```
+<template>
+  <view>
+    <scroll-view scroll-y style="height: 100vh;">
+      <recycle-list :list="longList" @click="onItemClick">
+        <template v-slot:default="{item}">
+          <view class="item">{{item.name}}</view>
+        </template>
+      </recycle-list>
+    </scroll-view>
+  </view>
+</template>
+```
