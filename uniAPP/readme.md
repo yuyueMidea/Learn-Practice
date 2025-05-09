@@ -90,5 +90,38 @@ uni.switchTab({
 **三、UI组件库**
 - 1、基础组件：视图容器；表单组件；
 - 2、扩展组件：
-- （1）安装uni-ui; ```npm install @dcloudio/uni-ui```
+   - （1）安装uni-ui; ```npm install @dcloudio/uni-ui```
+   - （2）使用示例：
+```
+<template>
+  <view>
+    <uni-card title="卡片标题" extra="额外信息">
+      <text>卡片内容</text>
+    </uni-card>
+    
+    <uni-segmented-control 
+      :current="current" 
+      :values="['选项1', '选项2', '选项3']"
+      @clickItem="onClickItem"
+    />
+  </view>
+</template>
 
+<script>
+import {uniCard, uniSegmentedControl} from '@dcloudio/uni-ui'
+
+export default {
+  components: {uniCard, uniSegmentedControl},
+  data() {
+    return {
+      current: 0
+    }
+  },
+  methods: {
+    onClickItem(index) {
+      this.current = index
+    }
+  }
+}
+</script>
+```
