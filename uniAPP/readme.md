@@ -223,3 +223,6 @@ export function getPlatformApi() {
   // #endif
 }
 ```
+
+**七、插件与扩展**
+- 1、常用插件推荐：图标插件uCharts, ```npm install @qiun/ucharts```
