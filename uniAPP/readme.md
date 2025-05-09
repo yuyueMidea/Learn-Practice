@@ -125,3 +125,13 @@ export default {
 }
 </script>
 ```
+
+**四、状态管理**
+- 1、Vuex使用；
+- 2、全局变量在main.js中定义：
+```
+Vue.prototype.$globalData = {
+  apiBaseUrl: 'https://api.example.com',
+  version: '1.0.0'
+}
+```
