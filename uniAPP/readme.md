@@ -267,3 +267,17 @@ export function getPlatformApi() {
   ]
 }
 ```
+
+**九、调试与发布**
+- 1、调试技巧：使用console.log输出日志；在HbuilderX中使用调试功能；微信开发者工具中还有 Source Map调试；
+- 2、发布流程：
+   - （1）小程序发布运行```npm run build:mp-weixin```；使用微信开发者工具打开```dist/dev/mp-weixin```； 点击上传按钮提交审核；
+   - （2）APP发布：配置```manifest.json```；选择发行__原生APP_云打包；选择证书和配置；提交打包；
+   - （3）H5发布：运行```npm run build:h5```； 部署```dist/build/h5```到服务器；
+
+
+ **最佳实践**
+ - 代码风格统一：
+    - （1）使用```ESLint+ Prettier```；
+    - （2）组件命名使用```PascalCase```
+
