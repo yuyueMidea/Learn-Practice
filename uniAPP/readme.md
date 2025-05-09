@@ -250,3 +250,20 @@ export function getPlatformApi() {
   </view>
 </template>
 ```
+- 3、分包加载
+```
+// pages.json
+{
+  "subPackages": [
+    {
+      "root": "pages/sub1",
+      "pages": [
+        {
+          "path": "page1",
+          "style": { ... }
+        }
+      ]
+    }
+  ]
+}
+```
