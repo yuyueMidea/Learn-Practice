@@ -135,3 +135,4 @@ Vue.prototype.$globalData = {
   version: '1.0.0'
 }
 ```
+在页面中使用：```console.log(this.$globalData.apiBaseUrl)```
