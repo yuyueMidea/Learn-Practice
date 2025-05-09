@@ -38,7 +38,7 @@ export default {
 ```
 
 **二、路由与页面跳转**
-- 页面配置（pages.json）
+- 1、页面配置（pages.json）
 ```
 {
   "pages": [
@@ -56,4 +56,24 @@ export default {
     }
   ]
 }
+```
+- 2、页面跳转方法
+```
+// 保留当前页面，跳转到应用内页面
+uni.navigateTo({
+  url: '/pages/detail/detail?id=1'
+})
+
+// 关闭当前页面，跳转到应用内页面
+uni.redirectTo({
+  url: '/pages/detail/detail?id=1'
+})
+
+// 返回上一页
+uni.navigateBack()
+
+// 跳转到 tabBar 页面
+uni.switchTab({
+  url: '/pages/tabbar/home'
+})
 ```
