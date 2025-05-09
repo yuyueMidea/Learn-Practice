@@ -38,7 +38,7 @@ export default {
 ```
 
 **二、路由与页面跳转**
-页面配置（pages.json）
+- 页面配置（pages.json）
 ```
 {
   "pages": [
