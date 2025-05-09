@@ -277,8 +277,18 @@ export function getPlatformApi() {
 
 
  **最佳实践**
- - 代码风格统一：
+ - 1、项目结构规范：
+  ```
+├── api             // 接口定义
+├── components      // 公共组件
+├── pages           // 页面
+├── static          // 静态资源
+├── store           // 状态管理
+└── utils           // 工具函数`
+```
+ - 2、代码风格统一：
     - （1）使用```ESLint+ Prettier```；
     - （2）组件命名使用```PascalCase```
     - （3）方案分命名使用```camelCase```；
 
+总结：uniAPP提供了强大的跨平台开发能力，通过合理使用其特性 和 遵循最佳实践，可以高效开发出 高质量的跨平台应用。
