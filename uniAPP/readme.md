@@ -175,3 +175,20 @@ const http = {
 
 export default http
 ```
+- uni.request使用示例：
+```
+import http from '@/utils/http'
+
+export default {
+  methods: {
+    async fetchData() {
+      try {
+        const res = await http.get('/api/data')
+        console.log(res)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
+}
+```
