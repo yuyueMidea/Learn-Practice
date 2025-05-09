@@ -136,3 +136,42 @@ Vue.prototype.$globalData = {
 }
 ```
 在页面中使用：```console.log(this.$globalData.apiBaseUrl)```
+
+**五、网络请求**
+- 1、uni.request封装
+```
+// utils/http.js
+const http = {
+  request(options) {
+    return new Promise((resolve, reject) => {
+      uni.request({
+        url: options.url,
+        method: options.method || 'GET',
+        data: options.data || {},
+        header: {
+          'Content-Type': 'application/json',
+          'Authorization': uni.getStorageSync('token') || ''
+        },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data)
+          } else {
+            reject(res.data)
+          }
+        },
+        fail: (err) => {
+          reject(err)
+        }
+      })
+    })
+  },
+  get(url, data) {
+    return this.request({url, method: 'GET', data})
+  },
+  post(url, data) {
+    return this.request({url, method: 'POST', data})
+  }
+}
+
+export default http
+```
