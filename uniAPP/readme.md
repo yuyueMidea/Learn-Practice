@@ -280,4 +280,5 @@ export function getPlatformApi() {
  - 代码风格统一：
     - （1）使用```ESLint+ Prettier```；
     - （2）组件命名使用```PascalCase```
+    - （3）方案分命名使用```camelCase```；
 
