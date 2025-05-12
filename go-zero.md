@@ -23,4 +23,4 @@
 - api与rpc基于grpc的metadata传值
 - API错误处理
 - rpc错误处理
-- 
+- 使用template来自定义生成代码
