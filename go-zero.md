@@ -19,4 +19,8 @@
 - rpc服务之 model
 - rpc服务之 interceptor
 - rpc服务之 源码解读
-- 服务发现三种方式
+- 服务发现三种方式（直连、etcd、k8s）
+- api与rpc基于grpc的metadata传值
+- API错误处理
+- rpc错误处理
+- 
