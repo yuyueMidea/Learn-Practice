@@ -24,3 +24,6 @@
 - API错误处理
 - rpc错误处理
 - 使用template来自定义生成代码
+
+
+go-zero是一个集成了各种工程实践的web和rpc框架，
