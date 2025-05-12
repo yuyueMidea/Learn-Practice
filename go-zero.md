@@ -28,4 +28,4 @@
 
 go-zero是一个集成了各种工程实践的web和rpc框架。通过弹性设计保证了大并发服务端的稳定性，经受了充分的实战检验。
 
-**缩短从需求到上线的距离** go-zero包含极简的API定义和生成工具`goctl`，可以根据定义的API文件一键生成GO、iOS、Android、Kotlin、Dart、Typescript、JavaScript代码。
+**缩短从需求到上线的距离** go-zero包含极简的API定义和生成工具`goctl`，可以根据定义的API文件一键生成GO、iOS、Android、Kotlin、Dart、Typescript、JavaScript代码，并可以直接运行。
