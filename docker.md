@@ -36,3 +36,9 @@ docker是一个开源的**容器化平台**，用于开发、部署和运行应�
 | docker exec -it <容器ID> bash	| 进入容器内部
 | docker stop <容器ID>	| 停止容器
 | docker-compose up -d	| 启动 Compose 定义的所有服务
+
+**五、Docker架构**
+
+- Docker客户端（CLI）：用户通过命令操作（如docker run）；
+- Docker守护进程（）：负责管理容器、镜像等；
+- Docker hub、Registry：存储和分发镜像的仓库。
