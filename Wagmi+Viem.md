@@ -35,3 +35,27 @@ function App() {
   )
 }
 ```
+- 4、连接钱包：Wagmi 2.0 提供了便捷的方式来连接用户的加密钱包，比如 MetaMask。下面是一个简单的连接钱包的示例：
+```
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+
+const ConnectWallet = () => {
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
+  const { disconnect } = useDisconnect();
+
+  if (isConnected) {
+    return (
+      <div>
+        <p>Connected to {address}</p>
+        <button onClick={() => disconnect()}>Disconnect</button>
+      </div>
+    );
+  }
+
+  return <button onClick={() => connect()}>Connect Wallet</button>;
+};
+```
