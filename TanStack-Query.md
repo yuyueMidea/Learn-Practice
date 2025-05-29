@@ -20,3 +20,5 @@ const UsingFetchAPI = () => {
   return <></>
 }
 ```
+
+而React Query 不仅仅简化了data fetching的代码，而且能够轻松处理复杂的场景。比如：当用户离开网页后，再回到网页，我们可能想要重新发起请求，这时候我们只需要配置refetchOnWindowFoucs: true 即可; 如果想要实现无限滚动，可以使用它的useInfiniteQuery() API；而且我们可以使用它的开发者工具debug data fetching 逻辑。
