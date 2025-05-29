@@ -18,3 +18,39 @@ Zustand 是一个轻量级、简洁且强大的 React 状态管理库，旨在�
 
 **三、如何在 React 项目中使用 Zustand**
 - 1、安装：`npm install zustand`
+- 2、快速上手：
+```
+
+// 计数器 Demo 快速上手
+import React from "react";
+import { create } from "zustand";
+
+// create（）：存在三个参数，第一个参数为函数，第二个参数为布尔值
+// 第一个参数：(set、get、api)=>{…}
+// 第二个参数：true/false 
+// 若第二个参数不传或者传false时，则调用修改状态的方法后得到的新状态将会和create方法原来的返回值进行融合；
+// 若第二个参数传true时，则调用修改状态的方法后得到的新状态将会直接覆盖create方法原来的返回值。
+
+const useStore = create(set => ({
+  count: 0,
+  setCount: (num: number) => set({ count: num }),
+  inc: () => set((state) => ({ count: state.count + 1 })),
+}));
+
+export default function Demo() {
+  // 在这里引入所需状态
+  const { count, setCount, inc } = useStore();
+
+  return (
+    <div>
+      {count}
+      <input
+        onChange={(event) => {
+          setCount(Number(event.target.value));
+        }}
+      ></input>
+      <button onClick={inc}>增加</button>
+    </div>
+  );
+}
+```
