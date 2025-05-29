@@ -1,4 +1,4 @@
-地址：` https://juejin.cn/post/7321049446443384870?searchId=202505292206209FC32D6DBB624479202A`
+掘金地址：<https://juejin.cn/post/7321049446443384870?searchId=202505292206209FC32D6DBB624479202A>
 
 **一、Zustand 状态库：轻便、简洁、强大的 React 状态管理工具**
 
