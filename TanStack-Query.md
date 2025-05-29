@@ -4,3 +4,19 @@ React Query 通常被描述为React的data fetching库，它让React应用程序
 
 React 自身并没有开箱即用的获取和更新数据的方法，通常我们使用hook来实现fetching data。
 
+如下代码虽然能用，但是实现缓存、错误后重试、避免重复请求会更加麻烦。
+```
+import { useEffect, useState } from "react"
+const UsingFetchAPI = () => {
+  const [user, setUsers] = useState()
+  const fetchData = () => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => response.json())
+      .then((json) =>setUsers(json))
+  }
+  useEffect(() => {
+    fetchData()
+  }, [])
+  return <></>
+}
+```
