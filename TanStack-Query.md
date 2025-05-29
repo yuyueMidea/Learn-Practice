@@ -22,3 +22,35 @@ const UsingFetchAPI = () => {
 ```
 
 而React Query 不仅仅简化了data fetching的代码，而且能够轻松处理复杂的场景。比如：当用户离开网页后，再回到网页，我们可能想要重新发起请求，这时候我们只需要配置refetchOnWindowFoucs: true 即可; 如果想要实现无限滚动，可以使用它的useInfiniteQuery() API；而且我们可以使用它的开发者工具debug data fetching 逻辑。
+```
+import { QueryClient,QueryClientProvider,useQuery} from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+
+const queryClient = new QueryClient()
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UsingFetchAPI />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  )
+}
+
+function UsingFetchAPI() {
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['getUser'],
+    queryFn: () =>
+      fetch('https://jsonplaceholder.typicode.com/users').then(
+        (res) => res.json(),
+      ),
+  })
+
+  if (isLoading) return 'Loading...'
+
+  if (error) return 'An error has occurred: ' + error.message
+
+  return  <></>
+}
+```
