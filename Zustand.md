@@ -54,3 +54,14 @@ export default function Demo() {
   );
 }
 ```
+- 3、在状态中访问和存储数组，假设我们需要在 Zustand 中存储一个 state 中的数组, 我们可以像下面这样定义：
+```
+const useStore = create(set => ({
+  fruits: ['apple', 'banana', 'orange'],
+  addFruits: (fruit) => {
+    set(state => ({
+      fruits: [...state.fruits, fruit]
+    }));
+  }
+}));
+```
