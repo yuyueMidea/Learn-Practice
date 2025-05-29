@@ -17,3 +17,4 @@ Zustand 是一个轻量级、简洁且强大的 React 状态管理库，旨在�
 - 无副作用: Zustand 鼓励无副作用的状态更新方式。它倡导使用 immer 库来处理不可变性，使得状态更新更具可预测性，也更易于调试和维护。
 
 **三、如何在 React 项目中使用 Zustand**
+- 1、安装：`npm install zustand`
