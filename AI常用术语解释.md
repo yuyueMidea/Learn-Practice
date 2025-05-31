@@ -58,4 +58,13 @@
 | DeepSeek-MoE | DeepSeek 的混合专家模型，动态激活参数提升效率。
 | DeepSeek-Coder | DeepSeek 的代码生成大模型。
 
+7. 训练流程与优化
 
+| 术语/缩写 | 解释
+|-----------|------
+| Curriculum Learning | 课程学习：按难度逐步训练模型（如先学简单样本，再学复杂样本）。
+| Gradient Clipping | 梯度裁剪：限制梯度值，防止训练不稳定（避免梯度爆炸）。
+| Warmup Steps | 学习率预热：训练初期逐步增加学习率，避免早期震荡。
+| Batch Norm (Batch Normalization) | 批归一化：标准化每层输入，加速训练收敛。
+| Gradient Checkpointing | 梯度检查点：用计算换内存，减少显存占用（适合大模型训练）。
+| Megatron-LM | 一种分布式训练框架（由NVIDIA开发，用于高效训练LLM）。
