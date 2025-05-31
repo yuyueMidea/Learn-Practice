@@ -69,15 +69,16 @@
 | Gradient Checkpointing | 梯度检查点：用计算换内存，减少显存占用（适合大模型训练）。
 | Megatron-LM | 一种分布式训练框架（由NVIDIA开发，用于高效训练LLM）。
 
-8. 训练理论与数学  
-| 术语/缩写 | 解释 |  
-|--------------|---------|  
-| Loss Landscape | 损失景观：模型参数空间中的损失函数形状，影响优化难度。 |  
-| SGD (Stochastic Gradient Descent) | 随机梯度下降：基础优化算法，通过小批量数据更新参数。 |  
-| AdamW | Adam优化器的改进版，解耦权重衰减（更稳定的训练）。 |  
-| Sharpness-Aware Minimization (SAM) | 锐度感知最小化：优化损失景观的平坦性，提升泛化能力。 |  
-| Neural Tangent Kernel (NTK) | 神经正切核：描述无限宽神经网络的训练动力学理论。 |  
-| Grokk | 模型从“记忆”到“理解”的突然转变现象（如某些数学任务）。 |  
+8. 训练理论与数学
+
+| 术语/缩写 | 解释 
+|-----------|-- 
+| Loss Landscape | 损失景观：模型参数空间中的损失函数形状，影响优化难度。
+| SGD (Stochastic Gradient Descent) | 随机梯度下降：基础优化算法，通过小批量数据更新参数。
+| AdamW | Adam优化器的改进版，解耦权重衰减（更稳定的训练）。
+| Sharpness-Aware Minimization (SAM) | 锐度感知最小化：优化损失景观的平坦性，提升泛化能力。
+| Neural Tangent Kernel (NTK) | 神经正切核：描述无限宽神经网络的训练动力学理论。
+| Grokk | 模型从“记忆”到“理解”的突然转变现象（如某些数学任务）。
 
 ---
 
