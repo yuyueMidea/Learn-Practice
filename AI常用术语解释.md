@@ -21,3 +21,13 @@
 | SFT (Supervised Fine-Tuning) | 监督微调：用标注数据调整模型输出。
 | LoRA (Low-Rank Adaptation) | 低秩适配：高效微调大模型的技术，减少计算开销。
 | PPO (Proximal Policy Optimization) | 近端策略优化，一种强化学习算法（用于RLHF）。
+
+3. 模型架构与技术
+
+| 术语/缩写 | 解释
+|-----------|----
+| Attention | 注意力机制：让模型聚焦输入的关键部分（Transformer的核心）。
+| Self-Attention | 自注意力：序列内元素相互计算权重的机制。
+| FFN (Feed-Forward Network) | 前馈网络：Transformer 中的全连接层。
+| KV Cache (Key-Value Cache) | 缓存键值对，加速自回归生成（如文本续写）。
+| RoPE (Rotary Positional Embedding) | 旋转位置编码，改进 Transformer 的长文本处理能力。
