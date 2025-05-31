@@ -51,7 +51,8 @@
 | FLOPs (Floating Point Operations) | 浮点运算次数，衡量计算复杂度。
 | HBM (High Bandwidth Memory) | 高带宽内存，用于大模型训练的高效数据存取。
 
-6. DeepSeek 相关  
+6. DeepSeek 相关
+
 | 术语/缩写 | 解释 
 |-----------|---- 
 | DeepSeek-MoE | DeepSeek 的混合专家模型，动态激活参数提升效率。
