@@ -41,3 +41,12 @@
 | MMLU (Massive Multitask Language Understanding) | 多任务语言理解基准，测试模型通用能力。 
 | Inference | 推理：模型对输入生成输出的过程。
 | Quantization | 量化：降低模型权重精度以减少计算资源占用。
+
+5. 硬件与计算
+
+| 术语/缩写 | 解释
+|-----------|------ 
+| GPU (Graphics Processing Unit) | 图形处理器，加速深度学习计算。
+| TPU (Tensor Processing Unit) | 谷歌专为张量计算设计的AI芯片。
+| FLOPs (Floating Point Operations) | 浮点运算次数，衡量计算复杂度。
+| HBM (High Bandwidth Memory) | 高带宽内存，用于大模型训练的高效数据存取。
