@@ -68,3 +68,55 @@
 | Batch Norm (Batch Normalization) | 批归一化：标准化每层输入，加速训练收敛。
 | Gradient Checkpointing | 梯度检查点：用计算换内存，减少显存占用（适合大模型训练）。
 | Megatron-LM | 一种分布式训练框架（由NVIDIA开发，用于高效训练LLM）。
+
+8. 训练理论与数学  
+| 术语/缩写 | 解释 |  
+|--------------|---------|  
+| Loss Landscape | 损失景观：模型参数空间中的损失函数形状，影响优化难度。 |  
+| SGD (Stochastic Gradient Descent) | 随机梯度下降：基础优化算法，通过小批量数据更新参数。 |  
+| AdamW | Adam优化器的改进版，解耦权重衰减（更稳定的训练）。 |  
+| Sharpness-Aware Minimization (SAM) | 锐度感知最小化：优化损失景观的平坦性，提升泛化能力。 |  
+| Neural Tangent Kernel (NTK) | 神经正切核：描述无限宽神经网络的训练动力学理论。 |  
+| Grokk | 模型从“记忆”到“理解”的突然转变现象（如某些数学任务）。 |  
+
+---
+
+9. 模型思考与认知理论
+   
+| 术语/缩写 | 解释
+|-----------|------- 
+| Chain-of-Thought (CoT) | 思维链：让模型分步推理，提升复杂问题解答能力。
+| System 1/System 2 Thinking | 双系统思维理论（System 1快思考/System 2慢思考），类比模型推理模式。
+| Emergent Abilities | 涌现能力：模型规模增大时突然出现的新能力（如上下文学习）。
+| Scaling Laws | 缩放定律：模型性能与数据/参数规模之间的幂律关系。
+| Inductive Bias | 归纳偏置：模型设计中对解空间的隐含假设（如CNN的局部性偏好）。
+| In-Context Learning (ICL) | 上下文学习：通过提示（prompt）让模型学习任务，无需微调。
+
+
+10. 分布式与高效训练
+
+| 术语/缩写 | 解释 
+|-----------|----
+| ZeRO (Zero Redundancy Optimizer) | 零冗余优化器（DeepSpeed框架技术），减少显存占用。
+| Pipeline Parallelism | 流水线并行：将模型层拆分到不同设备，按阶段计算。
+| Tensor Parallelism | 张量并行：将矩阵运算拆分到多个设备（如Megatron-LM）。
+| Activation Checkpointing | 激活检查点：只保存部分中间结果，反向传播时重新计算。
+| Flash Attention | 高效注意力计算算法，优化显存和速度。
+
+
+11. 其他关键概念
+
+| 术语/缩写 | 解释
+|-----------|---
+| Catastrophic Forgetting | 灾难性遗忘：模型在新任务上训练后遗忘旧任务知识。
+| Sparsity | 稀疏性：通过剪枝或MoE减少激活参数，提升效率。
+| Latent Space | 潜在空间：模型内部的高维表示（如生成模型的隐变量空间）。
+| Teacher Forcing | 教师强制：训练时使用真实标签而非模型预测（用于序列生成）。
+
+附：常见工具/库 
+
+- PyTorch：Meta 开源的深度学习框架。  
+- Hugging Face：提供预训练模型和数据集的开源平台。  
+- vLLM：高效大模型推理框架。  
+- PAC Learning (Probably Approximately Correct)：计算学习理论框架。  
+- Bayesian Neural Networks：贝叶斯神经网络，引入参数不确定性。  
