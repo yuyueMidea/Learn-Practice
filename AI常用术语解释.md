@@ -31,3 +31,13 @@
 | FFN (Feed-Forward Network) | 前馈网络：Transformer 中的全连接层。
 | KV Cache (Key-Value Cache) | 缓存键值对，加速自回归生成（如文本续写）。
 | RoPE (Rotary Positional Embedding) | 旋转位置编码，改进 Transformer 的长文本处理能力。
+
+4. 评估与部署
+
+| 术语/缩写 | 解释
+|-----------|---- 
+| BLEU (Bilingual Evaluation Understudy) | 评估机器翻译质量的指标。
+| Rouge (Recall-Oriented Understudy for Gisting Evaluation) | 评估文本摘要质量的指标。 
+| MMLU (Massive Multitask Language Understanding) | 多任务语言理解基准，测试模型通用能力。 
+| Inference | 推理：模型对输入生成输出的过程。
+| Quantization | 量化：降低模型权重精度以减少计算资源占用。
