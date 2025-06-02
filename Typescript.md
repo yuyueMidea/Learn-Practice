@@ -37,3 +37,13 @@ function getNum(): number{
   return 34;
 }
 ```
+- 对象类型（Object Types）
+```
+function printCood(pt: {x: number, y: number}){
+   console.log( pt.x,  pt.y);
+}
+```
+- 联合类型（Union Types）
+
+
+
