@@ -25,13 +25,13 @@ TypeScript 中文站点: <https://ts.yayujs.com>
 - 数组（Array）：声明一个类似于 `[1, 2, 3]` 的数组类型，你需要用到语法 number[]
 - any：TypeScript 有一个特殊的类型，any，当你不希望一个值导致类型检查错误的时候，就可以设置为 any 。
 - 函数（Function）：
-   - 1.参数类型注解：当你声明一个函数的时候，你可以在每个参数后面添加一个类型注解，声明函数可以接受什么类型的参数。
+   - 1. 参数类型注解：当你声明一个函数的时候，你可以在每个参数后面添加一个类型注解，声明函数可以接受什么类型的参数。
    ```
    function greet(name: string){
      return 'hello' + name;
    }
    ```
-   - 2.返回值类型注解:你也可以添加返回值的类型注解。返回值的类型注解跟在参数列表后面
+   - 2. 返回值类型注解:你也可以添加返回值的类型注解。返回值的类型注解跟在参数列表后面
    ```
    function getNum(): number{
      return 34;
@@ -79,3 +79,13 @@ TypeScript 中文站点: <https://ts.yayujs.com>
     
    printCoord({ x: 100, y: 100 });
    ```
+- null 和 undefined: JavaScript 有两个原始类型的值，用于表示空缺或者未初始化，他们分别是 null 和 undefined 。
+- 不常见的原始类型：
+   - bigInt：ES2020 引入原始类型 BigInt，用于表示非常大的整数：`const oneHundred: bigint = BigInt(100);`
+   - symbol：这也是 JavaScript 中的一个原始类型，通过函数 Symbol()，我们可以创建一个全局唯一的引用：`const firstName = Symbol("name");
+`
+
+
+
+
+
