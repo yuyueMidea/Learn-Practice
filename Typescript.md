@@ -21,4 +21,6 @@ TypeScript 中文站点: <https://ts.yayujs.com>
 - tsc TypeScript 编译器（tsc，the TypeScript compiler）
 
 **常见类型**
-- 原始类型: string，number 和 boolean
+- 原始类型: string，number 和 boolean；举例`let myname: string='zhangsan' `
+- 数组（Array）：声明一个类似于 `[1, 2, 3]` 的数组类型，你需要用到语法 number[]
+- any：TypeScript 有一个特殊的类型，any，当你不希望一个值导致类型检查错误的时候，就可以设置为 any 。
