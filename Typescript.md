@@ -50,5 +50,19 @@ TypeScript 中文站点: <https://ts.yayujs.com>
      console.log("Your ID is: " + id);
    }
    ```
-
+- 类型别名（Type Aliases）：所谓类型别名，顾名思义，一个可以指代任意类型的名字。类型别名的语法是：
+   ```
+   type Point = {
+     x: number;
+     y: number;
+   };
+    
+   // Exactly the same as the earlier example
+   function printCoord(pt: Point) {
+     console.log("The coordinate's x value is " + pt.x);
+     console.log("The coordinate's y value is " + pt.y);
+   }
+    
+   printCoord({ x: 100, y: 100 });
+   ```
 
