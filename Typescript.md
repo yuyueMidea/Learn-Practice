@@ -44,11 +44,11 @@ TypeScript 中文站点: <https://ts.yayujs.com>
    }
    ```
 - 联合类型（Union Types）
-举例 写一个函数，用来处理字符串或者数字：
-```
-function printId(id: number | string) {
-  console.log("Your ID is: " + id);
-}
-```
+   - 定义一个联合类型：写一个函数，用来处理字符串或者数字：
+   ```
+   function printId(id: number | string) {
+     console.log("Your ID is: " + id);
+   }
+   ```
 
 
