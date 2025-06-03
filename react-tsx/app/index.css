@@ -1,0 +1,23 @@
+.wrapper1 {
+    padding: 20px;
+    text-align: center;
+}
+.formInput1 {
+    padding: 3px;
+}
+.formbtn1 {
+    margin-left: 13px;
+}
+.itemListWrapper {
+    list-style: none;
+    border: 1px solid #ccc;
+}
+.itemWrapper {
+    padding: 5px; margin: 3px;
+}
+.itemWrapper button {
+    margin-left: 11px;
+}
+.btnWrapper button {
+    margin-left: 11px;
+}
