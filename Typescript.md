@@ -83,7 +83,21 @@ TypeScript 中文站点: <https://ts.yayujs.com>
 - 不常见的原始类型：
    - bigInt：ES2020 引入原始类型 BigInt，用于表示非常大的整数：`const oneHundred: bigint = BigInt(100);`
    - symbol：这也是 JavaScript 中的一个原始类型，通过函数 Symbol()，我们可以创建一个全局唯一的引用：`const firstName = Symbol("name");
-`
+ 
+**函数部分**
+- 最简单描述一个函数的方式是使用**函数类型表达式（function type expression）。**它的写法有点类似于箭头函数：
+   ```
+   function greeter(fn: (a: string) => void) {
+     fn("Hello, World");
+   }
+    
+   function printToConsole(s: string) {
+     console.log(s);
+   }
+    
+   greeter(printToConsole);
+   //语法 (a: string) => void 表示一个函数有一个名为 a ，类型是字符串的参数，这个函数并没有返回任何值。
+   ```
 
 
 
