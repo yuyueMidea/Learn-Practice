@@ -58,7 +58,12 @@ console.log(fibonacci(1000)); // 非常大的数
 ```
 - 高精度时间戳：`const timestamp = BigInt(Date.now()) * 1000000n;`
 
+**注意事项**
+- 不能被JSON序列化：`JSON.stringify({ num: 123n }); // TypeError: Do not know how to serialize a BigInt`;
+- 浏览器兼容性：`ES2020 标准引入,现代浏览器和 Node.js 10.4+ 支持`;
+- 性能考虑：BigInt 运算通常比 Number 慢；只在需要大整数时使用；
 
+总结：BigInt 为 JavaScript 带来了处理大整数的能力，特别适合金融计算、密码学、科学计算等领域需要高精度整数运算的场景。
 
 
 
