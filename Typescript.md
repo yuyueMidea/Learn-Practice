@@ -132,6 +132,25 @@ TypeScript 中文站点: <https://ts.yayujs.com>
      return "Hello " + person.name;
    }
    ```
+- 属性修饰符（Property Modifiers）:对象类型中的每个属性可以说明它的类型、属性是否可选、属性是否只读等信息。 我们可以在属性名后面加一个 `?` 标记表示这个属性是可选的：
+   ```
+   interface PaintOptions {
+     shape: Shape;
+     xPos?: number;
+     yPos?: number;
+   }
+   //在这个例子中，xPos 和 yPos 就是可选属性。
+   ```
+- readonly 属性（readonly Properties）:在类型检查的时候，一个标记为 readonly的属性是不能被写入的。
+   ```
+   interface SomeType {
+     readonly prop: string;
+   }
+   ```
+
+
+
+
 
 
 
