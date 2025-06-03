@@ -1,3 +1,4 @@
+```
 let s1:string='asd'
 s1='aas'
 let n1:number = 12
@@ -32,3 +33,4 @@ function fn3<T>(a:T, b: T): T[] {
 }
 fn3<number>(1,33);
 fn3<string>('a', 'c');
+```
