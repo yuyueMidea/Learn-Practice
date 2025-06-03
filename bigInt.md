@@ -36,6 +36,31 @@ a % b; // 123456789012345678901234567890n
 2n === 2;  // false (类型不同)
 ```
 
+**类型转换**
+- 显式转换：
+```
+BigInt(123); // 123n
+Number(123n); // 123
+```
+
+**使用场景**
+- 大整数计算
+```
+// 计算斐波那契数列大数
+function fibonacci(n) {
+  let a = 0n, b = 1n;
+  for (let i = 0; i < n; i++) {
+    [a, b] = [b, a + b];
+  }
+  return a;
+}
+console.log(fibonacci(1000)); // 非常大的数
+```
+- 高精度时间戳：`const timestamp = BigInt(Date.now()) * 1000000n;`
+
+
+
+
 
 
 
