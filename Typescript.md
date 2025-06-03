@@ -98,6 +98,21 @@ TypeScript 中文站点: <https://ts.yayujs.com>
    greeter(printToConsole);
    //语法 (a: string) => void 表示一个函数有一个名为 a ，类型是字符串的参数，这个函数并没有返回任何值。
    ```
+   - 泛型函数 （Generic Functions）
+  ```
+  function firstElement<Type>(arr: Type[]): Type | undefined {
+     return arr[0];
+   }
+   ```
+  通过给函数添加一个类型参数 Type，并且在两个地方使用它，我们就在函数的输入(即数组)和函数的输出(即返回值)之间创建了一个关联。现在当我们调用它，一个更具体的类型就会被判断出来：
+  ```
+  // s is of type 'string'
+   const s = firstElement(["a", "b", "c"]);
+   // n is of type 'number'
+   const n = firstElement([1, 2, 3]);
+   // u is of type undefined
+   const u = firstElement([]);
+   ```
 
 
 
