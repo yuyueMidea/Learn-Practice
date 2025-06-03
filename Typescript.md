@@ -114,6 +114,27 @@ TypeScript 中文站点: <https://ts.yayujs.com>
    const u = firstElement([]);
    ```
 
+**对象类型（Object types）**
+- 对象类型可以是匿名的：
+   ```
+   function greet(person: { name: string; age: number }) {
+     return "Hello " + person.name;
+   }
+   ```
+- 也可以使用接口进行定义：
+   ```
+   interface Person {
+     name: string;
+     age: number;
+   }
+    
+   function greet(person: Person) {
+     return "Hello " + person.name;
+   }
+   ```
+
+
+
 
 
 
