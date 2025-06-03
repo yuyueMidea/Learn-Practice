@@ -152,6 +152,38 @@ useEffect(() => {
 }
 ```
 
+**六、最佳实践**
+
+1、组件设计原则：
+- 单一职责：每个组件只做一件事；
+- 明确Prop类型：使用Interface或 Type定义；
+- 合理使用泛型：适用于通用组件；
+```
+interface ListProps<T> {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+}
+
+function List<T>({ items, renderItem }: ListProps<T>) {
+  return <ul>{items.map((item, index) => (
+    <li key={index}>{renderItem(item)}</li>
+  ))}</ul>;
+}
+```
+2、性能优化：
+- 使用React.memo 记忆组件；
+- 正确标注依赖数组类型；
+- 使用 `useCallback/useMemo`优化回调；
+```
+const MemoButton = React.memo(
+  ({ onClick, children }: { onClick: () => void; children: React.ReactNode }) => (
+    <button onClick={onClick}>{children}</button>
+  )
+);
+```
+
+
+
 
 
 
