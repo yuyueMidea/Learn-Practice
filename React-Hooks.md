@@ -20,4 +20,4 @@ React Hooks 是React16.8引入的一项革命性创新，它允许你在组件�
 1. 只在最顶层使用Hooks：不要在循环、条件、或嵌套函数中调用`Hooks`；
 2. 只在React函数中调用Hooks：在React函数组件或自定义`Hooks`中调用；
 
-Hooks已成为现代React开发的标准方式，推荐在新项目中使用 函数组件和Hooks组合。
+Hooks已成为现代React开发的标准方式，推荐在新项目中使用 函数组件和Hooks的组合。
