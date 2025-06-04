@@ -6,3 +6,12 @@ React Hooks 是React16.8引入的一项革命性创新，它允许你在组件�
 - 解决class组件的问题：复杂的生命周期方法、this问题；
 - 逻辑复用困难：高阶组件和`Render Props`会导致"wrapper hell";
 - 简化组件：将相关代码组织在一起，而不是分散在不同的生命周期里；
+
+**主要Hooks介绍**
+
+1. useState
+2. useEffect
+3. useContext
+4. useReducer
+5. useMemo
+6. useCallback
