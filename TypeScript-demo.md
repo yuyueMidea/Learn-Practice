@@ -62,4 +62,13 @@ class Article {
 const a = new Article('title1', 'connn')
 console.log(a.content)
 //temdata是私有属性，实例化`a`不可访问，只能在类的内部访问
+
+// 函数重载【就是创建名称一样，但是参数类型和返回值不同的函数；编写一个函数实现多种功能】
+function hello (value: string | number): string {
+    if (typeof value ==='string') {
+        //
+    } else if (typeof value === 'number') {
+        //
+    }
+}
 ```
