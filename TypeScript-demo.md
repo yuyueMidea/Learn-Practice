@@ -47,4 +47,19 @@ const o2: Child = {
     prop2: 12,
     prop3: 44
 }
+
+// 在类中添加私有属性
+class Article {
+    title: string
+    content: string
+    aaa?: string
+    private temdata?: string
+    constructor(title: string, content: string) {
+        this.title = title
+        this.content = content
+    }
+}
+const a = new Article('title1', 'connn')
+console.log(a.content)
+//temdata是私有属性，实例化`a`不可访问，只能在类的内部访问
 ```
