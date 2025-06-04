@@ -18,7 +18,7 @@ Hooks含义：React Hooks的意思是，组件尽量写成纯函数，如果需�
 5. useMemo
 6. useCallback
 
-React Hooks本质是自变量与因变量，useState用来定义自变量，useMemo 与 useCallback 定义无副作用的因变量；useEffect定义有副作用的因变量；useContext用来跨组件层级的操作自变量；useRef让组件层级更灵活。
+React Hooks本质是自变量与因变量，useState用来定义自变量，useMemo 与 useCallback 定义无副作用的因变量；useEffect定义有副作用的因变量；useContext用来跨组件层级的操作自变量；useRef让组件逻辑更灵活。
 
 
 **Hooks规则**
