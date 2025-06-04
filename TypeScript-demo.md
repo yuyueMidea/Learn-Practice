@@ -33,4 +33,18 @@ function fn3<T>(a:T, b: T): T[] {
 }
 fn3<number>(1,33);
 fn3<string>('a', 'c');
+
+//使用extends进行接口继承、复用
+interface Parent {
+    prop1: string,
+    prop2: number
+}
+interface Child extends Parent {
+    prop3: number
+}
+const o2: Child = {
+    prop1: 'zhang',
+    prop2: 12,
+    prop3: 44
+}
 ```
