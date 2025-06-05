@@ -37,15 +37,31 @@ export default {
 
 **核心特性**
 1. setup（）函数：Composition API 的入口点、在组件创建之前执行、返回的对象会暴露给模板和其他选项。
-```
-setup() {
-  // 在这里声明响应式数据、计算属性、方法等
-  return {
-    // 暴露给模板的内容
-  }
-}
-```
-
+    ```
+    setup() {
+      // 在这里声明响应式数据、计算属性、方法等
+      return {
+        // 暴露给模板的内容
+      }
+    }
+    ```
+2. 响应式系统：ref（）用于基本类型值，reactive（）用于对象，computed（）计算属性，watch() 和 watchEffect(): 侦听器；
+    ```
+    import { ref, reactive, computed, watch } from 'vue'
+    
+    setup() {
+      const count = ref(0)
+      const state = reactive({ name: 'Vue' })
+      
+      const doubleCount = computed(() => count.value * 2)
+      
+      watch(count, (newVal, oldVal) => {
+        console.log(`count changed from ${oldVal} to ${newVal}`)
+      })
+      
+      return { count, state, doubleCount }
+    }
+    ```
 
 
 
