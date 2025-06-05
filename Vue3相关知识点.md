@@ -89,7 +89,10 @@
 
 
 **组合式API 与 Options API 的关系**
-- 不是替代而是补充；
+1. 不是替代而是补充：Composition API是可选的、可以与Options API混用；
+2. 适用场景：简单组件 Options API可能更简洁，复杂组件 Composition API更有优势。
+
+总结：Composition API 代表了vue的未来发展方向，特别适合大型项目和 需要良好Typescript支持的项目。
 
 
 
