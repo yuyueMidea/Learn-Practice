@@ -29,6 +29,15 @@ export const constantRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/todoList',
+    name: 'TodoList',
+    component: () => import('../views/TodoList.vue'),
+    meta: {
+      title: '待办事项',
+      icon: 'info'
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue'),
