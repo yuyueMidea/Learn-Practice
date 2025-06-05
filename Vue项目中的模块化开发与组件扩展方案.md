@@ -18,7 +18,76 @@ src/
 └── App.vue
 ```
 2. 组件分类原则：
-   1. 基础组件
-   2. 业务组件
-   3. 容器组件
-   4. 展示组件
+   1. 基础组件：与业务无关的纯UI组件（Button，Input等）
+   2. 业务组件：包含特定业务逻辑的组件
+   3. 容器组件：负责数据获取和状态管理
+   4. 展示组件：只负责UI呈现
+  
+**二、Mixin实现复用逻辑**
+1. 基本使用方式
+```
+// mixins/loadingMixin.js
+export default {
+  data() {
+    return {
+      isLoading: false
+    }
+  },
+  methods: {
+    showLoading() {
+      this.isLoading = true
+    },
+    hideLoading() {
+      this.isLoading = false
+    }
+  }
+}
+
+// 组件中使用
+import loadingMixin from '@/mixins/loadingMixin'
+
+export default {
+  mixins: [loadingMixin],
+  methods: {
+    async fetchData() {
+      this.showLoading()
+      try {
+        // 获取数据
+      } finally {
+        this.hideLoading()
+      }
+    }
+  }
+}
+```
+2. Mixin的优缺点
+   1. 优点：简单易用，适合Vue2项目；可以复用组件选项（data，methods等）
+   2. 缺点：命名冲突风险；来源不清晰（多个Mixin时 难以追踪）；不利于Typescript类型推断；
+  
+3. Vue3的替代方案（组合式函数）
+```
+// composables/useLoading.js
+import { ref } from 'vue'
+
+export default function useLoading() {
+  const isLoading = ref(false)
+  
+  const showLoading = () => isLoading.value = true
+  const hideLoading = () => isLoading.value = false
+  
+  return { isLoading, showLoading, hideLoading }
+}
+
+// 组件中使用
+import useLoading from '@/composables/useLoading'
+
+export default {
+  setup() {
+    const { isLoading, showLoading, hideLoading } = useLoading()
+    
+    return { isLoading, showLoading, hideLoading }
+  }
+}
+```
+
+
