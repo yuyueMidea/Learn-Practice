@@ -62,6 +62,38 @@
       return { count, state, doubleCount }
     }
     ```
+3. 生命周期钩子以`onX`形式提供：
+        ```
+        import { onMounted, onUpdated, onUnmounted } from 'vue'
+        
+        setup() {
+          onMounted(() => {
+            console.log('组件挂载')
+          })
+          
+          onUpdated(() => {
+            console.log('组件更新')
+          })
+          
+          onUnmounted(() => {
+            console.log('组件卸载')
+          })
+        }
+```
+
+**组合式API优势特点**
+1. 更好的逻辑复用；
+2. 更灵活的代码组织；
+3. 更好的Typescript支持；
+4. 更小的生产包体积；
+
+
+**组合式API 与 Options API 的关系**
+- 不是替代而是补充；
+
+
+
+
 
 
 
