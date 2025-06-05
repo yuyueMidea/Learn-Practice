@@ -20,6 +20,15 @@ export const constantRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/userList',
+    name: 'UserList',
+    component: () => import('../views/UserList.vue'),
+    meta: {
+      title: '用户列表',
+      icon: 'info'
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue'),
