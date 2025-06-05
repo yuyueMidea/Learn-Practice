@@ -22,3 +22,31 @@ React 的渲染过程分为两个主要阶段：Render 阶段和 Commit 阶段�
 | 执行方式	| 异步	| 同步
 | 生命周期/Hook 调用	| 调用 render 相关方法	| 调用副作用相关方法
 | 主要输出	| 标记变化的 Fiber 节点	| 实际 DOM 更新
+
+---
+
+在React18的并发模式下，Render阶段的行为有了重要变化：
+1. 时间切片（Time Slicing）：将渲染工作分解为小块，避免长时间阻塞主线程；
+2. 过渡更新（Transitions）：区分紧急和非紧急更新；
+3. 自动批处理：将多个状态更新合并为单个渲染。
+4. 并发模式下的渲染流程：`触发更新 → 调度（Scheduler）→ Render 阶段（可中断）→ Commit 阶段（不可中断）`;
+
+
+**性能优化启示**
+1. 减少Render阶段的工作量：使用 React.memo、useMemo、useCallback、避免在渲染期间进行昂贵计算；
+2. 优化Commit阶段：减少不必要的 DOM 操作、批量状态更新；
+3. 合理使用并发特性：对非紧急更新使用 startTransition、使用 Suspense 管理异步加载；
+
+**调试工具**
+1. React DevTools：查看组件树和渲染性能，分析组件更新原因；
+2. Performance 面板：记录和分析渲染时间线，识别性能瓶颈；
+3. Scheduler 跟踪；
+
+总结：理解 React 的 Render 和 Commit 阶段对于编写高性能 React 应用至关重要，它能帮助你更好地理解组件何时以及如何更新，从而做出更明智的优化决策。
+
+
+
+
+
+
+
