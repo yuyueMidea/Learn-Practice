@@ -12,13 +12,15 @@
              :class="{active: currentFilter === filter}">{{ filter }}</button>
           </div>
           <!-- Todo列表 -->
-           <ul class="todo-list">
-            <li v-for="todo in filteredTodos" :key="todo.id" :class="{completed: todo.completed}">
-                <input type="checkbox" v-model="todo.completed" class="todo-checkbox" @change="toggleTodo(todo.id)" :name="todo.text"/>
-                <span class="todo-text">{{ todo.text }}</span>
-                <button class="delete-button" @click="deleteTodo(todo.id)">x</button>
-            </li>
-           </ul>
+           <transition-group name="fade" tag="ul" class="todo-list">
+             <!-- <ul class="todo-list"> -->
+              <li v-for="todo in filteredTodos" :key="todo.id" :class="{completed: todo.completed}">
+                  <input type="checkbox" v-model="todo.completed" class="todo-checkbox" @change="toggleTodo(todo.id)" :name="todo.text"/>
+                  <span class="todo-text">{{ todo.text }}</span>
+                  <button class="delete-button" @click="deleteTodo(todo.id)">x</button>
+              </li>
+             <!-- </ul> -->
+           </transition-group>
            <!-- 统计信息 -->
            <div class="stats">
                 <span>{{ activeTodosCount }} items left</span>
@@ -92,11 +94,10 @@ export default defineComponent({
         };
         const deleteTodo = (id: number) =>{
           todos.value = todos.value.filter(c => c.id !== id);
-          saveTodos();
+          saveTodos()
         };
         const clearCompleted = ()=>{
           todos.value = todos.value.filter(c=> !c.completed)
-          saveTodos();
         }
         //从本地localStorage加载数据
         const loadTodos = ()=>{
@@ -257,5 +258,21 @@ h1 {
 .clear-button:hover {
   color: #333;
   text-decoration: underline;
+}
+/* 添加动画效果的样式 */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.fade-leave-active {
+  position: absolute;
 }
 </style>
