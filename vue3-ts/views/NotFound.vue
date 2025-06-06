@@ -1,7 +1,7 @@
 <template>
     <div class="home">
-      <h2>首页内容</h2>
-      <p>这是一个使用 Vue 3 + TypeScript 搭建的基础项目</p>
+      <h1>404</h1>
+      <p>你所寻找的页面不存在！</p>
     </div>
   </template>
   

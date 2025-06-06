@@ -4,18 +4,18 @@
         <!-- 添加/编辑表单 -->
          <div class="form-container">
             <h2>{{ isEditing ? '编辑用户' : '添加新用户' }}</h2>
-            <form @submit.prevent="handleSubmit">
+            <form @submit.prevent="handleSubmit" class="from-wrapper">
                 <div class="form-group">
                     <label for="name">姓名: </label>
                     <input type="text" id="name" required v-model="currentUser.name">
                 </div>
                 <div class="form-group">
-                    <label for="name">邮箱: </label>
-                    <input type="email" id="name" required v-model="currentUser.email">
+                    <label for="youx">邮箱: </label>
+                    <input type="email" id="youx" required v-model="currentUser.email">
                 </div>
                 <div class="form-group">
-                    <label for="name">年龄: </label>
-                    <input type="number" id="name" required min="1" v-model="currentUser.age">
+                    <label for="age">年龄: </label>
+                    <input type="number" id="age" required min="1" v-model="currentUser.age">
                 </div>
                 <div class="form-group">
                     <label for="name">性别: </label>
@@ -97,10 +97,10 @@ export default defineComponent({
         })
         // 性别显示文本
         const getGenderText = (gender: string): string =>{
-            const genderMap = {
-                male: '男',
-                female: '女',
-                other: '其他'
+            const genderMap: Record<string, string> = {
+                'male': '男',
+                'female': '女',
+                'other': '其他'
             }
             return genderMap[gender] || gender
         }
@@ -175,6 +175,12 @@ export default defineComponent({
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 30px;
+}
+.from-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 20px;
 }
 
 .form-group {
