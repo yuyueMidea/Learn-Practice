@@ -7,16 +7,19 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/Home.vue'),
     meta: {
       title: '首页',
-      icon: 'home'
+      icon: 'home',
+      requiresAuth: true
     }
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue'),
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/LoginForm.vue'),
     meta: {
-      title: '关于',
-      icon: 'info'
+      title: '登录',
+      icon: 'info',
+      hidden: true,
+      requiresAuth: false
     }
   },
   {
@@ -25,7 +28,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/UserList.vue'),
     meta: {
       title: '用户列表',
-      icon: 'info'
+      icon: 'info',
+      requiresAuth: true
     }
   },
   {
@@ -34,7 +38,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/TodoList.vue'),
     meta: {
       title: '待办事项',
-      icon: 'info'
+      icon: 'info',
+      requiresAuth: true
     }
   },
   {
@@ -43,7 +48,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/NotFound.vue'),
     meta: {
       title: '404',
-      hidden: true
+      hidden: true,
+      requiresAuth: false
     }
   }
 ]
