@@ -50,9 +50,12 @@ export default defineComponent({
     setup() {
         // 状态管理
         const todos = ref<Todo[]>([
-            {id:1, text:'qw1', completed: false },
-            {id:2, text:'as22', completed: false },
-            {id:3, text:'zxc444', completed: false },
+            {id:1, text:'洗脸', completed: false },
+            {id:2, text:'刷牙', completed: false },
+            {id:3, text:'吃饭饭', completed: false },
+            {id:4, text:'去打球', completed: false },
+            {id:5, text:'锻炼健身', completed: false },
+            {id:6, text:'约人见面', completed: false },
         ]);
         const newTodoText = ref('');
         const currentFilter = ref<FilterType>('all');
@@ -90,16 +93,12 @@ export default defineComponent({
         const deleteTodo = (id: number) =>{
             todos.value = todos.value.filter(c => c.id !== id);
         };
+        const clearCompleted = ()=>{
+          todos.value = todos.value.filter(c=> !c.completed)
+        }
         const toggleTodo = (id: number) =>{
-            setTimeout(() => {
-                
-                const ctodo = todos.value.find(c=>c.id === id);
-                if(ctodo) {
-                    ctodo.completed = !ctodo.completed;
-                }
-                console.log('ttt: ',ctodo?.id, ctodo?.completed)
-                console.log('ccc: ', todos.value.map(c=>c.completed))
-            }, 1000);
+          const ctodo = todos.value.find(c=>c.id === id);
+          console.log('ttt: ',ctodo )
         };
         return {
             todos,
@@ -111,7 +110,8 @@ export default defineComponent({
             completedTodosCount,
             addTodo,
             deleteTodo,
-            toggleTodo
+            toggleTodo,
+            clearCompleted
         }
     }
 })
@@ -189,7 +189,10 @@ h1 {
   border-bottom: 1px solid #eee;
 }
 
-
+.todo-list li.completed .todo-text {
+  text-decoration: line-through;
+  color: #888;
+}
 .todo-checkbox {
     margin-right: 10px;
 }
@@ -198,10 +201,6 @@ h1 {
     flex-grow: 1;
 }
 
-.todo-text.completed {
-  text-decoration: line-through;
-  color: #888;
-}
 .delete-button {
   background: none;
   border: none;
