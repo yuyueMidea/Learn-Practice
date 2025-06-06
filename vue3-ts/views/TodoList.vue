@@ -15,7 +15,6 @@
            <ul class="todo-list">
             <li v-for="todo in filteredTodos" :key="todo.id" :class="{completed: todo.completed}">
                 <input type="checkbox" v-model="todo.completed" class="todo-checkbox" @change="toggleTodo(todo.id)" :name="todo.text"/>
-                {{ todo.completed }}---
                 <span class="todo-text">{{ todo.text }}</span>
                 <button class="delete-button" @click="deleteTodo(todo.id)">x</button>
             </li>
@@ -23,13 +22,12 @@
            <!-- 统计信息 -->
            <div class="stats">
                 <span>{{ activeTodosCount }} items left</span>
-                <button
-                    v-if="completedTodosCount > 0"
-                    @click="clearCompleted"
-                    class="clear-button"
-                >
-                    Clear completed ({{ completedTodosCount }})
+                <button v-if="completedTodosCount > 0" @click="clearCompleted" class="save-button">
+                  Clear completed ({{ completedTodosCount }})
                 </button>
+                <!-- <button @click="saveTodos" class="asve-button">
+                  本地保存
+                </button> -->
             </div>
     </div>
 </template>
@@ -50,13 +48,14 @@ export default defineComponent({
     setup() {
         // 状态管理
         const todos = ref<Todo[]>([
-            {id:1, text:'洗脸', completed: false },
-            {id:2, text:'刷牙', completed: false },
-            {id:3, text:'吃饭饭', completed: false },
-            {id:4, text:'去打球', completed: false },
-            {id:5, text:'锻炼健身', completed: false },
-            {id:6, text:'约人见面', completed: false },
+            // {id:1, text:'洗脸', completed: false },
+            // {id:2, text:'刷牙', completed: false },
+            // {id:3, text:'吃饭饭', completed: false },
+            // {id:4, text:'去打球', completed: false },
+            // {id:5, text:'锻炼健身', completed: false },
+            // {id:6, text:'约人见面', completed: false },
         ]);
+        
         const newTodoText = ref('');
         const currentFilter = ref<FilterType>('all');
         const filters: FilterType [] = ['all' , 'active' , 'completed'];
@@ -89,16 +88,32 @@ export default defineComponent({
             };
             todos.value.push(newTodo);
             newTodoText.value = '';
+            saveTodos()
         };
         const deleteTodo = (id: number) =>{
-            todos.value = todos.value.filter(c => c.id !== id);
+          todos.value = todos.value.filter(c => c.id !== id);
+          saveTodos();
         };
         const clearCompleted = ()=>{
           todos.value = todos.value.filter(c=> !c.completed)
+          saveTodos();
+        }
+        //从本地localStorage加载数据
+        const loadTodos = ()=>{
+          const saved = localStorage.getItem('todos');
+          if (saved) {
+            todos.value = JSON.parse(saved)
+          }
+        }
+        loadTodos();    //初始化加载本地数据
+        //保存到本地localStorage
+        const saveTodos = ()=>{
+          localStorage.setItem('todos', JSON.stringify(todos.value))
         }
         const toggleTodo = (id: number) =>{
           const ctodo = todos.value.find(c=>c.id === id);
           console.log('ttt: ',ctodo )
+          saveTodos();
         };
         return {
             todos,
@@ -111,7 +126,9 @@ export default defineComponent({
             addTodo,
             deleteTodo,
             toggleTodo,
-            clearCompleted
+            clearCompleted,
+            saveTodos,
+            loadTodos
         }
     }
 })
@@ -164,6 +181,13 @@ h1 {
 }
 
 .filters button {
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.save-button {
   padding: 5px 10px;
   background: none;
   border: 1px solid #ddd;
