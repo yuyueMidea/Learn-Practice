@@ -22,6 +22,9 @@ Vue 3.x 中引入了一种新的 API 叫做“组合式 API”（Composition API
 
 组合式 API 不取代 Options API，而是提供了另一种组织代码的方式，你可以根据项目的需求选择使用其中的一种或混合使用两种 API。对于复杂的组件和更好的代码组织，组合式 API 提供了更灵活、清晰和易于维护的解决方案
 
+代码说明
+---
+
 1. Composition API 是vue引入的一种新的组件代码 组织方式，它解决了Options API 在复杂组件中代码分散的问题，让相关逻辑可以集中管理。
     ```
     // Options API (Vue2 风格)
