@@ -1,5 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router'
 
+import {
+  UserFilled,
+  Setting,
+  Message,
+  PieChart,
+  Menu,
+  HomeFilled,
+} from '@element-plus/icons-vue'
+
 export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -7,7 +16,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/Home.vue'),
     meta: {
       title: '首页',
-      icon: 'home',
+      icon: HomeFilled,
       requiresAuth: true
     }
   },
@@ -17,8 +26,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/LoginForm.vue'),
     meta: {
       title: '登录',
-      icon: 'info',
-      hidden: true,
+      icon: Menu,
+      // hidden: true,
       requiresAuth: false
     }
   },
@@ -28,7 +37,17 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/UserList.vue'),
     meta: {
       title: '用户列表',
-      icon: 'info',
+      icon: UserFilled,
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('../views/About.vue'),
+    meta: {
+      title: '关于',
+      icon: PieChart,
       requiresAuth: true
     }
   },
@@ -38,7 +57,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('../views/TodoList.vue'),
     meta: {
       title: '待办事项',
-      icon: 'info',
+      icon: Message,
       requiresAuth: true
     }
   },
