@@ -10,23 +10,28 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   {
-    title: "Home",
+    title: "首页",
     path: "/",
     requiresAuth: false,
   },
   {
-    title: "Dashboard",
+    title: "看板",
     path: "/dashboard",
     requiresAuth: true,
   },
   {
-    title: "About",
-    path: "/about",
+    title: "商品管理",
+    path: "/goods",
     requiresAuth: false,
   },
   {
-    title: "Contact",
-    path: "/contact",
+    title: "post管理",
+    path: "/postList",
+    requiresAuth: false,
+  },
+  {
+    title: "待办事项",
+    path: "/taskList",
     requiresAuth: false,
   },
 ];
