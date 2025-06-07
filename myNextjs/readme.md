@@ -9,15 +9,17 @@
     app/
     ├── layout.tsx
     ├── page.tsx
-    ├── globals.css
+    ├── global.css
     ├── (protected)/
     │   ├── layout.tsx
     │   ├── page.tsx
     │   └── dashboard/
     │       └── page.tsx
-    ├── about/
+    ├── goods/
     │   └── page.tsx
-    ├── contact/
+    ├── postList/
+    │   └── page.tsx
+    ├── taskList/
     │   └── page.tsx
     ├── login/
     │   └── page.tsx
