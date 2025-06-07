@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLex/Grid布局示例</title>
+    <style>
+        /* flex布局样式 */
+        .navbar {
+        display: flex;
+        justify-content: center;
+        background: #333;
+        padding: 10px;
+        }
+
+        .navbar a {
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        }
+
+        .navbar a:hover {
+        background: #555;
+        }
+        /* grid布局样式 */
+        .responsive-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        }
+
+        .item {
+        background: #f0f0f0;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <p>Flex布局示例</p>
+    <nav class="navbar">
+        <a href="#">首页</a>
+        <a href="#">产品</a>
+        <a href="#">服务</a>
+        <a href="#">关于</a>
+        <a href="#">联系</a>
+      </nav>
+    <br/><hr/><br/>
+      <p>实际示例：响应式网格布局</p>
+    <div class="responsive-grid">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+      </div>
+</body>
+</html>
