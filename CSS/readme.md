@@ -24,3 +24,35 @@ flex项目属性
   order: 1; /* 排列顺序 */
 }
 ```
+
+基本Grid容器
+```
+.grid-container {
+  display: grid;
+  grid-template-columns: 100px 1fr 2fr; /* 定义列 */
+  grid-template-rows: 50px 1fr 50px; /* 定义行 */
+  gap: 10px; /* 网格间隙 */
+  
+  /* 简写方式 */
+  grid-template: 
+    "header header header" 50px
+    "sidebar main main" 1fr
+    "footer footer footer" 50px
+    / 100px 1fr 2fr;
+}
+```
+Grid项目属性
+```
+.grid-item {
+  grid-column: 1 / 3; /* 跨越列 */
+  grid-row: 1; /* 跨越行 */
+  
+  /* 使用命名区域 */
+  grid-area: header;
+  
+  /* 对齐方式 */
+  justify-self: center; /* 水平对齐 */
+  align-self: center; /* 垂直对齐 */
+}
+```
+
