@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./global.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
@@ -17,9 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body >
         <Navbar />
-        <main className="container py-8">{children}</main>
+        <main className="mainContainer">{children}</main>
       </body>
     </html>
   );

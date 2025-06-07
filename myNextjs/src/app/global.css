@@ -14,11 +14,10 @@
   }
   
   /* Container */
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
+  .mainContainer {
+    width: 100vw;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
   }
   
   /* Utility Classes */
@@ -38,7 +37,3 @@
     padding: 1rem;
   }
   
-  .py-8 {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
