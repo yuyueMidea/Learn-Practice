@@ -1,32 +1,37 @@
 import Link from "next/link";
+import styles from './styles.module.css'
 
 export default function LoginPage() {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
       <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-      <form className="space-y-4">
+      <form className={styles.formWrapper}>
         <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className={styles.formLabel} htmlFor="email">Email</label>
           <input
             type="email"
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            id="email"
+            className={styles.formInput}
             placeholder="your@email.com"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
+          <label className={styles.formLabel} htmlFor="pwd">Password</label>
           <input
             type="password"
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            placeholder="••••••••"
+            id="pwd"
+            className={styles.formInput}
           />
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-        >
-          Sign In
-        </button>
+        <div>
+          <label className={styles.formLabel}></label>
+          <button
+            type="submit"
+            className={styles.submitBtn}
+          >
+            Sign In
+          </button>
+        </div>
       </form>
       <div className="mt-4 text-center text-sm">
         <Link href="/" className="text-blue-600 hover:underline">

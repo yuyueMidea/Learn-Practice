@@ -1,0 +1,21 @@
+.formWrapper {
+    border: 1px solid #ccc;
+    padding: 1rem;
+}
+.formWrapper>div {
+    margin: 11px;
+}
+.formWrapper .formLabel {
+    display: inline-block;
+    min-width: 100px;
+    text-align: right;
+    padding-right: 11px;
+}
+.formWrapper .formInput {
+    min-width: 200px;
+    padding: 3px;
+}
+.formWrapper .submitBtn {
+    min-width: 100px;
+    padding: 5px;
+}
