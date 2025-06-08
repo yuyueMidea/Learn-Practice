@@ -12,6 +12,8 @@
     ├── router/               # 路由配置
     │   ├── index.ts          # 路由入口
     │   └── routes.ts         # 路由表
+    ├── services/             # 数据库服务类
+    │   └── idb.ts            # 数据库服务类
     ├── stores/               # Pinia 状态管理
     │   └── app.ts            # 应用状态
     │   └── authStore.ts      # 登录认证、鉴权认证状态
