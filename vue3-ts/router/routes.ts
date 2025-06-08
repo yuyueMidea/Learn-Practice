@@ -7,6 +7,7 @@ import {
   PieChart,
   Menu,
   HomeFilled,
+  Grid
 } from '@element-plus/icons-vue'
 
 export const constantRoutes: RouteRecordRaw[] = [
@@ -64,10 +65,20 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/postList',
     name: 'PostList',
-    component: () => import('../views/postList.vue'),
+    component: () => import('../views/PostList.vue'),
     meta: {
       title: '博客列表',
       icon: Document,
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/dataList',
+    name: 'dataList',
+    component: () => import('../views/DBdataList.vue'),
+    meta: {
+      title: '数据库',
+      icon: Grid,
       requiresAuth: true
     }
   },
