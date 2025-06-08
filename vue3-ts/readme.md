@@ -17,6 +17,9 @@
     ├── views/                # 页面组件
     │   ├── Home.vue          # 首页
     │   ├── About.vue         # 关于页
+    │   ├── DBdataList.vue    # 数据库页
+    │   ├── LoginForm.vue    # 登录页
+    │   ├── PostList.vue       # 博客页
     |   ├── UserList.vue      # 用户管理页面
     |   ├── TodoList.vue         # 待办事项页面（TodoList）
     │   └── NotFound.vue      # 404页
