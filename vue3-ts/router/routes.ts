@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 import {
   UserFilled,
-  Setting,
+  Document,
   Message,
   PieChart,
   Menu,
@@ -58,6 +58,16 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '待办事项',
       icon: Message,
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/postList',
+    name: 'PostList',
+    component: () => import('../views/postList.vue'),
+    meta: {
+      title: '博客列表',
+      icon: Document,
       requiresAuth: true
     }
   },
