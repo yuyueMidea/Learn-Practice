@@ -14,6 +14,7 @@
     │   └── routes.ts         # 路由表
     ├── stores/               # Pinia 状态管理
     │   └── app.ts            # 应用状态
+    │   └── authStore.ts      # 登录认证、鉴权认证状态
     ├── views/                # 页面组件
     │   ├── Home.vue          # 首页
     │   ├── About.vue         # 关于页
