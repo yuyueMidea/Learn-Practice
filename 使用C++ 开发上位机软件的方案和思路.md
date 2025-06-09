@@ -17,3 +17,46 @@ GUI框架选择：
     - 适合传统windows应用
     - 与Visual Studio深度集成
     - 逐渐被Qt等现代框架取代
+
+通信方案
+1. 串口通信
+    - QSerialPort (Qt)
+    - Windows API (CreateFile/ReadFile/WriteFile)
+2. 网络通信
+    - TCP/UDP: QtNetwork模块
+    - WebSocket: Qt WebSockets
+    - 自定义协议实现
+  
+3. 工业协议
+    - Modbus: libmodbus库
+    - CAN: SocketCAN (Linux), PCAN (Windows)
+    - OPC UA: open62541库
+  
+**二、开发思路与架构设计**
+1.模块化设计
+```
+├── 核心应用层
+│   ├── 主控制模块
+│   ├── 通信管理模块
+│   ├── 数据处理模块
+│   └── 业务逻辑模块
+├── 用户界面层
+│   ├── 主窗口
+│   ├── 配置面板
+│   ├── 数据显示面板
+│   └── 日志/报警面板
+├── 硬件接口层
+│   ├── 串口通信
+│   ├── 网络通信
+│   └── 专用协议实现
+└── 工具与服务层
+    ├── 日志系统
+    ├── 配置管理
+    ├── 数据库访问
+    └── 辅助工具类
+```
+
+
+
+
+
