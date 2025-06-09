@@ -73,5 +73,24 @@ project/
 └── requirements.txt      # 依赖列表
 ```
 
+2、配置管理方案
+
+3、日志系统实现
+
+**六、调试与优化技巧**
+1. 信号调试
+```
+# 打印所有发出的信号
+def log_signal(*args):
+    print(f"Signal received: {args}")
+
+any_signal.connect(log_signal)
+```
+2. 性能分析工具：使用cProfile分析性能瓶颈、Qt自带QElapsedTimer进行代码段计时；
+3. 内存管理：使用QObject.deleteLater() 安全释放对象、避免在QThread子类中创建QObject；
+4. 跨平台注意事项：路径使用 QDir和QFileInfo 处理、换行符使用 os.linesep；
+
+总结：通过以上方案，可以构建出专业级的上位机软件，具备良好的可维护性、可扩展性和稳定性；建议从核心通信功能开始实现，逐步完善UI界面，最终集成各项辅助功能。
+
 
 
