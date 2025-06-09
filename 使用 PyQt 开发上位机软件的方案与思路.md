@@ -53,8 +53,57 @@
 **四、通信与硬件交互**
 
 1、串口通信增强实现
+```
+class EnhancedSerialManager(QObject):
+    def __init__(self):
+        super().__init__()
+        self.port = QSerialPort()
+        self.parser = ProtocolParser()  # 自定义协议解析器
+        self.buffer = bytearray()
+        
+    @pyqtSlot()
+    def read_data(self):
+        while self.port.bytesAvailable():
+            chunk = self.port.readAll().data()
+            self.buffer.extend(chunk)
+            
+            # 协议解析
+            while len(self.buffer) >= HEADER_SIZE:
+                if self.buffer.startswith(HEADER_MARKER):
+                    packet_size = unpack('>H', self.buffer[2:4])[0]
+                    if len(self.buffer) >= packet_size:
+                        packet = self.buffer[:packet_size]
+                        self.buffer = self.buffer[packet_size:]
+                        self.parser.process_packet(packet)
+                else:
+                    self.buffer.pop(0)  # 丢弃无效数据
+```
 
 2、网络通信实现
+```
+class TcpClient(QObject):
+    connected = pyqtSignal()
+    disconnected = pyqtSignal()
+    data_received = pyqtSignal(bytes)
+
+    def __init__(self):
+        super().__init__()
+        self.socket = QTcpSocket()
+        self.socket.connected.connect(self.connected)
+        self.socket.disconnected.connect(self.disconnected)
+        self.socket.readyRead.connect(self._on_ready_read)
+        
+    def connect_to_host(self, host, port):
+        self.socket.connectToHost(host, port)
+        
+    def _on_ready_read(self):
+        data = self.socket.readAll()
+        self.data_received.emit(data.data())
+        
+    def send_data(self, data):
+        if self.socket.state() == QAbstractSocket.ConnectedState:
+            self.socket.write(data)
+```
 
 **五、工程化建议**
 
