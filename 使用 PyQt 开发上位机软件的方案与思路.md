@@ -45,10 +45,50 @@
 
 1、现代化UI实现
 - QSS样式表示例
+```
+# styles.qss
+QMainWindow {
+    background-color: #2b2b2b;
+}
+
+QPushButton {
+    background-color: #3c3f41;
+    color: #a9b7c6;
+    border: 1px solid #555;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+QPushButton:hover {
+    background-color: #4e5254;
+}
+
+# 加载样式表
+with open('styles.qss', 'r') as f:
+    app.setStyleSheet(f.read())
+```
+
 - 自定义控件示例
 
 2、数据可视化方案
 - PyQtGraph实时曲线示例
+```
+import pyqtgraph as pg
+
+class RealTimePlot(pg.PlotWidget):
+    def __init__(self):
+        super().__init__()
+        self.setBackground('w')
+        self.plotItem.showGrid(True, True)
+        self.curve = self.plot(pen=pg.mkPen('b', width=2))
+        self.data = []
+        
+    def update_plot(self, new_value):
+        self.data.append(new_value)
+        if len(self.data) > 1000:  # 限制数据点数量
+            self.data = self.data[-1000:]
+        self.curve.setData(self.data)
+```
 
 **四、通信与硬件交互**
 
