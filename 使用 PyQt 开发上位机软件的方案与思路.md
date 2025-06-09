@@ -11,24 +11,24 @@
 
 2、推荐架构模式
 ```
-主应用程序架构
-├── 核心层 (Core)
-│   ├── 通信管理 (Serial/Network)
-│   ├── 数据处理引擎
-│   └── 业务逻辑控制器
-├── 界面层 (UI)
-│   ├── 主窗口 (MainWindow)
-│   ├── 仪表板 (Dashboard)
-│   ├── 配置面板
-│   └── 日志视图
-├── 服务层 (Services)
-│   ├── 日志系统
-│   ├── 配置管理
-│   └── 异常处理
-└── 资源层 (Resources)
-    ├── QSS样式表
-    ├── 多语言翻译
-    └── 图标资源
+        主应用程序架构
+        ├── 核心层 (Core)
+        │   ├── 通信管理 (Serial/Network)
+        │   ├── 数据处理引擎
+        │   └── 业务逻辑控制器
+        ├── 界面层 (UI)
+        │   ├── 主窗口 (MainWindow)
+        │   ├── 仪表板 (Dashboard)
+        │   ├── 配置面板
+        │   └── 日志视图
+        ├── 服务层 (Services)
+        │   ├── 日志系统
+        │   ├── 配置管理
+        │   └── 异常处理
+        └── 资源层 (Resources)
+            ├── QSS样式表
+            ├── 多语言翻译
+            └── 图标资源
 ```
 
 **二、开发流程与实现方案**
@@ -46,26 +46,26 @@
 1、现代化UI实现
 - QSS样式表示例
 ```
-# styles.qss
-QMainWindow {
-    background-color: #2b2b2b;
-}
-
-QPushButton {
-    background-color: #3c3f41;
-    color: #a9b7c6;
-    border: 1px solid #555;
-    padding: 5px;
-    border-radius: 4px;
-}
-
-QPushButton:hover {
-    background-color: #4e5254;
-}
-
-# 加载样式表
-with open('styles.qss', 'r') as f:
-    app.setStyleSheet(f.read())
+        # styles.qss
+        QMainWindow {
+            background-color: #2b2b2b;
+        }
+        
+        QPushButton {
+            background-color: #3c3f41;
+            color: #a9b7c6;
+            border: 1px solid #555;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        QPushButton:hover {
+            background-color: #4e5254;
+        }
+        
+        # 加载样式表
+        with open('styles.qss', 'r') as f:
+            app.setStyleSheet(f.read())
 ```
 
 - 自定义控件示例
