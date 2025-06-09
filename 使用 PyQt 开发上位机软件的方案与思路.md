@@ -74,9 +74,49 @@ project/
 ```
 
 2、配置管理方案
+```
+from PyQt6.QtCore import QSettings
 
+class ConfigManager:
+    def __init__(self):
+        self.settings = QSettings("MyCompany", "MyApp")
+        
+    def save_config(self, key, value):
+        self.settings.setValue(key, value)
+        
+    def load_config(self, key, default=None):
+        return self.settings.value(key, default)
+        
+    @property
+    def serial_port(self):
+        return self.load_config('serial/port', 'COM1')
+        
+    @serial_port.setter
+    def serial_port(self, value):
+        self.save_config('serial/port', value)
+```
 3、日志系统实现
+```
+import logging
+from PyQt6.QtCore import QObject, pyqtSignal
 
+class QtHandler(logging.Handler, QObject):
+    log_received = pyqtSignal(str, str)  # message, level
+    
+    def __init__(self):
+        logging.Handler.__init__(self)
+        QObject.__init__(self)
+        
+    def emit(self, record):
+        msg = self.format(record)
+        self.log_received.emit(msg, record.levelname)
+
+# 设置日志系统
+logger = logging.getLogger()
+handler = QtHandler()
+handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(handler)
+```
 **六、调试与优化技巧**
 1. 信号调试
 ```
