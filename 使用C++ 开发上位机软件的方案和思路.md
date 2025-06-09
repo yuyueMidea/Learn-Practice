@@ -84,16 +84,38 @@ GUI框架选择：
 
 **四、实用技巧与最佳实践**
 1. 多线程处理
+    - 使用QThread或QtConcurrent处理耗时的操作
+    - 避免直接在UI线程 进行I/O操作
 2. 数据可视化
+    - 使用QCustomPlot或Qt Charts进行曲线绘制
+    - 考虑使用OpenGL加速（对于高频数据）
 3. 配置管理
+    - 使用QSettings 存储应用配置
+    - 或实现 XML/JSON 配置文件解析
 4. 日志系统
+    - 考虑分级日志（Qt logging categories）
+    - 考虑异步日志记录
 5. 跨平台考虑
+    - 隔离平台相关代码
+    - 使用条件编译处理平台差异
 
 **六、推荐工具链**
 1. 开发环境
+   - Qt Creator (集成开发环境)
+   - Visual Studio + Qt插件 (Windows)
+   - CLion + Qt (跨平台)
 2. 调试工具
+   - Qt内置调试器
+   - GDB/LLDB
+   - 串口/网络抓包工具(Wireshark等)
 3. 构建系统
+   - qmake (Qt默认)
+   - CMake (推荐用于复杂项目)
 4. 版本控制
+   - Git + GitLab/GitHub
+   - Qt Creator内置Git支持
+  
+总结：通过以上方案和思路，可以构建出功能强大、稳定可靠的上位机软件，满足工业控制、仪器仪表、自动化测试等各种应用场景的需求。
 
 
 
