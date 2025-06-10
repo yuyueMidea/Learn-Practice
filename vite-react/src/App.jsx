@@ -9,53 +9,57 @@ import {
 import {KeepAlive,AliveScope } from 'react-activation';
 
 import './App.css'
-import UserInfo from './UserInfo.jsx';
-import GoodsList from './GoodsList.jsx'
-import Signup from './Signup.jsx'
-import SiblingsParam from './SiblingsParam.jsx'
-import Refdemo from './Refdemo.jsx'
-import Score from "./Score.jsx";
-import Toolbar from "./Toolbar.jsx";
-import Movingdot from './Movingdot'
-import CheckedItems from './CheckedItems.jsx'
-import TaskList from './TaskList.jsx'
-import GrandSon from './GrandSon.jsx'
-import ToggleSize from './ToggleSize.jsx'
+import UserInfo from './pages/UserInfo.jsx';
+import GoodsList from './pages/GoodsList.jsx'
+// import Signup from './pages/pages/Signup.jsx'
+import CacheDemo from './pages/CacheDemo.jsx'
+import SiblingsParam from './pages/SiblingsParam.jsx'
+import Refdemo from './pages/Refdemo.jsx'
+// import Score from "./pages/Score.jsx";
+import Toolbar from "./pages/Toolbar.jsx";
+import Movingdot from './pages/Movingdot'
+import CheckedItems from './pages/CheckedItems.jsx'
+import TaskList from './pages/TaskList.jsx'
+import GrandSon from './pages/GrandSon.jsx'
+import ToggleSize from './pages/ToggleSize.jsx'
+import NotFound from './pages/NotFound'
+
+// 定义菜单项
+const menuItems = [
+    { path: '/', name: '首页', componentName: Home, title: 'home'},
+    { path: '/userinfo', name: '用户', componentName: UserInfo, title: 'user-list'},
+    { path: '/goodslist', name: '商品', componentName: GoodsList, title: ''},
+    { path: '/siblingsParam', name: '兄弟组件传值', componentName: SiblingsParam, title: ''},
+    { path: '/refDemo', name: 'Ref用法', componentName: Refdemo, title: ''},
+    // { path: '/signup', name: '注册', componentName: Signup, title: ''},
+    { path: '/cacheDemo', name: '缓存测试', componentName: CacheDemo, title: ''},
+    { path: '/toolbar', name: '事件冒泡', componentName: Toolbar, title: ''},
+    { path: '/movingdot', name: 'Movingdot', componentName: Movingdot, title: ''},
+    { path: '/GrandSon', name: 'GrandSon', componentName: GrandSon, title: ''},
+    { path: '/checkedItems', name: 'CheckedItems', componentName: CheckedItems, title: ''},
+    { path: '/taskList', name: '任务列表', componentName: TaskList, title: ''},
+    { path: '/toggleSize', name: 'ToggleSize', componentName: ToggleSize, title: ''},
+    { path: '*', name: 'NotFound', componentName: NotFound, title: ''},
+]
 export default function AppCopy() {
     return(
         <BrowserRouter>
-            <AliveScope>
-                <nav className='navbar'>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/" title='home'>首页</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/userinfo" title='渲染用户'>用户</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/goodslist" title='渲染商品列表'>商品</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/siblingsParam" title='兄弟组件传值'>SiblingsParam</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/refDemo" title='Ref用法'>Refdemo</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/signup">signup</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/score">測試渲染</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/toolbar" title='事件冒泡'>事件傳播</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/movingdot" title='设置对象state'>Movingdot</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/checkedItems">CheckedItems</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/tasklist">TaskList</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/grandson">GrandSon</NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to="/toggleSize">ToggleSize</NavLink>
-                </nav>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/userinfo" element={ <UserInfo /> } />
-                    <Route path="/goodslist" element={ <GoodsList /> } />
-                    <Route path="/siblingsParam" element={<SiblingsParam />} />
-                    <Route path="/refDemo" element={<Refdemo />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/score" element={<Score />} />
-                    <Route path="/toolbar" element={<Toolbar />} />
-                    <Route path="/movingdot" element={<Movingdot />} />
-                    <Route path="/checkedItems" element={<CheckedItems />} />
-                    <Route path="/tasklist" element={<TaskList />} />
-                    <Route path="/grandson" element={<GrandSon />} />
-                    <Route path="/toggleSize" element={<ToggleSize />} />
-                </Routes>
-            </AliveScope>
+            <div className="app-container out_route_wrapper">
+                <AliveScope>
+                    <nav className='navbar status-bar'>
+                        {menuItems.map(item => (
+                            <NavLink key={item.path} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to={item.path} title={item.title}>{ item.name }</NavLink>
+                        ))}
+                    </nav>
+                    <div className="innerroute_wrapper content-area">
+                        <Routes>
+                            {menuItems.map(item => (
+                                <Route path={item.path} element={<item.componentName />} />
+                            ))}
+                        </Routes>
+                    </div>
+                </AliveScope>
+            </div>
         </BrowserRouter>
     )
 }
