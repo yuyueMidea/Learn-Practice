@@ -11,37 +11,43 @@
     </style>
   </head>
   <body>
-    <h1 class="text-3xl font-bold underline text-clifford">
-      Hello world!
-    </h1>
-    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-        点击我
-      </button>
-      <p>3. 响应式网格</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="bg-gray-200 p-4">项目1</div>
-        <div class="bg-gray-200 p-4">项目2</div>
-        <div class="bg-gray-200 p-4">项目3</div>
-        <div class="bg-gray-200 p-4">项目4</div>
-        <div class="bg-gray-200 p-4">项目5</div>
-        <div class="bg-gray-200 p-4">项目6</div>
-      </div>
-      <hr/><br/>
-      <div class="flex flex-col sm:flex-row">
-        <div class="w-full sm:w-1/3 p-4 bg-blue-100">侧边栏</div>
-        <div class="w-full sm:w-2/3 p-4 bg-green-100">主内容</div>
-      </div>
-
-      <button class="px-4 py-2 bg-purple-600 text-white rounded-lg transform hover:scale-105 transition duration-200">
-        悬停放大
-      </button>
-
-      <div class="m-4 p-4 w-64 h-32 border border-gray-300">
-        固定宽高的盒子
-      </div>
-
-      <h1 class="text-3xl font-bold text-gray-800 tracking-wide">大标题</h1>
-      <p class="text-lg text-gray-600 leading-relaxed">这是一段文本，行高较为宽松。</p>
+    <div class="container border m-auto p-4">
+        <h1 class="text-3xl font-bold underline text-clifford">
+          Hello world!
+        </h1>
+        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            点击我
+          </button>
+          <p>3. 响应式网格</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-gray-200 p-4">项目1</div>
+            <div class="bg-gray-200 p-4">项目2</div>
+            <div class="bg-gray-200 p-4">项目3</div>
+            <div class="bg-gray-200 p-4">项目4</div>
+            <div class="bg-gray-200 p-4">项目5</div>
+            <div class="bg-gray-200 p-4">项目6</div>
+          </div>
+          <hr/><br/>
+          <div class="flex flex-col sm:flex-row">
+            <div class="w-full sm:w-1/3 p-4 bg-blue-100">侧边栏</div>
+            <div class="w-full sm:w-2/3 p-4 bg-green-100">主内容</div>
+          </div>
+    
+          <button class="px-4 py-2 bg-purple-600 text-white rounded-lg transform hover:scale-105 transition duration-200">
+            悬停放大
+          </button>
+    
+          <div class="m-4 p-4 w-64 h-32 border border-gray-300">
+            固定宽高的盒子
+          </div>
+    
+          <h1 class="text-3xl font-bold text-gray-800 tracking-wide">大标题</h1>
+          <p class="text-lg text-gray-600 leading-relaxed">这是一段文本，行高较为宽松。</p>
+          <hr/>
+          <p>盒模型相关样式说明：w-xx宽度， h-xx高度，  bg-xx背景色， p-xx表示padding, m-xx表示margin</p>
+          <div class="w-40 h-20 bg-red-600">div1</div>
+          <div class="w-2/3 h-20 bg-green-400 mt-4 p-5 border-4 border-pink-300">div2,</div>
+    </div>
       
   </body>
 </html>
