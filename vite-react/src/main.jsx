@@ -14,9 +14,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
 // import './index.css'
 import { createRoot } from 'react-dom/client'
+import AuthGuard from './components/authGuard.jsx'
 // 定义菜单项
 const menuItems = [
   { path: '/', name: '首页', componentName: lazy(() => import('./pages/Home.jsx')), title: 'home'},
+  { path: '/login', name: '登录', componentName: lazy(() => import('./pages/Login.jsx')), title: 'loginpage'},
   { path: '/userinfo', name: '用户', componentName: lazy(() => import('./pages/UserInfo.jsx')), title: 'user-list'},
   { path: '/goodslist', name: '商品', componentName: lazy(() => import('./pages/GoodsList.jsx')), title: ''},
   { path: '/siblingsParam', name: '兄弟组件传值', componentName: lazy(() => import('./pages/SiblingsParam.jsx')), title: ''},
@@ -31,13 +33,19 @@ const menuItems = [
   { path: '/toggleSize', name: 'ToggleSize', componentName: lazy(() => import('./pages/ToggleSize.jsx')), title: ''},
   { path: '*', name: 'NotFound', componentName: lazy(() => import('./pages/NotFound.jsx')), title: ''},
 ]
+
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
       <Routes>
         <Route path="/" element={<App />}>
           {menuItems.map(item => (
-            <Route path={item.path} element={<item.componentName />} />
+            <Route path={item.path} element={
+              <AuthGuard>
+                <item.componentName />
+              </AuthGuard>
+            } />
           ))}
         </Route>
       </Routes>
