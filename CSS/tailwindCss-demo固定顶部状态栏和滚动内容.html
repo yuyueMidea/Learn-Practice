@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      @keyframes progress {
+        0% { width: 0%; }
+        100% { width: 100%; }
+      }
+      .animate-progress {
+        animation: progress 2s ease-in-out infinite;
+      }
+
+      @keyframes spin-slow {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .animate-spin-slow {
+        animation: spin-slow 2s linear infinite;
+      }
+    </style>
   </head>
   <body>
 
@@ -26,15 +43,58 @@
             <div class="space-y-4">
               <!-- 模拟长内容 -->
               <div class="bg-white p-6 rounded-lg shadow">内容区块1</div>
-              <div class="bg-white p-6 rounded-lg shadow">内容区块2</div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                zone2
+                <div class="flex justify-center items-center ">
+                  <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
               <div class="bg-white p-6 rounded-lg shadow">内容区块3</div>
-              <div class="bg-white p-6 rounded-lg shadow">内容区块4</div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                zone4
+                <div class="flex justify-center items-center space-x-2">
+                  <div class="w-3 h-3 bg-gray-600 rounded-full animate-bounce"></div>
+                  <div class="w-3 h-3 bg-gray-600 rounded-full animate-bounce delay-100"></div>
+                  <div class="w-3 h-3 bg-gray-600 rounded-full animate-bounce delay-200"></div>
+                </div>
+              </div>
               <div class="bg-white p-6 rounded-lg shadow">内容区块5</div>
-              <div class="bg-white p-6 rounded-lg shadow">内容区块6</div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                zone6
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div class="bg-blue-600 h-2.5 rounded-full animate-progress"></div>
+                </div>
+              </div>
               <div class="bg-white p-6 rounded-lg shadow">内容区块7</div>
-              <div class="bg-white p-6 rounded-lg shadow">内容区块8</div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                zone8
+                <div class="flex justify-center items-center">
+                  <div class="w-12 h-12 bg-blue-500 rounded-full animate-ping"></div>
+                </div>
+              </div>
               <div class="bg-white p-6 rounded-lg shadow">内容区块9</div>
-              <div class="bg-white p-6 rounded-lg shadow">内容区块10</div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                zone10
+                <div class="flex justify-center items-center">
+                  <div class="w-12 h-12 bg-blue-500 animate-spin-slow"></div>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex justify-center items-center ">
+                  <div class="relative w-16 h-16">
+                    <div class="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow">内容区块9</div>
+              <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex justify-center items-center">
+                  <div class="w-16 h-16 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-300 animate-spin"></div>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow">内容区块9</div>
+              <div class="bg-white p-6 rounded-lg shadow">内容区块9</div>
             </div>
           </div>
         </main>
