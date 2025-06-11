@@ -68,5 +68,25 @@ const useStore = create(set => ({
 }));
 //以上, 我们创建了一个 store 包含了 fruits state, 其中包含了一系列水果, 第二个参数是 addFruits , 接受一个参数 fruit 并运行一个函数来得到 fruits state 和 新增的 fruits, 第二个变量用于更新我们存储状态的值
 ```
+**Zustand优势**
+- 简单易用：API非常直观，学习曲线低
+- 高性能：自动处理重复渲染问题
+- 灵活性：不需要Provider 包裹组件
+- 中间件支持：如持久化、Redux开发工具等
+- Typescript友好：完整的类型支持
+
+**最佳实践**
+- 按功能拆分store：不要把所有状态放在一个store中
+- 使用选择器：只订阅需要的状态，以避免不必要的渲染
+- 合理使用持久化：对需要持久化的状态使用 persist中间件
+- 组合store：对于复杂应用，可以组合多个store
 
 总结：Zustand 提供了一种比 Redux 更简单、比 Context 更高效的状态管理方案，特别适合中小型 React 应用。对于大型应用，它也能通过良好的组织保持可维护性。
+
+
+
+
+
+
+
+
