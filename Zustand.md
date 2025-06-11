@@ -68,3 +68,5 @@ const useStore = create(set => ({
 }));
 //以上, 我们创建了一个 store 包含了 fruits state, 其中包含了一系列水果, 第二个参数是 addFruits , 接受一个参数 fruit 并运行一个函数来得到 fruits state 和 新增的 fruits, 第二个变量用于更新我们存储状态的值
 ```
+
+总结：Zustand 提供了一种比 Redux 更简单、比 Context 更高效的状态管理方案，特别适合中小型 React 应用。对于大型应用，它也能通过良好的组织保持可维护性。
