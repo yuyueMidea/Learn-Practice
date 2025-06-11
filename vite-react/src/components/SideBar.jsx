@@ -5,6 +5,7 @@ export default function Sidebar({ open }) {
     const menuItems = [
         { path: '/', name: '首页' },
         { path: '/userinfo', name: '用户' },
+        // { path: '/login', name: '登录' },
         { path: '/goodslist', name: '商品' },
         { path: '/siblingsParam', name: '兄弟组件传值' },
         { path: '/refDemo', name: 'Ref用法' },
