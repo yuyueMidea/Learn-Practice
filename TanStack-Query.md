@@ -54,3 +54,20 @@ function UsingFetchAPI() {
   return  <></>
 }
 ```
+
+**React中使用**：需要在根组件中引入`QueryClient,QueryClientProvider`， 用 `QueryClientProvider`对根组件进行包裹，再用QueryClient new一个实例， 将实例使用Context的方式 提供给整个APP。
+```
+import {QueryClient,QueryClientProvider} from "@tanstack/react-query";
+
+// 创建一个 client
+const queryClient = new QueryClient();
+
+function App() {
+return (
+    // 提供 client 至 App
+    <QueryClientProvider client={queryClient}>
+        <Todos />
+    </QueryClientProvider>
+);
+}
+```
