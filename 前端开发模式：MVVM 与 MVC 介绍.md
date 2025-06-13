@@ -1,6 +1,8 @@
 ## 前端开发模式：MVVM 与 MVC 介绍
 
-MVC (Model-View-Controller),MVC是一种经典的软件架构模式，将应用程序分为三个核心组件：
+**一、MVC (Model-View-Controller)**
+
+MVC是一种经典的软件架构模式，将应用程序分为三个核心组件：
 - Model (模型): 负责数据和业务逻辑；
 - View (视图): 负责用户界面展示；
 - Controller (控制器): 接收用户输入，协调模型和视图；
@@ -14,9 +16,15 @@ MVC (Model-View-Controller),MVC是一种经典的软件架构模式，将应用�
 
 前端MVC特点：视图和控制器通常紧密耦合，需要手动处理dom更新，适用于传统多页面应用，典型实现：Backbone.js。
 
-**MVVM (Model-View-ViewModel)**
+**二、MVVM (Model-View-ViewModel)**
 
 MVVM是MVC的衍生模式，特别适合现代前端开发：
 - Model (模型): 数据层，与MVC中的模型类似
 - View (视图): 用户界面，通常是声明式模版
 - ViewModel (视图模型):  视图的抽象，负责视图的展示逻辑和状态
+
+关键特性
+1. 数据绑定：自动同步视图和视图模型
+2. 双向绑定：视图变化自动更新模型，模型变化自动更新视图
+3. 命令系统：处理用户交互
+4. 依赖追踪：自动更新相关视图部分
