@@ -99,7 +99,17 @@ updated() {
   }
 }
 ```
-
+- 预防内存泄漏
+```
+beforeDestroy() {
+  // 清除定时器
+  clearInterval(this.timer);
+  // 取消事件监听
+  this.$bus.$off('event-name');
+  // 清理第三方库实例
+  this.chartInstance && this.chartInstance.dispose();
+}
+```
 
 
 
