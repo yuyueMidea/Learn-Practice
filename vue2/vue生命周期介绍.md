@@ -84,5 +84,23 @@ beforeCreate
 | activated	| 恢复缓存组件的数据状态	| 仅keep-alive组件有效
 | deactivated	| 保存组件状态或暂停操作	| 仅keep-alive组件有效
 
+**常见问题与最佳实践**
+- 异步请求放在那个钩子？
+   - 需要dom操作，放在mounted；
+   - 仅需要数据，created；
+   - keep-alive组件：activated
+ 
+- 避免在updated中修改数据
+```
+// 错误示范 - 可能导致无限循环
+updated() {
+  if (this.count < 10) {
+    this.count++; // 触发新的更新
+  }
+}
+```
+
+
+
 
 
