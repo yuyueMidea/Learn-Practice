@@ -110,7 +110,10 @@ beforeDestroy() {
   this.chartInstance && this.chartInstance.dispose();
 }
 ```
-
+- 性能优化提示：
+   - 在created中 而不是 mounted中 发起非dom依赖的请求
+   - 使用v-once减少不必要的更新
+   - 在 beforeDestroy 中彻底清理资源
 
 
 
