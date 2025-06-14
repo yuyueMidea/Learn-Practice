@@ -25,6 +25,7 @@ beforeCreate
 ```
 
 **二、生命周期钩子详解**
+
 **- 初始化阶段：**
 - beforeCreate，
    - 触发时机，在初始化实例之后，数据观测(data observer)和event/watcher 事件配置之前；
@@ -61,6 +62,13 @@ beforeCreate
    - 触发时机：实例销毁后；
    - 特点：所有绑定和监听器都会被移除，子实例也已经被销毁。
 
-
+**- 缓存组件相关**
+- activated：
+   - 触发时机：被 keep-alive 缓存的组件激活；
+   - 特点：适合刷新数据
+ 
+- deactivated：
+   - 触发时机：被 keep-alive 缓存的组件停用时；
+   - 特点：适合保存状态
 
 
