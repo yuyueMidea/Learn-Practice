@@ -18,8 +18,41 @@
    - 解决方案：（1）使用主进程作为状态管理中心；（2）考虑使用redux+electron-store组合；（3）实现广播机制通知所有窗口；
 
 **二、性能优化方案**
-- 启动优化
-- 消息处理优化
-- 内存优化
+- 启动优化：策略：在主进程中app.whenReady()中，先创建无边框窗口快速显示，然后后台加载主窗口；其他措施：使用Vite等现代工具构建，延迟加载非核心模块，启用代码分割；
+- 消息处理优化：策略：使用消息队列避免阻塞
+- 内存优化的措施：
+   - 实现虚拟列表渲染长消息记录
+   - 限制历史消息存储量（可配置）
+   - 对图片或文件使用懒加载
+   - 定期调用gc()(需启用--js-flags="--expose-gc")（JavaScript手动内存回收，主进程开启暴露垃圾回收方法，渲染进程添加 window.gc() 方法）
+- 渲染优化措施：
+   - 使用CSS硬件加速(transform/opacity)
+   - 避免频繁的dom操作，使用DocumentFragment
+   - 对频繁更新的UI使用Canvas/WebGL
+   - 启用offscreen渲染复杂组件
+ 
+**三、高级优化技巧**
+- Worker线程利用：
+   - 将加密解密、编解码等CPU密集型任务放入Worker；
+   - 使用worker_threads模块处理Node.js端任务
+ 
+- 本地缓存策略
+   - 分级存储：内存 → SQLite → 文件系统
+   - 实现消息分页加载
+ 
+- Electron特性调优：
+      ```
+      // 主进程窗口配置优化
+      new BrowserWindow({
+        webPreferences: {
+          sandbox: true, // 启用沙箱安全模式
+          contextIsolation: true, // 必须开启
+          webgl: true, // 启用GPU加速
+          offscreen: false // 根据需求调整
+        },
+        backgroundColor: '#fff', // 减少白屏闪烁
+        frame: false // 自定义标题栏可提升性能
+      });
+      ```
 
 
