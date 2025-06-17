@@ -41,7 +41,7 @@
    - 实现消息分页加载
  
 - Electron特性调优：
-      ```
+  ```
       // 主进程窗口配置优化
       new BrowserWindow({
         webPreferences: {
@@ -53,6 +53,6 @@
         backgroundColor: '#fff', // 减少白屏闪烁
         frame: false // 自定义标题栏可提升性能
       });
-      ```
+  ```
 
 
