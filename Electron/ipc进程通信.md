@@ -4,7 +4,7 @@
 
 ### 1、渲染进程 → 主进程（单向）
 
-方式一：ipcRenderer.send -> ipcMain.on（染进程发送消息至主进程，主进程监听）
+方式一：ipcRenderer.send -> ipcMain.on（渲染进程发送消息至主进程，主进程监听）
 
 ```纯文本
 ipcRenderer.send('my_channel', 'my_data');
