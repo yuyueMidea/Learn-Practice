@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Secondary Window</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { padding: 8px 12px; margin: 5px; }
+  </style>
+</head>
+<body>
+  <h1>yuyue3,Secondary Window,副窗口</h1>
+  <div>
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button id="sendButton">Send to Main</button>
+  </div>
+  <div id="receivedMessages"></div>
+
+  <script>
+    document.getElementById('sendButton').addEventListener('click', () => {
+      const message = document.getElementById('messageInput').value
+      window.electronAPI.sendToMain(message)
+      document.getElementById('messageInput').value = ''
+    })
+    
+    window.electronAPI.onMessageFromMain((event, message) => {
+      const div = document.createElement('div')
+      div.textContent = `Main Window says: ${message}`
+      document.getElementById('receivedMessages').appendChild(div)
+    })
+  </script>
+</body>
+</html>
