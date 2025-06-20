@@ -41,6 +41,9 @@ const UserModal = ({children, record,  onOkevent })=>{
         else {
             onOkevent({id: generateRandomString(16), username: uname, role: urole})
         }
+        //关闭之前清空了输入框
+        setUname('');
+        setUrole('');
         setVisible(false)
     }
     useEffect(()=>{
@@ -72,8 +75,8 @@ const UserModal = ({children, record,  onOkevent })=>{
     )
 }
 const UserList: React.FC = ()=>{
-    const { users, addUser, updateUser, deleteUser, getUsersByRole } = useUserStore();
-    console.log('userrr: ', users)
+    const { users, addUser, updateUser, deleteUser, getUsersByRole, getAllUsers } = useUserStore();
+    // console.log('userrr: ', users)
     const [filterRole, setFilterrole] = useState('');
     const handleSearch = () =>{
         if (filterRole) {
@@ -90,6 +93,11 @@ const UserList: React.FC = ()=>{
     useEffect(()=>{
         setDataList(users)
     }, [])
+    const getAllUserList = ()=>{
+        const res = getAllUsers();
+        console.log('userrrr: ', res)
+        setDataList(res)
+    }
     const columns = [
         {
           title: 'ID',
@@ -126,8 +134,8 @@ const UserList: React.FC = ()=>{
           },
     ]
     const handleAdd = (newItem: User)=>{
-        // setDataList([...dataList, newItem])
         addUser(newItem);
+        getAllUserList()
     }
     const handleUpdate = (upItem: User)=>{
         /* let updateList = dataList.map(v=>{
@@ -140,11 +148,12 @@ const UserList: React.FC = ()=>{
         console.log('handleUpdateNew: ', upItem, updateList)
         setDataList(updateList) */
         updateUser(upItem);
+        getAllUserList()
     }
     const handleDelete = (cid: string)=>{
-        console.log('handleDelete: ', cid)
         // setDataList(dataList.filter(v=>v.id!==cid))
         deleteUser(cid);
+        getAllUserList()
     }
     
     return (
@@ -159,7 +168,7 @@ const UserList: React.FC = ()=>{
                     <Button type="primary" onClick={handleSearch}>查询</Button>
                 </div>
             </div>
-            <Table 
+            <Table size="small"
                 columns={columns}
                 rowKey="id"
                 dataSource={dataList}/>
