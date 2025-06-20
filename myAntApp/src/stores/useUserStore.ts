@@ -11,6 +11,7 @@ interface UserStore {
     addUser: (user: User) => void;
     updateUser: (user: User) => void;
     deleteUser: (id: string) => void;
+    getUsersByRole: (role: User['role']) => User[];
 }
 export const useUserStore = create<UserStore>((set, get) =>({
     users: [
@@ -31,5 +32,9 @@ export const useUserStore = create<UserStore>((set, get) =>({
     // 删除用户
     deleteUser: (cid) =>{
         set(state => ({ users: state.users.filter(v=>v.id!==cid) }) )
+    },
+    // 根据角色筛选用户
+    getUsersByRole: (role) => {
+        return get().users.filter(user => user.role === role);
     }
 }))
