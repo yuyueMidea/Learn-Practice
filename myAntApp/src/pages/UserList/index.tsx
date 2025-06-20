@@ -58,12 +58,12 @@ const UserModal = ({children, record,  onOkevent })=>{
             <Modal title={record ? '编辑用户' : '新建用户'} open={vflag}
                 onOk={handleOk}
                 onCancel={() => setVisible(false)}>
-                    <div style={{display:'grid', gridTemplateColumns: '120px 1fr'}}>
-                        <label htmlFor="uname">username</label>
+                    <div className="form-line">
+                        <label htmlFor="uname">姓名</label>
                         <Input id="uname" value={uname} onChange={(e) => setUname(e.target.value)}/>
                     </div>
-                    <div style={{display:'grid', gridTemplateColumns: '120px 1fr'}}>
-                        <label htmlFor="urole">role</label>
+                    <div className="form-line">
+                        <label htmlFor="urole">角色</label>
                         <Select value={urole} options={roleMapList} onChange={(e) => setUrole(e)}></Select>
                         {/* <Input id="urole" value={urole} onChange={(e) => setUrole(e.target.value)}/> */}
                     </div>
@@ -72,16 +72,24 @@ const UserModal = ({children, record,  onOkevent })=>{
     )
 }
 const UserList: React.FC = ()=>{
-    const { users, addUser, updateUser, deleteUser } = useUserStore();
+    const { users, addUser, updateUser, deleteUser, getUsersByRole } = useUserStore();
     console.log('userrr: ', users)
+    const [filterRole, setFilterrole] = useState('');
+    const handleSearch = () =>{
+        if (filterRole) {
+            const res = getUsersByRole(filterRole);
+            setDataList(res)
+        } else {
+            setDataList(users)
+        }
+    }
+    const handleClearFilter = ()=>{
+        setDataList(users)
+    }
     const [dataList, setDataList] = useState<User[]>([])
-    // useEffect(()=>{
-    //     setDataList([
-    //         {id: 'Kho5GIoLa3irqGRt', username: '张三', role: 'admin'},
-    //         {id: 'BvwQzKClL50gI2sA', username: '李四', role: 'user'},
-    //         {id: 'BvwQzKClL123I2sA', username: '王五', role: 'guest'},
-    //     ])
-    // }, [])
+    useEffect(()=>{
+        setDataList(users)
+    }, [])
     const columns = [
         {
           title: 'ID',
@@ -138,17 +146,23 @@ const UserList: React.FC = ()=>{
         // setDataList(dataList.filter(v=>v.id!==cid))
         deleteUser(cid);
     }
+    
     return (
         <>
             <div className="headr_line">
                 <UserModal record={''} onOkevent={handleAdd} >
                     <Button type="primary" >新建用户</Button>
                 </UserModal>
+                <div className="search_wrapper">
+                    <span className="role_label">role</span>
+                    <Select value={filterRole} options={roleMapList} onChange={(e) => setFilterrole(e)} allowClear onClear={handleClearFilter}></Select>
+                    <Button type="primary" onClick={handleSearch}>查询</Button>
+                </div>
             </div>
             <Table 
                 columns={columns}
                 rowKey="id"
-                dataSource={users}/>
+                dataSource={dataList}/>
         </>
     )
 }
