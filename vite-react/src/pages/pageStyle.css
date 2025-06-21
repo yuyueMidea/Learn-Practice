@@ -1,0 +1,18 @@
+/* App.css */
+.form_box {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+  
+.form_box.show {
+    opacity: 1;
+}
+  
+.form_box.hide {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
