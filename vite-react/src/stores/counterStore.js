@@ -15,6 +15,11 @@ const useCounterStore = create((set) => ({
     setMenuName: (cname) => set({
         menuName: cname
     }),
+    // 新增menu列表
+    menuNameList: [],
+    setMenuList: (mlist) => set({
+        menuNameList: mlist
+    })
 }));
 
 export default useCounterStore;
