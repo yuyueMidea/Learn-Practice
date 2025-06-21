@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const useAuthStore = create((set) =>({
-    token: null,
+    token: 123,
     user: null,
     isAuthenticated: false,
     // 模拟登录API的方法
@@ -33,6 +33,7 @@ const useAuthStore = create((set) =>({
         user: null,
         isAuthenticated: false
     }),
+    
 }))
 
 export default useAuthStore;
