@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Electron 视频播放器</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            /* max-width: 1200px; */
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+        }
+        .video-container {
+            width: 100%;
+            height: 90vh; /* 视口高度的80% */
+            margin: 0 auto;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        #videoPlayer {
+            width: 100%;
+            height: calc(100% - 10px);
+            object-fit: contain; /* 保持原始比例，内容完全显示 */
+        }
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        /* 之前的样式保持不变 */
+        .video-hud {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .video-container:hover .video-hud {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-container">
+            <video id="videoPlayer" controls></video>
+            <div class="video-hud" id="videoHud"></div>
+        </div>
+        <div class="controls">
+            <input type="text" id="videoUrl" placeholder="输入视频URL">
+            <button id="loadBtn">Next video</button>
+        </div>
+    </div>
+
+    <script>
+        const videoPlayer = document.getElementById('videoPlayer')
+        const videoUrl = document.getElementById('videoUrl')
+        const loadBtn = document.getElementById('loadBtn')
+
+        // 加载视频
+        loadBtn.addEventListener('click', () => {
+            const newVideoUrl = `http://api.yujn.cn/api/zzxjj.php?type=video&rand=${Math.random()}`;
+            videoUrl.value = newVideoUrl
+            if (videoUrl.value) {
+                videoPlayer.src = videoUrl.value
+                videoPlayer.load()
+                videoPlayer.play()
+            }
+        })
+        // 添加滚轮事件监听
+        videoPlayer.addEventListener('wheel', (e) => {
+            e.preventDefault() // 阻止页面滚动
+            
+            // 检查是否按住Ctrl键
+            const isCtrlPressed = e.ctrlKey || e.metaKey
+            
+            if (isCtrlPressed) {
+                // Ctrl+滚轮：调整播放速度
+                const speedChange = e.deltaY > 0 ? -0.1 : 0.1
+                const newSpeed = Math.max(0.5, Math.min(4, videoPlayer.playbackRate + speedChange))
+                videoPlayer.playbackRate = parseFloat(newSpeed.toFixed(1))
+                showHud(`播放速度: ${videoPlayer.playbackRate.toFixed(1)}x`)
+            } else {
+                // 普通滚轮：调整音量
+                const volumeChange = e.deltaY > 0 ? -0.1 : 0.1
+                const newVolume = Math.max(0, Math.min(1, videoPlayer.volume + volumeChange))
+                videoPlayer.volume = parseFloat(newVolume.toFixed(1))
+                showHud(`音量: ${Math.round(videoPlayer.volume * 100)}%`)
+            }
+        })
+
+        // 显示操作提示
+        function showHud(text) {
+            videoHud.textContent = text
+            videoHud.style.opacity = 1
+            
+            // 3秒后淡出
+            clearTimeout(videoHud.timeout)
+            videoHud.timeout = setTimeout(() => {
+                videoHud.style.opacity = 0
+            }, 3000)
+        }
+
+        // 初始化时显示默认值
+        videoPlayer.addEventListener('loadedmetadata', () => {
+            showHud(`音量: ${Math.round(videoPlayer.volume * 100)}% | 速度: ${videoPlayer.playbackRate.toFixed(1)}x`)
+        })
+
+        // 也可以从命令行参数获取URL
+        const { ipcRenderer } = require('electron')
+        ipcRenderer.on('set-video-url', (event, url) => {
+            if (url) {
+                videoUrl.value = url
+                videoPlayer.src = url
+                videoPlayer.load()
+            }
+        })
+    </script>
+</body>
+</html>
