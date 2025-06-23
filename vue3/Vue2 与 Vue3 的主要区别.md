@@ -23,3 +23,13 @@
 | errorCaptured	| onErrorCapture
 
 - 五、片段 (Fragments)
+   - Vue2：组件模板必须有单个根元素
+   - Vue3：支持多根节点组件（片段）
+ 
+- 六、Teleport 组件
+   - Vue3 新增 <teleport> 组件，可以将内容渲染到 DOM 树的任意位置；解决模态框、弹出菜单等需要突破组件 DOM 层级限制的场景
+```
+<teleport to="body">
+  <div class="modal">这是一个模态框</div>
+</teleport>
+```
