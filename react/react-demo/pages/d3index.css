@@ -1,0 +1,36 @@
+.compressor-monitor {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .gauge-panel, .chart-panel, .status-panel {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .alert-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .status-item {
+    margin-bottom: 15px;
+  }
+  
+  .status-item h3 {
+    margin-bottom: 8px;
+    color: #555;
+  }
