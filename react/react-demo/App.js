@@ -107,7 +107,7 @@ const menuItems = [
   { name: '联系', path: '/contract', title: '', componentName: lazy(() => import('./pages/Contract.jsx'))},
   { name: '用户列表', path: '/userlist', title: '', componentName: lazy(() => import('./pages/UserList.jsx'))},
   { name: '用户详情', path: '/user/:id', title: '', componentName: lazy(() => import('./pages/User.jsx'))},
-  { name: '仪表盘', path: '/dashboard', title: '', componentName: lazy(() => import('./pages/Dashboard.jsx'))},
+  { name: '监控界面', path: '/dashboard', title: '', componentName: lazy(() => import('./pages/Dashboard.jsx'))},
   { name: 'NotFound', path: '*', title: '', componentName: lazy(() => import('./pages/NotFound.jsx'))},
 ]
 
@@ -118,7 +118,7 @@ function App() {
         {/* 顶部固定导航栏 */}
         <nav style={styles.navbar}>
             <ul style={styles.navLinks}>
-              {menuItems.filter(v=>v.name!=='NotFound').map(item => (
+              {menuItems.filter(v=>(v.name!=='NotFound' && v.name!=='用户详情')).map(item => (
                 <li key={item.path}>
                   <NavLink style={styles.navLink} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'} to={item.path} title={item.title}>{ item.name }</NavLink>
                 </li>
@@ -131,14 +131,6 @@ function App() {
           {/* <NavigationButton /> */}
           
           {/* 路由配置 */}
-          {/* <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/user/:id" element={<User />} />
-            <Route path="/dashboard/*" element={<Dashboard />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes> */}
           <Routes>
             {menuItems.map(item => (
                 <Route path={item.path} element={<item.componentName />} />
