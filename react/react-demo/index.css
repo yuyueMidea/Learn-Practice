@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/* 活动链接样式 */
+.nav-item.active {
+  background-color: #4CAF50;
+  font-weight: bold;
+}
+
+.about_wrapper {
+  padding: 11px;
+}
+.about_wrapper .border_box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  color: green;
+  height: 1200px;
+}
+
+.userlist_wrapper ul li{
+  list-style: none;
+}
+.userlist_wrapper .useritem_wrapper {
+  margin: 5px;
+  padding: 3px;
+  border-bottom: 1px solid #ccc;
+}
+.userlist_wrapper .useritem_wrapper span {
+  display: inline-block;
+  min-width: 160px;
+}
+.userlist_wrapper .useritem_wrapper span:nth-child(0) {
+  min-width: 180px;
+}
+.userlist_wrapper .useritem_wrapper .operation_btns {
+  display: inline-block;
+  width: 200px;
+}
+.userlist_wrapper .useritem_wrapper .operation_btns button {
+  padding: 6px;
+  margin: 0 5px;
+}
+.userlist_wrapper .useritem_wrapper .operation_btns .editBtn {
+  color: #4CAF50;
+}
+.userlist_wrapper .useritem_wrapper .operation_btns .deleteBtn {
+  color: #f44;
+}
+
+.u_detail .form_wrapper {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 11px;
+  margin: 22px;
+}
+
+.u_detail .form_wrapper p span {
+  display: inline-block;
+  min-width: 120px;
+  padding: 3px;
+  text-align: right;
+}
+.u_detail .form_wrapper p input {
+  display: inline-block;
+  width: 200px;
+  padding: 5px;
+}
