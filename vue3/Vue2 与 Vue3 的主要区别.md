@@ -9,7 +9,7 @@
    - Vue3：使用 ES6 的 Proxy 实现响应式：完全解决了 Vue2 的响应式限制；性能更好；支持 Map、Set 等新数据类型；
  
 - 四、生命周期变化
-```
+
 | Vue2	       | Vue3 (Composition API)
 |---------------|-------------
 | beforeCreate	| 使用 setup()
@@ -21,4 +21,3 @@
 | beforeDestroy	| onBeforeUnmount
 | destroyed	| onUnmounted
 | errorCaptured	| onErrorCapture
-```
