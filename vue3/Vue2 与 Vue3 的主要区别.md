@@ -10,8 +10,8 @@
  
 - 四、生命周期变化
 ```
-| Vue2	| Vue3 (Composition API)
-|--------|-------------
+| Vue2	       | Vue3 (Composition API)
+|---------------|-------------
 | beforeCreate	| 使用 setup()
 | created	| 使用 setup()
 | beforeMount	| onBeforeMount
