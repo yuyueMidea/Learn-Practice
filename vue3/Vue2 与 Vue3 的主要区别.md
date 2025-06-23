@@ -7,3 +7,18 @@
 - 三、响应式系统
    - Vue2：使用 Object.defineProperty 实现响应式；无法检测对象属性的添加/删除；对数组的某些操作需要特殊处理；
    - Vue3：使用 ES6 的 Proxy 实现响应式：完全解决了 Vue2 的响应式限制；性能更好；支持 Map、Set 等新数据类型；
+ 
+- 四、生命周期变化
+```
+| Vue2	| Vue3 (Composition API)
+|--------|-------------
+| beforeCreate	| 使用 setup()
+| created	| 使用 setup()
+| beforeMount	| onBeforeMount
+| mounted	| onMounted
+| beforeUpdate	| onBeforeUpdate
+| updated	| onUpdated
+| beforeDestroy	| onBeforeUnmount
+| destroyed	| onUnmounted
+| errorCaptured	| onErrorCapture
+```
