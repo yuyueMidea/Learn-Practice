@@ -21,3 +21,5 @@
 | beforeDestroy	| onBeforeUnmount
 | destroyed	| onUnmounted
 | errorCaptured	| onErrorCapture
+
+- 五、片段 (Fragments)
