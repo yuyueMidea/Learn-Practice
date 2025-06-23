@@ -33,3 +33,17 @@
   <div class="modal">这是一个模态框</div>
 </teleport>
 ```
+
+- 七、更好的 TypeScript 支持
+   - Vue3 完全用 TypeScript 重写
+   - 提供更好的类型推断和类型支持
+   - Composition API 尤其适合 TypeScript
+ 
+
+
+总结：Vue3 在性能、开发体验和可维护性方面都有显著提升，特别是对于大型复杂应用。
+
+
+
+
+
