@@ -17,3 +17,5 @@ Pinia 是 Vue 3 的官方推荐状态管理库，而 Vuex 是 Vue 2 时代的主
 - 热更新：Pinia 支持模块热更新而不重载页面；Vuex 需要额外配置
 - 两者都支持插件；Pinia 的插件更简单易用
 - Pinia 更易于学习和使用，概念更少；Vuex 需要理解 mutation/action 等概念
+
+迁移建议：对于新项目，Vue 官方推荐使用 Pinia。对于现有 Vuex 项目，如果满足需求可以继续使用，或者逐步迁移到 Pinia。
