@@ -16,16 +16,22 @@
 import { computed, ref } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 import router from '../router';
+import { useAppStore } from '../stores/app';
 
 const username = ref('');
 const password = ref('');
+
 const authStore = useAuthStore();
 const isLoading = computed(() => authStore.loading);
 const error = computed(() => authStore.error);
-
+const appStore = useAppStore()
 const handleSubmitLogin = async() =>{
     try {
-        // console.log('loginnnn: ', username.value, password.value)
+      if(username.value==='' || password.value==='') {
+        return authStore.setError()
+      }
+      authStore.setCrole(username.value)        //设置角色
+        console.log('loginnnn__: ', username.value, password.value)
         await authStore.login(username.value, password.value);
         // 登录成功后重定向到首页
         router.push('/')
