@@ -18,7 +18,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '首页',
       icon: HomeFilled,
-      requiresAuth: true
+      requiresAuth: true,
+      roles: ''
     }
   },
   {
@@ -29,7 +30,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       title: '登录',
       icon: Menu,
       // hidden: true,
-      requiresAuth: false
+      requiresAuth: false,
+      roles: ''
     }
   },
   {
@@ -39,7 +41,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '用户列表',
       icon: UserFilled,
-      requiresAuth: true
+      requiresAuth: true,
+      roles: 'admin'
     }
   },
   {
@@ -49,7 +52,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '关于',
       icon: PieChart,
-      requiresAuth: true
+      requiresAuth: true,
+      roles:  ''
     }
   },
   {
@@ -59,7 +63,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '待办事项',
       icon: Message,
-      requiresAuth: true
+      requiresAuth: true,
+      roles: ''
     }
   },
   {
@@ -69,7 +74,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '博客列表',
       icon: Document,
-      requiresAuth: true
+      requiresAuth: true,
+      roles: ''
     }
   },
   {
@@ -79,7 +85,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '数据库',
       icon: Grid,
-      requiresAuth: true
+      requiresAuth: true,
+      roles: 'admin'
     }
   },
   {
@@ -89,7 +96,8 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '404',
       hidden: true,
-      requiresAuth: false
+      requiresAuth: false,
+      roles: ''
     }
   }
 ]
