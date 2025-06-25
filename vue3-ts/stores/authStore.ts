@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
 import { useAppStore } from "./app";
+import { constantRoutes } from "../router/routes";
+
 interface User {
     username: string
     email: string
@@ -14,6 +16,7 @@ export const useAuthStore = defineStore('auth', ()=>{
     const user: Ref<User | null> = ref(null)
     const loading: Ref<boolean> = ref(false);
     const error: Ref<string | null> = ref(null);
+    const crole: Ref<string> = ref('');
     // 计算属性
     const isAuthenticated = computed(() => !!user.value);
     const currentUser = computed(() => user.value);
@@ -23,6 +26,7 @@ export const useAuthStore = defineStore('auth', ()=>{
         try {
             loading.value = true;
             error.value = null;
+            
             // 模拟API调用
             const response = await mockLoginApi(username, password);
             // 更新用户状态
@@ -45,7 +49,27 @@ export const useAuthStore = defineStore('auth', ()=>{
     async function mockLoginApi(username: string, password: string): Promise<{username: string, email:string, token:string}> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                if (username ==='admin') {
+                // 需要做权限判断，管理员可以查看和操作所有，访客仅能部分菜单
+                if(username === 'admin') {
+                    resolve({
+                        username: 'admin',
+                        email: 'admin@example.com',
+                        token: 'mock-jwt-token-123456'
+                    })
+                    pwdStore.setPassword(3)
+                }else if(username === 'guest') {
+                    resolve({
+                        username: 'guest',
+                        email: 'guest@example.com',
+                        token: 'mock-jwt-token-123456'
+                    })
+                    pwdStore.setPassword(1)
+                    
+                } else {
+                    reject(new Error('用户名或密码错误!'))
+                }
+                
+                /* if (username ==='admin') {
                     resolve({
                         username: 'admin',
                         email: 'admin@example.com',
@@ -60,7 +84,7 @@ export const useAuthStore = defineStore('auth', ()=>{
                     }
                 } else {
                     reject(new Error('用户名或密码错误!'))
-                }
+                } */
             }, 1000);
         })
     }
@@ -68,6 +92,24 @@ export const useAuthStore = defineStore('auth', ()=>{
     function logout() {
         user.value = null;
         localStorage.removeItem('authToken');
+        crole.value=''
+    }
+    function setError() {
+        error.value = '用户名或密码不能为空'
+    }
+    function setCrole(role: string) {
+        crole.value = role
+    }
+    function generateRoutes() {
+        // 根据角色过滤路由列表
+        let fconstantRoutes = constantRoutes.filter(item => {
+          if(item.meta?.hidden || (item.meta && item.meta.roles!=='' && item.meta.roles !==crole.value)) {
+              return false
+          }
+          return true
+        })
+        console.log(constantRoutes, 'constantRoutes_: ',  fconstantRoutes)
+        return fconstantRoutes
     }
     return {
         user,
@@ -76,6 +118,10 @@ export const useAuthStore = defineStore('auth', ()=>{
         isAuthenticated,
         currentUser,
         login,
-        logout
+        logout,
+        setError,
+        crole,
+        setCrole,
+        generateRoutes
     }
 })

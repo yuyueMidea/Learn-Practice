@@ -2,13 +2,13 @@ import { defineStore } from 'pinia'
 
 interface AppState {
   sidebarOpened: boolean,
-  passwordLevel: number
+  passwordLevel: number,
 }
 
 export const useAppStore = defineStore('app', {
   state: (): AppState => ({
     sidebarOpened: true,
-    passwordLevel: 0
+    passwordLevel: 0,
   }),
   actions: {
     toggleSidebar() {
@@ -16,6 +16,6 @@ export const useAppStore = defineStore('app', {
     },
     setPassword(passNum: number) {
       this.passwordLevel = passNum;
-    }
+    },
   }
 })
