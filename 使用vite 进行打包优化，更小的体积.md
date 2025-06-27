@@ -12,3 +12,12 @@ Vite 是一个现代化的前端构建工具，它利用浏览器原生 ES 模�
 
 - **压缩资源**
 - Vite 默认使用 Terser 来压缩 JavaScript，使用 `vite-plugin-compression` 插件可以进一步压缩资源（如 gzip 或 brotli）：`npm install vite-plugin-compression -D`
+
+- **使用更小的库**
+-  尽可能选择体积更小的库。例如，使用 `dayjs` 替代 `moment.js`，使用 `preact` 替代 `react` 等。
+
+-  **分析打包体积**
+-  使用 `rollup-plugin-visualizer` 来分析打包后的体积，找出可以优化的模块：`npm install rollup-plugin-visualizer -D`
+
+-  **图片压缩**
+-  使用 `vite-plugin-imagemin` 插件压缩图片：`npm install vite-plugin-imagemin -D`
