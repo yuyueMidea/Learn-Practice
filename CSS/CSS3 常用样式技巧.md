@@ -19,3 +19,29 @@
   transform: translate(-50%, -50%);
 }
 ```
+
+2、文本渐变色
+- （1）线性渐变
+```
+.text-gradient {
+  background: linear-gradient(to right, #ff8a00, #e52e71);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+```
+- (2)径向渐变
+```
+.text-gradient {
+  background: radial-gradient(circle, #ff8a00, #e52e71);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+```
+
+
+
+
+
+
