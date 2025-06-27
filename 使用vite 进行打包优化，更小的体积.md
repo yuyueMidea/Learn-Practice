@@ -49,6 +49,26 @@ const module = import('./heavy-module.js');
 // Vue Router
 { path: '/home', component: () => import('@/views/Home.vue') }
 ```
+- 分析打包体积
+```
+// vite.config.js
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default {
+  plugins: [visualizer({ open: true })],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor'; // 拆分第三方库
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 
 
