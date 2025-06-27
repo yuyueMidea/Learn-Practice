@@ -40,6 +40,25 @@
 }
 ```
 
+3、实现0.5px宽度
+```
+.thin-border {
+  position: relative;
+}
+.thin-border::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200%;
+  height: 200%;
+  border: 1px solid #000;
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  box-sizing: border-box;
+}
+```
+
 
 
 
