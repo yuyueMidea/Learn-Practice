@@ -53,3 +53,14 @@ useEffect(() => {
 ```
 那么每次 count 改变，都会重新执行 useEffect。
 
+## React 18+ 新增 Hooks 一览（含 React 19 预发布内容）
+- useId： 为组件生成唯一 ID，避免 SSR/CSR 不一致；
+- useDeferredValue： 延迟处理高开销值，用于“模糊响应”优化；
+- useTransition：实现非阻塞 UI 更新（如切换分页）；
+- useSyncExternalStore： 与外部状态库（如 Redux、Zustand）同步；
+- useInsertionEffect：DOM 插入前执行（用于 CSS-in-JS）
+
+
+
+
+
