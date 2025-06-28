@@ -33,3 +33,16 @@ function MyComponent() {
   );
 }
 ```
+
+## useEffect 中方法为什么重复调用
+
+useEffect 中的方法重复调用，通常并不是 Bug，而是 React 设计上的行为。尤其在开发模式下，这是 React 严格模式（Strict Mode） 和 Hook 使用方式共同造成的。
+
+React 会在开发模式下 刻意调用 useEffect 清理和重新执行一次，以帮助你发现副作用中潜在的问题。
+
+模拟流程如下：
+- useEffect 执行一次（挂载）
+- 立即调用 return 清理函数
+- 再执行一次 useEffect
+
+
