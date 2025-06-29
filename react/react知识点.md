@@ -42,3 +42,13 @@ Redux核心原理与中间件；描述Redux单向数据流？异步Action如何�
 - 流程：View -> Action -> Reducer -> Store -> View更新；
 - 异步方案：使用Redux-thunk（函数形式Action）或Redux-saga管理异步逻辑；
 
+Context API替代Redux的场景；Context适合哪些场景？与Redux有何优劣？
+- 适用于跨层级传递主题、用户信息等低频更新数据。
+- 劣势：无中间件，无DevTools支持，频繁更新可能引发性能问题（需配合memo）
+
+
+
+
+
+
+
