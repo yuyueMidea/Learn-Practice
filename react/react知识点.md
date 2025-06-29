@@ -61,7 +61,36 @@ const LazyComponent = React.lazy(() => import('./Component'));
 </Suspense>
 ```
 
+**五、Fiber架构与并发模式（React 18+）**
 
+1、Fiber设计目标与时间切片：Fiber如何解决同步渲染阻塞问题？
+- 将渲染拆分为可中断的小任务单元，通过requestIdleCallback在浏览器空闲时间执行，避免卡顿；
+- 双缓冲机制：当前树与构建中的树 交替更新。
 
+2、并发特性实践：
+- startTransition：标记非紧急更新，避免阻塞用户交互；
 
+**六、高级特性与生态**
+
+1、在 React 中使用 Error Boundaries（错误边界）可以捕获子组件树中的JavaScript错误，记录这些错误并显示一个备用的UI（而不是直接崩溃整个应用）；
+```
+// 使用示例
+function App() {
+  return (
+    <ErrorBoundary>
+      <BuggyComponent /> {/* 可能会抛出错误的组件 */}
+    </ErrorBoundary>
+  );
+}
+// 错误显示组件
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <div role="alert">
+      <p>出错了：</p>
+      <pre style={{ color: 'red' }}>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>重试</button>
+    </div>
+  );
+}
+```
 
