@@ -19,7 +19,7 @@ Hooks原理与限制，为何Hooks不能在条件语句中使用？useState的�
 - 非受控组件：用Ref直接获取dom值（如inputRef.current.value），适合文件上传等低频操作；
 
 
-**Hooks深度机制**
+**二、Hooks深度机制**
 
 useEffect依赖数组与清理机制，依赖项为空数组`[]` 与未传依赖的区别？如何避免内存泄漏？
 
@@ -33,3 +33,12 @@ useMemo与useCallback性能优化；何时使用useMemo？useCallback解决什�
 - useMemo：缓存计算结果，仅在依赖变化时重新计算，避免重复执行开销大的函数，避免重复执行复杂运算（如过滤大型列表）；
 - useCallback：缓存函数引用，避免子组件因为回调函数重新生成导致无效渲染，（需要配合React.memo）；useCallback用于缓存某个函数的定义，只有依赖变化时才会重新生成函数，可以避免函数在每次渲染时都创建新的引用；
 - 错误用法：过度使用反而会增加内存开销；仅在高开销的操作或者依赖变动频繁时使用。
+
+**三、状态管理与数据流**
+
+Redux核心原理与中间件；描述Redux单向数据流？异步Action如何处理？
+
+解答：
+- 流程：View -> Action -> Reducer -> Store -> View更新；
+- 异步方案：使用Redux-thunk（函数形式Action）或Redux-saga管理异步逻辑；
+
