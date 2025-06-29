@@ -72,7 +72,7 @@ const LazyComponent = React.lazy(() => import('./Component'));
 
 **六、高级特性与生态**
 
-1、在 React 中使用 Error Boundaries（错误边界）可以捕获子组件树中的JavaScript错误，记录这些错误并显示一个备用的UI（而不是直接崩溃整个应用）；
+1、在 React 中使用 Error Boundaries（错误边界）可以捕获子组件树中的JavaScript错误，记录这些错误并显示一个备用的UI（而不是直接崩溃整个应用）；说明：在React中，将ErrorBoundary 应用于路由组件是常见的错误处理策略，可以确保某个路由下的组件崩溃时不会影响整个应用。
 ```
 // 使用示例
 function App() {
