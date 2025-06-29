@@ -32,6 +32,8 @@ const LazyComponent = React.lazy(() => import('./HeavyComponent'));
 - 避免内联对象、函数：减少子组件的无效更新；
 - 批量更新：自动批处理（react 18+），或者unstable_batchedUpdates；
 - 使用防抖、节流：控制高频更新（如滚动事件）；
+   - 防抖：事件停止触发后延迟执行，比如搜索框输入、窗口resize结束检测；
+   - 节流：是指固定间隔执行一次，比如滚动事件、按钮频繁点击。
 
 ---
 
