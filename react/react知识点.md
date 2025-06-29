@@ -94,3 +94,9 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 }
 ```
 
+2、react-router v6动态路由，核心特性：
+- <Routes> 取代 <Switch>，路由嵌套的简化；
+- 支持相对路径：路径自动继承父路由；
+- useRoutes：配置化路由；
+- 动态路由新特性：路径参数自动解析，通过 useParams() 获取；通配符 *：匹配任意子路径；
+
