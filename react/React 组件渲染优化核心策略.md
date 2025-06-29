@@ -23,3 +23,7 @@ const LazyComponent = React.lazy(() => import('./HeavyComponent'));
 </Suspense>
 ```
 - 图片懒加载：使用 loading="lazy" 或 IntersectionObserver
+
+5、性能分析工具：
+- React DevTools Profiler：检测渲染耗时；
+- Chrome Performance Tab：分析组件生命周期；
