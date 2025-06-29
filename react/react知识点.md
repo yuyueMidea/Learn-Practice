@@ -100,3 +100,41 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 - useRoutes：配置化路由；
 - 动态路由新特性：路径参数自动解析，通过 useParams() 获取；通配符 *：匹配任意子路径；
 
+完整的动态路配置如下：
+```
+// 1. 定义路由配置
+const routeConfig = [
+  {
+    path: '/',
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { 
+        path: 'products',
+        element: <ProductsLayout />,
+        children: [
+          { index: true, element: <ProductList /> },
+          { path: ':id', element: <ProductDetail /> }
+        ]
+      },
+      { path: '*', element: <NotFound /> }
+    ]
+  }
+];
+
+// 2. 在组件中应用
+function App() {
+  return useRoutes(routeConfig);
+}
+
+// 3. 在布局组件中使用Outlet
+function ProductsLayout() {
+  return (
+    <div>
+      <h2>产品中心</h2>
+      <Outlet /> {/* 子路由将在此渲染 */}
+    </div>
+  );
+}
+```
+
