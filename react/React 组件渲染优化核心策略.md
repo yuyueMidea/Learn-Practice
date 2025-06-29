@@ -27,3 +27,8 @@ const LazyComponent = React.lazy(() => import('./HeavyComponent'));
 5、性能分析工具：
 - React DevTools Profiler：检测渲染耗时；
 - Chrome Performance Tab：分析组件生命周期；
+
+6、其他优化技巧：
+- 避免内联对象、函数：减少子组件的无效更新；
+- 批量更新：自动批处理（react 18+），或者unstable_batchedUpdates；
+- 使用防抖、节流：控制高频更新（如滚动事件）；
