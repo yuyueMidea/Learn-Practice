@@ -9,3 +9,17 @@
 - 状态提升：将状态提升到合适的层级；
 - 状态拆分：避免大对象的状态（触发多余更新）；
 - Context优化：拆分 Context 或使用 selectors： `const { valueA } = useContext(MyContext); // 只订阅需要的值`；
+
+3、列表渲染优化：
+- key属性：使用稳定唯一值（非数组索引）；
+- 虚拟滚动：处理长列表（react-window 或 react-virtualized）
+
+4、懒加载组件：
+- React.lazy + Suspense：动态加载组件
+```
+const LazyComponent = React.lazy(() => import('./HeavyComponent'));
+<Suspense fallback={<Spinner />}>
+  <LazyComponent />
+</Suspense>
+```
+- 图片懒加载：使用 loading="lazy" 或 IntersectionObserver
