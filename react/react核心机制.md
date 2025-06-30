@@ -72,6 +72,50 @@ useEffect(() => {
 }, [dependencies]);
 ```
 
+7、事件处理：react使用合成事件系统：
+- 跨浏览器兼容；
+- 事件委托到 document（React 17 后改为挂载的根节点）；
+- 自动清理；
+
+8、性能优化：
+- 避免不必要的渲染：
+   - React.memo：记忆函数组件；
+   - PureComponent：类组件的浅比较；
+   - shouldComponentUpdate：自定义比较逻辑；
+ 
+- 使用key：列表渲染时为每个项提供稳定的key；
+- 代码分割：
+```
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+<Suspense fallback={<div>Loading...</div>}>
+  <OtherComponent />
+</Suspense>
+```
+- useMemo 和 useCallback:
+```
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+const memoizedCallback = useCallback(() => doSomething(a, b), [a, b]);
+```
+
+9、高阶组件 (HOC)：一种重用组件逻辑的模式；
+
+10、 render props：另一种共享代码的技术；
+
+11、react 18+ 新特性：
+- 并发渲染：可中断、可暂停、可恢复的渲染；
+- 自动批处理：多个状态自动更新合并为单个渲染；
+- 过渡更新：区分紧急和非紧急；
+- 新的 suspense特性：更好的代码获取和数据分割；
+- 新的根API：createRoot 替代 ReactDOM.render；
+
+
+
+
+
+
+
+
 
 
 
