@@ -41,7 +41,19 @@ react 16 引入的全新协调引擎，有以下特点：
    - useReducer：复杂状态逻辑;
    - useMemo & useCallback：性能优化;
  
-
+5、状态管理：
+- 组件内部状态：类组件：this.state 和 this.setState； 函数组件：useState 和 useReducer；
+- 状态提升：通过props将状态提升到共同的祖先组件；
+- 上下文API：
+```
+const MyContext = React.createContext(defaultValue);
+// 提供者
+<MyContext.Provider value={someValue}>
+  <ChildComponent />
+</MyContext.Provider>
+// 消费者
+const value = useContext(MyContext);
+```
 
 
 
