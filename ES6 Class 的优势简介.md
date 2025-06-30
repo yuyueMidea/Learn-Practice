@@ -38,4 +38,15 @@ class Student extends Person {
 }
 ```
 
+- 内置静态方法支持：
+   - 使用static关键字定义静态方法，更符合传统OOP习惯；
+ ```
+class MathUtils {
+  static add(a, b) {
+    return a + b;
+  }
+}
+```
+
+
 
