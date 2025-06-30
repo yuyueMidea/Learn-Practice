@@ -26,7 +26,7 @@ Redux 是一个可预测的状态管理容器，用于 JavaScript 应用。下�
 5、React-Redux
 ```
 import { Provider } from 'react-redux'
-
+//Provider包裹Router：Redux的Provider应该包裹在Router外层，这样整个应用都能访问到Redux store，包括路由组件。
 ReactDOM.render(
   <Provider store={store}>
     <App />
@@ -34,6 +34,29 @@ ReactDOM.render(
   document.getElementById('root')
 )
 ```
+Hooks (函数组件):
+- useSelector：从 store 提取数据;
+- useDispatch：获取 dispatch 方法;
+- useStore：访问 store 对象;
+
+6、Redux Toolkit (现代 Redux 开发)：
+- 主要API：
+   - configureStore：包装 createStore，提供默认中间件；
+   - createSlice：自动生成 action creators 和 action types；
+   - createAsyncThunk：处理异步请求；
+   - createSelector：创建记忆化选择器；
+ 
+Redux最佳实践：
+- 按功能组织代码：使用 "feature folder" 结构；
+- 避免巨型 reducer：拆分为多个小 reducer；
+- 保持 action 简单：避免复杂业务逻辑；
+- 使用 Redux Toolkit：减少样板代码；
+- 合理使用中间件：根据需求选择
+
+**总结**
+
+Redux 提供了可预测的状态管理方案，适用于中大型应用。现代 Redux 开发推荐使用 Redux Toolkit 简化代码，结合 React-Redux Hooks API 可以更简洁地集成到 React 应用中。理解 Redux 的核心概念和数据流是有效使用它的关键，同时根据项目规模合理选择中间件和架构模式。
+
 
 
 
