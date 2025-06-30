@@ -34,3 +34,17 @@ react 16 引入的全新协调引擎，有以下特点：
        };
      }, [count]); // 依赖数组
      ```
+- 常用Hooks：
+   - useState：管理组件状态;
+   - useEffect：处理副作用;
+   - useContext：访问上下文;
+   - useReducer：复杂状态逻辑;
+   - useMemo & useCallback：性能优化;
+ 
+
+
+
+
+
+
+
