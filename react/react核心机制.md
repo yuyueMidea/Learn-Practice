@@ -54,7 +54,23 @@ const MyContext = React.createContext(defaultValue);
 // 消费者
 const value = useContext(MyContext);
 ```
+- 第三方状态库：如 Redux、MobX、Recoil 等；
 
+6、生命周期：
+- 类组件的生命周期：
+   - 挂载阶段：`constructor()， static getDerivedStateFromProps()、 render()、 componentDidMount()`；
+   - 更新阶段：`static getDerivedStateFromProps()、 shouldComponentUpdate()、 render()、 getSnapshotBeforeUpdate()、 componentDidUpdate()`；
+   - 卸载阶段：`componentWillUnmount()`；
+ 
+- 函数组件生命周期，通过 useEffect 实现：
+```
+useEffect(() => {
+  // componentDidMount 和 componentDidUpdate
+  return () => {
+    // componentWillUnmount
+  };
+}, [dependencies]);
+```
 
 
 
