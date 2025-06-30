@@ -28,9 +28,9 @@ react 16 引入的全新协调引擎，有以下特点：
    - react 16.8 引入Hooks，允许函数组件拥有状态和生命周期；
      ```
      useEffect(() => {
-    // 相当于 componentDidMount 和 componentDidUpdate
-    return () => {
-      // 清理函数，相当于 componentWillUnmount
-    };
-  }, [count]); // 依赖数组
+       // 相当于 componentDidMount 和 componentDidUpdate
+       return () => {
+         // 清理函数，相当于 componentWillUnmount
+       };
+     }, [count]); // 依赖数组
      ```
