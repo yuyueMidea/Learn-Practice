@@ -109,7 +109,14 @@ const memoizedCallback = useCallback(() => doSomething(a, b), [a, b]);
 - 新的 suspense特性：更好的代码获取和数据分割；
 - 新的根API：createRoot 替代 ReactDOM.render；
 
-
+12、错误处理：ErrorBoundary ，react 18+ suspense 错误处理：
+```
+<ErrorBoundary>
+  <Suspense fallback={<div>Loading...</div>}>
+    <ComponentThatMaySuspend />
+  </Suspense>
+</ErrorBoundary>
+```
 
 
 
