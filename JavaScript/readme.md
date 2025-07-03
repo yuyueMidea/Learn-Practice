@@ -127,7 +127,46 @@ Promise.race([
   });
 ```
 
+- Promise.any() - 获取第一个成功的结果:
+```
+const mirrorServers = [
+  'https://mirror1.example.com/data',
+  'https://mirror2.example.com/data',
+  'https://backup.example.com/data'
+];
 
+Promise.any(mirrorServers.map(url => 
+  fetch(url).then(res => res.json())
+))
+  .then(data => {
+    console.log('从最快的可用镜像获取数据:', data);
+  })
+  .catch(err => {
+    console.error('所有镜像都不可用:', err);
+  });
+```
+- 使用 async/await 实现并发:
+```
+async function fetchAllData() {
+  try {
+    // 同时启动所有请求
+    const userPromise = fetchUser();
+    const postsPromise = fetchPosts();
+    const commentsPromise = fetchComments();
+    
+    // 等待所有请求完成
+    const user = await userPromise;
+    const posts = await postsPromise;
+    const comments = await commentsPromise;
+    
+    console.log({ user, posts, comments });
+  } catch (error) {
+    console.error('获取数据失败:', error);
+  }
+}
+
+fetchAllData();
+```
 
 
 
