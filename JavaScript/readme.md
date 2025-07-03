@@ -33,3 +33,46 @@ promise 是 JavaScript中用于处理异步操作的对象；它表示一个还�
 - Promise.all()：所有成功才成功；任意一个失败旧失败；
 - Promise.race()：取得最先完成的结果；
 - Promise.allSettled()：等待所有的promise完成（无论成功失败）；
+
+Promise的设计模式解决了回调地狱，使得异步代码便于编写和维护；
+
+JavaScript 中同时执行多个异步操作的 Promise 方案：
+- Promise.all()：最常用的并行执行方案，接收一个Promise数组，当所有Promise都成功时 返回结果数组，任一一个失败立即拒绝；特点是全成功才成功，快速失败机制；
+```
+const promises = [fetch(url1), fetch(url2), fetch(url3)];
+Promise.all(promises)
+  .then(results => console.log(results))
+  .catch(err => console.error(err));
+```
+- Promise.allSettled(): ES2020新增的，无论成功失败都会等待所有Promise完成，返回包含每个Promise状态和结果的对象数组；特点是不中断执行，获取全部最终状态；
+```
+Promise.allSettled(promises)
+  .then(results => {
+    results.forEach(result => {
+      if(result.status === 'fulfilled') {
+        console.log(result.value);
+      } else {
+        console.error(result.reason);
+      }
+    });
+  });
+```
+- Promise.race()：返回最先完成的Promise结果（无论成功或失败）；典型应用是实现请求超时控制；
+```
+Promise.race([fetchAPI(), timeout(5000)])
+  .then(data => console.log(data))
+  .catch(err => console.error(err));
+```
+- Promise.any()： ES2021新增的，返回第一个成功的Promise，全部失败时才拒绝；特点是获取首个可用结果；
+```
+Promise.any(promises)
+  .then(firstSuccess => console.log(firstSuccess))
+  .catch(err => console.error('All failed', err));
+```
+
+
+
+
+
+
+
