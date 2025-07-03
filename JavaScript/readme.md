@@ -70,6 +70,63 @@ Promise.any(promises)
   .catch(err => console.error('All failed', err));
 ```
 
+---
+
+以下是几种常见的 Promise 并发执行方案及对应的代码示例：
+- Promise.all() - 全部成功才成功
+```
+const fetchUser = () => fetch('/api/user').then(res => res.json());
+const fetchPosts = () => fetch('/api/posts').then(res => res.json());
+const fetchComments = () => fetch('/api/comments').then(res => res.json());
+
+// 同时发起三个请求
+Promise.all([fetchUser(), fetchPosts(), fetchComments()])
+  .then(([user, posts, comments]) => {
+    console.log('用户:', user);
+    console.log('文章:', posts);
+    console.log('评论:', comments);
+  })
+  .catch(error => {
+    console.error('有一个请求失败了:', error);
+  });
+```
+- Promise.allSettled() - 获取所有结果无论成功失败:
+```
+const apis = [
+  fetch('/api/data1').then(res => res.json()),
+  fetch('/api/data2').then(res => res.json()),
+  fetch('/api/not-exist').catch(err => ({ error: err.message })) // 故意失败的请求
+];
+
+Promise.allSettled(apis)
+  .then(results => {
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        console.log(`请求 ${index} 成功:`, result.value);
+      } else {
+        console.log(`请求 ${index} 失败:`, result.reason);
+      }
+    });
+  });
+```
+- Promise.race() - 获取最先完成的结果:
+```
+const timeout = ms => new Promise((_, reject) => 
+  setTimeout(() => reject(new Error(`超时 ${ms}ms`)), ms));
+
+// 请求比赛：要么获取数据，要么超时
+Promise.race([
+  fetch('/api/slow-data').then(res => res.json()),
+  timeout(3000)
+])
+  .then(data => {
+    console.log('获取数据成功:', data);
+  })
+  .catch(err => {
+    console.error('错误:', err.message); // 3秒内没响应则显示超时
+  });
+```
+
 
 
 
