@@ -31,3 +31,17 @@ async function sha256(message) {
 
 sha256("hello world").then(console.log);
 ```
+
+使用生成密钥加密/解密时 流程图解:
+```
+生成密钥 (CryptoKey) 
+    → 导出为字符串 (Base64) 
+    → 存储密钥字符串 (localStorage/sessionStorage)
+    → 加密用户数据 (用原始 CryptoKey + 随机 IV) 
+    → 存储加密数据 + IV (localStorage)
+    
+解密时：
+    读取密钥字符串 → 恢复为 CryptoKey 
+    → 读取加密数据 + IV 
+    → 解密数据
+```
