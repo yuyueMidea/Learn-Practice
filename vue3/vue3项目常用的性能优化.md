@@ -28,3 +28,4 @@ export default {
 };
 ```
 - 图片优化：（1）使用WebP 格式图片；（2）小图使用Base64；（3）使用懒加载库 如lazysizes `<img v-lazy="imgUrl" />`;
+- 首屏加载优化：（1）减少首屏依赖，避免加载不必要组件，（2）使用骨架屏；（3）首页关键资源预加载 `<link rel="preload">` 或 vite 中配置 `build.rollupOptions.output.inlineDynamicImports`；
