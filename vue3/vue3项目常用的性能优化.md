@@ -36,6 +36,20 @@ export default {
  
 - 8、虚拟滚动+ 大数据优化： 用于表格、列表等大量数据展示组件 如`vue-virtual-scroller`；
 - 9、防抖、节流、请求合并的优化：对频繁操作进行优化，减少dom重绘和接口压力，`const onInput = debounce((val) => fetchData(val), 300);`；
+- 10、生成构建优化（Vite）：在 vite.config.js 中配置：
+```
+build: {
+  minify: 'terser',
+  terserOptions: {
+    compress: {
+      drop_console: true,
+      drop_debugger: true
+    }
+  }
+}
+```
+
+
 
 
 
