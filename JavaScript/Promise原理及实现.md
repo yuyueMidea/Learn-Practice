@@ -168,6 +168,27 @@ async function fetchAllData() {
 fetchAllData();
 ```
 
+Promise 的 then() 方法返回一个新的 Promise，这使得我们可以实现链式调用。下面通过简单代码示例演示这一特性：
+
+// 创建一个初始 Promise
+let p1 = new Promise(resolve => {
+    setTimeout(() => {
+        resolve(1)
+    }, 1000);
+})
+// 链式调用
+p1.then(result =>{
+    console.log({result});          //1
+    return result *2
+}).then(result2 =>{
+    console.log({result2});         //2
+    return result2+3
+}).then(result3 =>{
+    console.log({ result3 })        //5
+}).then(result4 =>{
+    console.log({ result4 })        //undefined
+})
+
 
 
 
