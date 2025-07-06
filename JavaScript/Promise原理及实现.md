@@ -225,6 +225,23 @@ fetchUser().then(user =>{
 }).catch(error =>{
     console.error('err: ', error )
 })
+// 错误处理链
+const p2 = new Promise(resolve =>{
+    setTimeout(() => {
+        resolve(10)
+    }, 2000);
+})
+p2.then(result=>{
+    console.log({ p2Res: result });
+    throw new Error('**故意抛出错误**')
+}).then(res =>{
+    console.log('这里不会执行')
+}).catch(error =>{
+    console.log('捕获到错误_： ', error.message );
+    return 143;
+}).then(result3 =>{
+    console.log('这里会继续正常执行：', {result3})
+})
 ```
 关键点：
 - 每个then（）都返回一个新的Promise，
