@@ -169,7 +169,7 @@ fetchAllData();
 ```
 
 Promise 的 then() 方法返回一个新的 Promise，这使得我们可以实现链式调用。下面通过简单代码示例演示这一特性：
-
+```
 // 创建一个初始 Promise
 let p1 = new Promise(resolve => {
     setTimeout(() => {
@@ -188,6 +188,44 @@ p1.then(result =>{
 }).then(result4 =>{
     console.log({ result4 })        //undefined
 })
+
+// 异步操作链式调用
+function asyncAdd(a, b) {
+    return new Promise(resolve=>{
+        setTimeout(() => {
+            resolve( a+ b);
+        }, 200);
+    })
+}
+
+asyncAdd(2, 3).then(result =>{
+    console.log('first_res: ', result);         //5
+    return asyncAdd(result ,4)                  // 返回一个新的 Promise
+}).then(result2 =>{
+    console.log('sec_res: ', result2)           //9
+    return asyncAdd(result2, 3)
+}).then(result3 =>{
+    console.log('finally_res: ', result3)       //最终结果，2+3+4+3 =12
+})
+
+// 返回 Promise 的链式调用
+function fetchUser() {
+    return new Promise(resolve => resolve({ id: 1, name:'zzsa'}))
+}
+function fetchOrders(userId) {
+    console.log({ userId })
+    return new Promise(resolve => resolve( [{id:1, total:100}, {id:2, total:120}] ))
+}
+fetchUser().then(user =>{
+    console.log('获取用户:', user);
+    return fetchOrders(user.id)
+}).then(res=>{
+    console.log('获取订单:', res );
+}).catch(error =>{
+    console.error('err: ', error )
+})
+```
+
 
 
 
