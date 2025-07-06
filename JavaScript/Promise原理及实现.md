@@ -167,6 +167,7 @@ async function fetchAllData() {
 
 fetchAllData();
 ```
+---
 
 Promise 的 then() 方法返回一个新的 Promise，这使得我们可以实现链式调用。下面通过简单代码示例演示这一特性：
 ```
@@ -225,6 +226,12 @@ fetchUser().then(user =>{
     console.error('err: ', error )
 })
 ```
+关键点：
+- 每个then（）都返回一个新的Promise，
+- 如果回调返回普通值，新Promise会用该值解决；
+- 如果回调返回Promise，会等待该Promise解决；
+- 如果回调抛出错误，新Promise会被拒绝；
+- 这种机制使得我们可以将多个异步操作 串联起来。
 
 
 
