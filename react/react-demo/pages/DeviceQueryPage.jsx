@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form, Input, Select, Button, Table, Card } from 'antd'
-
 const { Option } = Select
+import * as XLSX from 'xlsx'
 
 // ✅ 表格列配置
 const columns = [
@@ -96,6 +96,26 @@ const DeviceQueryPage = () => {
     //   console.log({crole},  fConfig)
       setFilterCfg(fConfig)
   }
+  // ✅ 导出 Excel 功能
+    const handleExport = () => {
+        if (!filteredData.length) {
+            message.warning('没有可导出的数据')
+            return
+        }
+        const exportData = filteredData.map(row => ({
+            设备编号: row.deviceId,
+            时间: row.timestamp,
+            运行状态: row.status,
+            压力: row.pressure,
+            温度: row.temperature,
+            电流: row.current,
+        }))
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData)
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, '运行数据')
+        XLSX.writeFile(workbook, '空压机运行报表.xlsx')
+    }
 
   const renderFilterField = (item) => {
     switch (item.type) {
@@ -133,7 +153,8 @@ const DeviceQueryPage = () => {
             </Form.Item>
             ))}
             <Form.Item>
-            <Button type="primary" htmlType="submit">查询</Button>
+                <Button type="primary" htmlType="submit">查询</Button>
+                <Button onClick={handleExport}>导出 Excel</Button>
             </Form.Item>
         </Form> }
 
