@@ -16,3 +16,8 @@
 - updated：数据变化，DOM更新后；
 - beforeDestroy：实例销毁前；
 - destroyed：实例销毁后；
+
+三、Vue 组件间通信方式有哪些：
+- 父子组件：Props 向下传递，$emit 事件向上传递，$parent/$children（不推荐）；
+- 跨级组件：provide/inject，Vuex/Pinia；
+- 任意组件：事件总线（EventBus），Vuex/Pinia 状态管理，全局事件总线（app.config.globalProperties）；
