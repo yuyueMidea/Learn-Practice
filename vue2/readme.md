@@ -30,3 +30,25 @@
 - 全局守卫：beforeEach（路由进入前），beforeResolve（导航确认前），afterEach（导航完成后），
 - 路由独享守卫：beforeEnter；
 - 组件内守卫：beforeRouteEnter，beforeRouteUpdate，beforeRouteLeave；
+- 执行顺序：全局 beforeEach → 路由 beforeEnter → 组件 beforeRouteEnter → 全局 beforeResolve → 全局 afterEach。
+
+六、Vue 项目性能优化手段：
+- 代码层面：路由懒加载、组件异步加载、v-if 和 v-show 合理使用、长列表虚拟滚动。
+- 构建优化：代码分割（SplitChunks）、Tree Shaking、压缩图片/资源。
+- 运行时优化：合理使用keep-alive、防抖节流、避免 v-for 和 v-if 同时使用。
+
+
+七、进阶问题：
+- nextTick 原理及使用场景：原理：将回调推迟到下一个dom更新周期后执行；实现：优先使用Promise.then、降级到MutationObserver、再降级到setTimeout。使用场景：dom更新后获取最新的dom状态、解决异步更新导致视图不同步。
+- Vue 的 diff 算法原理：
+   - 同级比较：只比较同层级节点；
+   - 双端比较：头头比较、 尾尾比较、头尾比较、尾头比较；
+   - key的作用：复用相同key的节点；
+   - 优化策略：静态节点跳过比较、同组件复用实例；
+
+
+
+
+
+
+
