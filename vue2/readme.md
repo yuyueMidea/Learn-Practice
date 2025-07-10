@@ -21,3 +21,12 @@
 - 父子组件：Props 向下传递，$emit 事件向上传递，$parent/$children（不推荐）；
 - 跨级组件：provide/inject，Vuex/Pinia；
 - 任意组件：事件总线（EventBus），Vuex/Pinia 状态管理，全局事件总线（app.config.globalProperties）；
+
+四、Vue 2 和 Vue 3 响应式原理的区别：
+- vue2：使用 Object.defineProperty，只能拦截对象属性的 get/set，数组通过重写方法实现响应式；
+- vue3：使用 Proxy 代理整个对象，支持动态添加属性，更好的性能（惰性监听），原生支持 Map/Set 等集合类型；
+
+五、Vue Router， 路由守卫有哪些？执行顺序？
+- 全局守卫：beforeEach（路由进入前），beforeResolve（导航确认前），afterEach（导航完成后），
+- 路由独享守卫：beforeEnter；
+- 组件内守卫：beforeRouteEnter，beforeRouteUpdate，beforeRouteLeave；
