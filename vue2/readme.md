@@ -35,6 +35,9 @@
 六、Vue 项目性能优化手段：
 - 代码层面：路由懒加载、组件异步加载、v-if 和 v-show 合理使用、长列表虚拟滚动。
 - 构建优化：代码分割（SplitChunks）、Tree Shaking、压缩图片/资源。
+   - 减少初始加载包体积，提高页面加载速度；
+   - Tree Shaking 是通过静态分析移除 JavaScript 上下文中未引用的代码（dead code）。
+   - 确保使用 ES6 的 import/export 语法，部分引入尽量不用全局引入，如：`import { cloneDeep } from 'lodash-es'`； CSS 需要配置 sideEffects；
 - 运行时优化：合理使用keep-alive、防抖节流、避免 v-for 和 v-if 同时使用。
 
 
