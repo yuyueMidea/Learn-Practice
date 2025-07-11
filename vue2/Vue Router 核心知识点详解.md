@@ -104,6 +104,57 @@ const router = createRouter({
 })
 ```
 
+四、使用技巧:
+- 路由懒加载：`const User = () => import('./views/User.vue')`;
+- 过渡动画：
+```
+<router-view v-slot="{ Component }">
+  <transition name="fade">
+    <component :is="Component" />
+  </transition>
+</router-view>
+```
+- 路由元信息：
+```
+{
+  path: '/admin',
+  meta: { requiresAdmin: true }
+}
+```
+
+五、常见问题解决方案：
+- 重复路由跳转报错：
+```
+// 在路由push时捕获异常
+router.push('/path').catch(err => {
+  if (err.name !== 'NavigationDuplicated') {
+    console.error(err)
+  }
+})
+```
+- 动态添加路由：
+```
+router.addRoute({
+  path: '/new-route',
+  component: NewComponent
+})
+// 添加嵌套路由
+router.addRoute('parentRoute', {
+  path: 'child',
+  component: ChildComponent
+})
+```
+- 路由重定向和别名
+```
+{
+  path: '/home',
+  redirect: '/', // 重定向
+  alias: '/welcome' // 别名
+}
+```
+
+
+
 
 
 
