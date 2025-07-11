@@ -166,7 +166,36 @@ Vue Router 中 hash 模式与 history 模式的区别：
 - 选择建议：当不需要考虑SEO、需要兼容旧浏览器、无法控制服务器配置时，使用hash模式；当需要干净的URL、需要更好的SEO支持、能配置服务器支持的时候使用history模式；
 - 大多数现代SPA项目推荐使用history模式，以获得更好的用户体验。
 
-
+在 Vue Router 中，要实现带 query 参数跳转但不刷新页面，可以通过以下几种方式实现：
+- 1、使用 router.push() 方法（推荐）：
+```
+// 方法1：使用 path + query
+this.$router.push({
+  path: '/currentPath',
+  query: {
+    id: '123',
+    // 其他参数...
+  }
+})
+// 方法2：使用 name + query（命名路由）
+this.$router.push({
+  name: 'routeName', // 路由配置中的name
+  query: {
+    id: '456',
+    // 其他参数...
+  }
+})
+```
+- 2/使用 router.replace() 方法（替换当前路由）:
+```
+// 替换当前路由，不会产生历史记录
+this.$router.replace({
+  path: '/currentPath',
+  query: {
+    id: '789'
+  }
+})
+```
 
 
 
