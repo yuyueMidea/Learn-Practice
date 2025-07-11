@@ -12,3 +12,19 @@ Webpack 热更新 是一种在不刷新整个页面的情况下，更新修改�
 - Webpack-dev-server (WDS)：提供开发服务器和websocket，集成express服务和webpack-dev-middleware；
 - webpack-dev-middleware：内存文件系统替代物理文件系统，监听文件变化并触发重新编译；
 - HMR Runtime：注入到打包后的客户端代码中，处理更新逻辑的核心运行时；
+
+客户端处理更新的流程：
+```
+// 客户端 HMR Runtime 处理流程
+1. 接收新的 hash 值并暂存
+2. 通过 JSONP 请求获取 manifest 文件
+3. 对比确定需要更新的模块
+4. 通过 JSONP 获取更新的 chunk
+5. 执行模块替换逻辑：
+  - 找出过期模块及其依赖
+  - 从缓存中删除旧模块
+  - 执行新模块代码
+  - 触发 accept 回调
+```
+
+
