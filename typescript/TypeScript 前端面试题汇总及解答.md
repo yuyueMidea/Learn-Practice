@@ -1,7 +1,7 @@
 ## TypeScript 前端面试题汇总及解答
 
 1、TypeScript 与 JavaScript 的主要区别是什么？
-- 静态类型检查：Typescript在编译时进行类型检查，JavaScript时动态类型；
+- 静态类型检查：Typescript在编译时进行类型检查，JavaScript是动态类型；
 - 类型注解：typescript支持类型注解，JavaScript不支持；
 - 接口和泛型：typescript有接口和泛型等高级类型特性；
 - 编译过程：typescript需要编译为JavaScript才能运行；
