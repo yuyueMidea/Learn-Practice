@@ -153,6 +153,18 @@ router.addRoute('parentRoute', {
 }
 ```
 
+Vue Router 4.x (Vue3版本) 相比 Vue Router 3.x (Vue2版本) 主要变化：
+- 创建方式改为 createRouter；
+- 路由模式API变更；
+- 移除了 * 通配路由，改为自定义正则；
+- 导航守卫参数变化；
+- 路由匹配算法优化；
+
+Vue Router 中 hash 模式与 history 模式的区别：
+- hash模式：使用URL中的 hash（#）部分来模拟完整URL；示例：`http://example.com/#/home`;实现原理：监听 window.onhashchange 事件；
+- History模式： HTML5 History API（pushState/replaceState）；示例：`http://example.com/home`；需要服务器端支持；
+- 选择建议：当不需要考虑SEO、需要兼容旧浏览器、无法控制服务器配置时，使用hash模式；当需要干净的URL、需要更好的SEO支持、能配置服务器支持的时候使用history模式；
+- 大多数现代SPA项目推荐使用history模式，以获得更好的用户体验。
 
 
 
