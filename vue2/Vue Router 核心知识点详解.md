@@ -218,6 +218,8 @@ watch: {
   }
 }
 ```
+- 性能优化：对于频繁变化的query参数，考虑使用vuex、Pinia状态管理；或者使用事件总线、provide-inject传递参数；URL长度限制：浏览器对URL长度有限制（通常2KB-8KB不等），大量数据建议使用其他方式传递；
+- Vue Router的机制：内部使用HTML5 History API（history模式）或hashchange事件（hash模式）；只更新URL而不触发页面更新；
 
 
 
