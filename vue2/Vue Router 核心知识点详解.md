@@ -186,7 +186,7 @@ this.$router.push({
   }
 })
 ```
-- 2/使用 router.replace() 方法（替换当前路由）:
+- 2、使用 router.replace() 方法（替换当前路由）:
 ```
 // 替换当前路由，不会产生历史记录
 this.$router.replace({
@@ -195,6 +195,28 @@ this.$router.replace({
     id: '789'
   }
 })
+```
+- 3、使用 <router-link> 组件方式：
+```
+<router-link 
+  :to="{
+    path: '/currentPath',
+    query: {
+      id: '123'
+    }
+  }"
+  replace <!-- 可选：使用replace模式 -->
+>
+  跳转链接
+</router-link>
+```
+- 注意事项：当query参数变化而路由路径相同时，组件实例会被复用；需要监听$route变化或使用beforeRouteUpdate守卫来处理参数变化：
+```
+watch: {
+  '$route.query.id'(newId) {
+    // 处理ID变化逻辑
+  }
+}
 ```
 
 
