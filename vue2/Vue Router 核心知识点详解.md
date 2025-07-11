@@ -72,6 +72,42 @@ const User = {
 }
 ```
 
+三、高级特性
+- 动态路由：`{ path: '/user/:id', component: User }`;访问参数：
+```
+this.$route.params.id
+// 或使用组合式API
+import { useRoute } from 'vue-router'
+const route = useRoute()
+console.log(route.params.id)
+```
+- 路由传参：
+```
+{
+  path: '/user/:id',
+  component: User,
+  props: true // 将params作为props传递
+  // 或使用函数形式
+  props: route => ({ id: route.params.id, query: route.query })
+}
+```
+- 滚动行为：
+```
+const router = createRouter({
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  }
+})
+```
+
+
+
+
+
 
 
 
