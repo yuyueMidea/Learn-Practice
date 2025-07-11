@@ -41,3 +41,40 @@ router.replace({ path: '/home' })
 router.go(1)
 router.go(-1)
 ```
+- 导航守卫：
+```
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/login')
+  } else {
+    next()
+  }
+})
+
+// 路由独享守卫
+{
+  path: '/admin',
+  beforeEnter: (to, from, next) => { /* ... */ }
+}
+
+// 组件内守卫
+const User = {
+  beforeRouteEnter(to, from, next) {
+    // 不能访问组件实例 `this`
+  },
+  beforeRouteUpdate(to, from, next) {
+    // 当前路由改变但组件被复用时调用
+  },
+  beforeRouteLeave(to, from, next) {
+    // 导航离开时调用
+  }
+}
+```
+
+
+
+
+
+
+
