@@ -38,5 +38,29 @@ function greet(name='alice'){
 }
 ```
 
+5、什么是泛型，请举例说明泛型在函数、接口和类中的使用：
+- 泛型允许创建可重用的组件，这些组件可以支持多种类型；
+- 函数中使用：
+```
+function identity<T>(arg: T): T {
+  return arg;
+}
+let output = identity<string>("hello");
+```
+- 在接口中的使用：
+```
+interface GenericIdentityFn<T> {
+  (arg: T): T;
+}
+let myIdentity: GenericIdentityFn<number> = identity;
+```
+
+
+
+
+
+
+
+
 
 
