@@ -23,10 +23,20 @@ if (typeof unknownValue === 'string') {
 
 3、什么是类型推断？typescript在什么情况下会进行类型推断？
 - 类型推断是typescript在没有显式类型注解时，自动推断变量类型的能力；
-- 变量初始化：let x = 3; // 推断为 number；
+- 变量初始化：`let x = 3; // 推断为 number`；
 - 函数返回值：
 ```
 function add(a: number, b: number) {
   return a + b; // 推断返回值为 number
 }
 ```
+- 数组元素：`const arr = [1, 2, 3]; // 推断为 number[]`;
+- 默认参数值：
+```
+function greet(name='alice'){
+    return 'hello ${name}'
+}
+```
+
+
+
