@@ -8,3 +8,39 @@
 | 适用对象	| 普通对象	| 数组、字符串、Map、Set等可迭代对象
 | 原型属性	| 会遍历原型链上的可枚举属性	| 不会遍历原型链
 | 顺序	| 不保证顺序	| 按迭代器顺序
+
+for...in 示例（遍历对象属性）
+```
+const obj = {
+    name:'zsd',
+    age:33
+}
+// 给原型添加属性
+Object.prototype.country='cc'
+
+for(let key in obj) {
+    console.log(key)
+}
+console.log('-'.repeat(11))
+// 使用 hasOwnProperty 过滤原型属性
+for(const key in obj) {
+    if(obj.hasOwnProperty(key)) {
+        console.log(key)
+    }
+}
+```
+
+for...of 示例（遍历数组值）
+```
+
+const arr = [1,2,'a']
+for(const val of arr) {
+    console.log(val)
+}
+// 遍历字符串
+for(let v of 'hello') {
+    console.log(v)
+}
+```
+
+
