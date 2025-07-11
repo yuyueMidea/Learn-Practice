@@ -27,4 +27,23 @@ Webpack 热更新 是一种在不刷新整个页面的情况下，更新修改�
   - 触发 accept 回调
 ```
 
+模块热替换实现：
+- module.hot API
+```
+if (module.hot) {
+  module.hot.accept('./module', () => {
+    // 更新后的处理逻辑
+  });
+}
+```
+更新策略：
+- JS：直接替换JavaScript模块代码并重新执行；
+- 样式文件：通过style-loader 直接替换style标签；
+- Vue/React 组件：框架专用 HMR 插件处理组件状态保持
+
+
+
+
+
+
 
