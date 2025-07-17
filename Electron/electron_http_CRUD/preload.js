@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   sendToMain: (message) => ipcRenderer.send('send-to-main', message),
   onMessageFromMain: (callback) => ipcRenderer.on('message-from-main', callback),
   onMessageFromSecondary: (callback) => ipcRenderer.on('message-from-secondary', callback),
+  handleReadfile: (content1)=> ipcRenderer.invoke('read-file', content1),
   handleSavefile: (content)=> ipcRenderer.invoke('save-file', content),
   execCmd: (cmd) => ipcRenderer.invoke('execcmd', cmd),
   execute: (cmd, args, options) => ipcRenderer.invoke('execute-command', { cmd, args, options }),

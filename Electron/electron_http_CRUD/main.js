@@ -45,10 +45,19 @@ function createWindows() {
   
   // 窗口间通信示例
   setupWindowCommunication()
+  //读写文件操作的
+  ipcMain.handle('read-file', async(event, msg) =>{
+    try {
+      const res = await openAndReadFile(msg);
+      return res;
+    } catch (error) {
+      console.error('readerr: ', error)
+      return error.message;
+    }
+  })
   ipcMain.handle('save-file', async(event, content) =>{
     try {
       const savePath = await saveFile(content);
-      // console.log({event, content, savePath} )
       return {success: true, path: savePath}
     } catch (error) {
       console.error('saveerr: ', error)
@@ -134,8 +143,8 @@ function setupWindowCommunication() {
  * @param {Object} [options] - 对话框选项
  * @returns {Promise<{path: string, content: string}>}
  */
-async function openAndReadFile(window, options = {}) {
-  const { canceled, filePaths } = await dialog.showOpenDialog(window, {
+async function openAndReadFile(msg, options = {}) {
+  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
     title: '选择文件',
     properties: ['openFile'],
     filters: [
