@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Main Window</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { padding: 8px 12px; margin: 5px; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    form { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 5px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    button { cursor: pointer; }
+    .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+    .online { background: #d4edda; color: #155724; }
+    .offline { background: #f8d7da; color: #721c24; }
+    .boxer { border: 1px solid #ccc; padding: 11px; margin: 5px; }
+  </style>
+</head>
+<body>
+  <div class="boxer">
+    <p>
+      <input type="text" id="messageInput" placeholder="Enter message">
+      <button id="sendButton">Send to Secondary</button>
+      <button id="readFileSyncBtn">同步读取文件</button>
+      <button id="saveFileBtn">保存文件</button>
+      <button id="execBtn">打印文件目录</button>
+    </p>
+    <div id="receivedMessages"></div>
+  </div>
+  <div class="boxer">
+    <h1>User Management</h1>
+    <div id="serverStatus" class="status">Checking server status...</div>
+    <h2>Add New User</h2>
+    <form id="userForm">
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <button type="submit">Add User</button>
+    </form>
+    
+    <h2>User List</h2>
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    document.getElementById('execBtn').addEventListener('click', async() => {
+      try {
+        const res = await window.electronAPI.execCmd('dir')
+        console.log('execBtn---', res)
+      } catch (error) {
+        console.error('execBtn_err: ', error)
+      }
+    })
+    document.getElementById('readFileSyncBtn').addEventListener('click', () => {
+      try {
+        console.log('saveeeeeeeee')
+      } catch (error) {
+        console.error('read_err: ', error)
+      }
+    })
+    document.getElementById('saveFileBtn').addEventListener('click', async() => {
+      const message = document.getElementById('messageInput').value
+      try {
+        const result = await window.electronAPI.handleSavefile(message)
+        console.log('文件保存成功:', result.path);
+      } catch (error) {
+        console.error('sss_err: ', error)
+      }
+    })
+    document.getElementById('sendButton').addEventListener('click', () => {
+      const message = document.getElementById('messageInput').value
+      window.electronAPI.sendToSecondary(message)
+      document.getElementById('messageInput').value = ''
+    })
+    
+    window.electronAPI.onMessageFromSecondary((event, message) => {
+      const div = document.createElement('div')
+      div.textContent = `Secondary Window says: ${message}`
+      document.getElementById('receivedMessages').appendChild(div)
+    })
+  </script>
+  <script src="./userRender.js"></script>
+</body>
+</html>
