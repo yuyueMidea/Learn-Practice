@@ -12,3 +12,22 @@ electron 常用API解析
 - icon: 窗口图标
 - show: 创建时是否显示
 - webPreferences: 网页功能设置
+
+窗口控制方法：
+```
+// 显示/隐藏窗口
+win.show()
+win.hide()
+// 最大化/最小化/还原
+win.maximize()
+win.minimize()
+win.restore()
+// 关闭窗口
+win.close()
+// 窗口位置
+win.setPosition(x, y)
+win.getPosition()
+// 窗口尺寸
+win.setSize(width, height)
+win.getSize()
+```
