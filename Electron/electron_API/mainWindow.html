@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Main Window</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { padding: 5px 12px; margin: 5px; }
+    .boxer { border: 1px solid #ccc; padding: 5px; margin: 3px; border-radius: 5px; }
+    .pos_wrapper >input { width: 120px; padding: 5px; }
+  </style>
+</head>
+<body>
+  <h2>electron, 窗口控制方法</h2>
+  <div class="boxer">
+    <p>
+      <button id="setminButton">最小化窗口</button>
+      <button id="setmaxButton">最大化</button>
+      <button id="getPosButton">获取窗口位置</button>
+      <span id="showTxt"></span>
+    </p>
+    <p class="pos_wrapper">
+      <input type="number" id="xInput" />
+      <input type="number" id="yInput" />
+      <button id="setPosButton">设置窗口位置</button>
+    </p>
+  </div>
+  <div id="receivedMessages"></div>
+
+  <script>
+    document.getElementById('setminButton').addEventListener('click', () => {
+      window.electronAPI.minimizeWindow()
+    })
+    document.getElementById('setmaxButton').addEventListener('click', () => {
+      window.electronAPI.miximizeWindow()
+    })
+    document.getElementById('getPosButton').addEventListener('click', async() => {
+      const posObj = await window.electronAPI.getWinPos();
+      console.log('获取窗口位置: ', posObj )
+      document.getElementById('showTxt').innerText = JSON.stringify(posObj);
+    })
+    document.getElementById('setPosButton').addEventListener('click', () => {
+      const x = document.getElementById('xInput').value;
+      const y = document.getElementById('yInput').value;
+      console.log('设置窗口位置: ', {x, y})
+      window.electronAPI.setWinPos(x,y);
+    })
+
+  </script>
+</body>
+</html>
