@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron路由应用</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <ul class="menu">
+                <li><a href="#" data-route="home" class="active">首页</a></li>
+                <li><a href="#" data-route="products">产品列表</a></li>
+                <li><a href="#" data-route="about">关于</a></li>
+            </ul>
+        </nav>
+        
+        <main class="content">
+            <!-- 各页面内容容器 -->
+            <div id="homePage" class="page active">
+                <h1>欢迎来到首页</h1>
+                <p>这是我们的应用程序主页。</p>
+            </div>
+            
+            <div id="productsPage" class="page">
+                <h1>产品列表</h1>
+                <div id="productList"></div>
+            </div>
+            
+            <div id="aboutPage" class="page">
+                <h1>关于我们</h1>
+                <p>这是一个使用纯JavaScript和Electron构建的简单路由应用。</p>
+            </div>
+        </main>
+    </div>
+    
+    <script src="renderer.js"></script>
+</body>
+</html>
