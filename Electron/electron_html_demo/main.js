@@ -14,14 +14,19 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
+        icon: path.join(__dirname, 'app1.png'), // 设置窗口图标
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true
         }
     });
+    // 设置任务栏图标（Windows）
+    if (process.platform === 'win32') {
+        mainWindow.setIcon(path.join(__dirname, 'app1.png'))
+    }
     //设置托盘图标
-      tray = new Tray(path.join(__dirname, 'database.png'));
+      tray = new Tray(path.join(__dirname, 'app1.png'));
       tray.setToolTip('我的应用');
       const contextMenu = Menu.buildFromTemplate([
         { label: '显示', click: () => { mainWindow.show() } },
