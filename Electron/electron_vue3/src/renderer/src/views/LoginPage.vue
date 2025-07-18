@@ -50,8 +50,21 @@ const handleSubmitLogin = async() =>{
   background: #fff;
 }
 
+
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
+  display: flex;
+  padding: 11px;
+}
+.form-group:focus-within {
+    background: #ccc;
+}
+.form-group >label {
+    width: 60px; padding-right: 5px;
+    text-align: right;
+}
+.form-group >input {
+    flex: 1;
 }
 
 label {
