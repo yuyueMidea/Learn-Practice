@@ -100,18 +100,30 @@ onMounted(() => {
     font-size: 1.2rem;
     cursor: pointer;
   }
-  .form-group {
-  margin-bottom: 1rem;
-}
-input {
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
-}
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-  </style>
+    .form-group {
+        margin-bottom: 1rem;
+        display: flex;
+        padding: 5px;
+    }
+    .form-group:focus-within {
+        background: #ccc;
+    }
+    .form-group >label {
+        width: 100px;
+        text-align: right;
+    }
+    .form-group >input {
+        flex: 1;
+    }
+    input {
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    }
+    .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    }
+</style>
   
