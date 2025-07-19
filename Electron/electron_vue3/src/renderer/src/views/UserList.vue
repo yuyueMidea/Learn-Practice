@@ -49,10 +49,10 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import SkeletonItem from '../components/SkeletonItem.vue'
-import ModalDialog from '../components/ModalDialog.vue'
-import { useAppStore } from '../store/appStore'
-import { exportToCSV, importCSV } from '../utils/csv'
+import SkeletonItem from '@renderer/components/SkeletonItem.vue'
+import ModalDialog from '@renderer/components/ModalDialog.vue'
+import { useAppStore } from '@renderer/store/appStore'
+import { exportToCSV, importCSV } from '@renderer/utils/csv'
 const showModal = ref(false)
 
 function openModal() {

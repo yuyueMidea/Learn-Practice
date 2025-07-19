@@ -18,8 +18,8 @@
   </div>
 </template>
 <script setup>
-import { useAppStore } from '../store/appStore';
-import { getPermissions } from '../utils/permission';
+import { useAppStore } from '@renderer/store/appStore';
+import { getPermissions } from '@renderer/utils/permission';
 const app1store = useAppStore()
 const perlist = getPermissions()
 // 生成随机ID的方法，入参是位数，比如16位ID

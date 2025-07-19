@@ -14,8 +14,8 @@
 </template>
 <script setup>
 import { computed, ref } from 'vue';
-import router from '../router';
-import { useAppStore } from '../store/appStore';
+import router from '@renderer/router';
+import { useAppStore } from '@renderer/store/appStore';
 
 const username = ref('');
 const password = ref('');
