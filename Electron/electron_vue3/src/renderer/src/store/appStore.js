@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { setPermissions } from "../utils/permission";
+import { setPermissions } from "@renderer/utils/permission";
 
 export const useAppStore = defineStore('app1',{
     state: ()=> ({
