@@ -29,7 +29,11 @@
 
       <!-- 右侧页面内容 -->
       <main class="app-main">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </main>
     </div>
   </div>
@@ -130,6 +134,25 @@ html, body, #app {
   background-color: #fff;
   padding: 20px;
   box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto;
+}
+
+/* 路由过渡动画 */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateX(0);
 }
 </style>
