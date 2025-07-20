@@ -17,6 +17,16 @@ export const menuItems = [
       name: '用户列表',
       icon: 'ℹ️',
       component: () => import('@renderer/views/UserList.vue')
-    }
+    },
+    {
+      path: '/formDesigner',
+      name: '表单设计器',
+      component: () => import('@renderer/views/FormDesigner.vue')
+    },
+    {
+      path: '/readForm',
+      name: '预览页面',
+      component: () => import('@renderer/views/ReadForm.vue')
+    },
   ];
   
