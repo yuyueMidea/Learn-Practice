@@ -8,3 +8,8 @@ vue3-dataserver/
 ├── server/          # Express 后端
 ├── package.json     # 根项目配置
 ```
+
+
+启动项目：在项目根目录运行npm start；
+- Express 后端服务（默认 http://localhost:3001）
+- Vue 前端开发服务器（默认 http://localhost:5173）
