@@ -8,7 +8,7 @@ vue3-dataserver/
 ├── server/          # Express 后端
 ├── package.json     # 根项目配置
 ```
-
+package.json使用了concurrently，并行运行多个命令,保持所有进程在同一个终端窗口可见.
 
 启动项目：在项目根目录运行npm start；
 - Express 后端服务（默认 http://localhost:3001）
