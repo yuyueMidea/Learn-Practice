@@ -3,59 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLex/Grid布局示例</title>
+    <title>三栏布局演示</title>
     <style>
-        /* flex布局样式 */
-        .navbar {
-        display: flex;
-        justify-content: center;
-        background: #333;
-        padding: 10px;
+        .container {
+            display: flex;
+            width: 100vw; height: 200px;
         }
-
-        .navbar a {
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
+        .left, .right {
+            width: 200px;background: #efefef;
         }
-
-        .navbar a:hover {
-        background: #555;
+        .middle {
+            flex: 1;
         }
-        /* grid布局样式 */
-        .responsive-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-        padding: 15px;
+        .container2 {
+            margin-top: 100px;
+            display: grid;
+            grid-template-columns: 200px 1fr 300px;
         }
-
-        .item {
-        background: #f0f0f0;
-        padding: 20px;
-        border-radius: 5px;
-        text-align: center;
+        .container3 {
+            margin-top: 100px;
+            width: 100vw; height: 200px;
+        }
+        .container3 .left3 {
+            width: 200px; float: left; background: pink;
+        }
+        .container3 .right3 {
+            width: 300px; float: right; background: pink;
+        }
+        .container3 .main3 {
+            /* 宽度等于左侧栏宽度，marginright也等于右侧宽度 */
+            margin-left: 200px;
+            margin-right: 300px;
+            background: #ccc;
         }
     </style>
 </head>
 <body>
-    <p>Flex布局示例</p>
-    <nav class="navbar">
-        <a href="#">首页</a>
-        <a href="#">产品</a>
-        <a href="#">服务</a>
-        <a href="#">关于</a>
-        <a href="#">联系</a>
-      </nav>
-    <br/><hr/><br/>
-      <p>实际示例：响应式网格布局</p>
-    <div class="responsive-grid">
-        <div class="item">1</div>
-        <div class="item">2</div>
-        <div class="item">3</div>
-        <div class="item">4</div>
-        <div class="item">5</div>
-        <div class="item">6</div>
-      </div>
+    <div class="container">
+        <div class="left">left</div>
+        <div class="middle">middle</div>
+        <div class="right">right</div>
+    </div>
+    <div class="container2">
+        <div style="background:#ddd">left bar</div>
+        <div>main content</div>
+        <div style="background: #ccc;">right bar</div>
+    </div>
+    <div class="container3">
+        <div class="left3">left bar</div>
+        <div class="main3">main content</div>
+        <div class="right3">right bar</div>
+    </div>
 </body>
 </html>
