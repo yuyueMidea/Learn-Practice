@@ -20,9 +20,7 @@
   </template>
   
 <script setup>
-import BaseButton from '@/components/BaseButton.vue';
-import BaseModal from '@/components/BaseModal.vue';
-import BaseTable from '@/components/BaseTable.vue';
+import { BaseButton, BaseModal, BaseTable } from '@/components';
 
 import { ref } from 'vue';
 
@@ -57,5 +55,6 @@ const btn3click = ()=>{
 }
 .com_wrapper {
   border: 1px solid #ccc; padding: 11px; border-radius: 5px;
+  min-height: 500px;
 }
 </style>
