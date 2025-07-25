@@ -68,6 +68,12 @@
 - 自定义属性：通过CSS变量var（）来重用自定义属性，可以简化样式表的管理；
 - 响应式布局：通过媒体查询和弹性布局，以适应不同的屏幕尺寸和设备。
 
+14、CSS中选择器的优先级，权重计算方式？
+- !important具有最高优先级；
+- 内联样式 》 ID选择器》类选择器、属性选择器》元素选择器和伪类选择器；
+
+15、HTML5 input元素的type属性有哪些？
+- text、 password、radio、checkbox、number、range、date、time、file、color、hidden、submit、reset、button。
 
 
 
