@@ -10,3 +10,13 @@ react中的Hooks解决了以下问题：函数组件难以复用状态逻辑、�
 | useRef	| createRef	| 函数组件也能访问 DOM、缓存变量
 | useMemo / useCallback	| shouldComponentUpdate	| 性能优化更精细
 | 自定义 Hook	| HOC / render props	| 逻辑复用简单、组合灵活
+
+react18+ 组件的生命周期方法
+| 生命周期场景        | 对应 Hook                       | 说明                     |
+| ------------- | ----------------------------- | ---------------------- |
+| 初始化（挂载）       | `useEffect(() => {}, [])`     | 组件首次渲染后执行一次            |
+| 更新（某个状态/属性变化） | `useEffect(() => {}, [deps])` | 依赖更新时执行                |
+| 卸载            | `useEffect` 中 return 函数       | 返回清理函数，组件卸载时触发         |
+| 获取 DOM 或持久引用  | `useRef`, `useLayoutEffect`   | 类似 `componentDidMount` |
+| 计算派生数据（缓存计算）  | `useMemo`                     | 避免不必要的计算               |
+| 函数缓存（如事件处理器）  | `useCallback`                 | 避免不必要的函数重建             |
