@@ -20,3 +20,9 @@ react18+ 组件的生命周期方法
 | 获取 DOM 或持久引用  | `useRef`, `useLayoutEffect`   | 类似 `componentDidMount` |
 | 计算派生数据（缓存计算）  | `useMemo`                     | 避免不必要的计算               |
 | 函数缓存（如事件处理器）  | `useCallback`                 | 避免不必要的函数重建             |
+
+react中状态state和属性props
+- props：父传子的只读数据，不可修改；
+- state：组件内部可变数据，可以通过useState修改，会触发组件重新渲染；
+
+react中高阶组件简介：高阶组件（HOC）是一种常见的封装逻辑复用的方式，可以实现组件的复用、逻辑的抽象和代码的组合。
