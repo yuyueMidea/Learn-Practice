@@ -1,24 +1,18 @@
 import { Edit3, Mail, MapPin, Phone, Save, User, X } from "lucide-react";
 import { useState } from "react";
+import useUserStore from "../store/userStore";
+import useAuthStore from "../store/authStore";
 
 export default function ProfileView () {
-    const [darkMode, setDarkMode] = useState(false);
-    const [userProfile, setUserProfile] = useState({
-        name: '张三',
-        email: 'zhangsan@example.com',
-        phone: '+86 138 0013 8000',
-        location: '北京市',
-        avatar: '',
-        bio: '产品经理，专注于用户体验设计',
-        joinDate: '2023年1月'
-    });
-    const [isEditing, setIsEditing] = useState(false);
-    const [editForm, setEditForm] = useState(userProfile);
-    // 保存个人资料
-    const handleSaveProfile = () => {
-        setUserProfile(editForm);
-        setIsEditing(false);
-    };
+  const {userProfile, setUserProfile} = useUserStore();
+  const {darkMode} = useAuthStore
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState(userProfile);
+  // 保存个人资料
+  const handleSaveProfile = () => {
+    setUserProfile(editForm);
+    setIsEditing(false);
+  };
 
     return (
         <div className="p-6 max-w-4xl">
