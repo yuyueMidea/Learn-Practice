@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+    --primary: #1d4ed8;
+    --bg: #ffffff;
+    --text: #000000;
+  }
+  
+  [data-theme='dark'] {
+    --primary: #22d3ee;
+    --bg: #0f172a;
+    --text: #ffffff;
+  }
+  

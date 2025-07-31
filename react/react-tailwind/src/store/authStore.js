@@ -1,0 +1,42 @@
+import { create } from "zustand";
+
+const useAuthStore = create((set) => ({
+  currentUser: null,
+  isAuthenticated: false,
+  darkMode: false,
+  
+  setDarkMode: (darkModevalue)=>{
+    set({
+      darkMode: darkModevalue
+    })
+  },
+  toggleDarkMode: ()=>{
+    set(state => ({ darkMode: !state.darkMode }) )
+  },
+  login: (userData) => {
+    set({
+      currentUser: userData,
+      isAuthenticated: true
+    });
+    localStorage.setItem('auth', JSON.stringify(userData));
+  },
+  
+  logout: () => {
+    set({
+      currentUser: null,
+      isAuthenticated: false
+    });
+    localStorage.removeItem('auth');
+  },
+  
+  initialize: () => {
+    const savedAuth = localStorage.getItem('auth');
+    if (savedAuth) {
+      set({
+        currentUser: JSON.parse(savedAuth),
+        isAuthenticated: true
+      });
+    }
+  }
+}));
+export default useAuthStore;
