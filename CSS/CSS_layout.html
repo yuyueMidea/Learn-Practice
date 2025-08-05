@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经典CSS页面布局示例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .nav button:hover, .nav button.active {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .layout-section {
+            display: none;
+            padding: 2rem;
+        }
+
+        .layout-section.active {
+            display: block;
+        }
+
+        .layout-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .layout-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .demo-container {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+            background: #f9f9f9;
+        }
+
+        /* 1. 圣杯布局 */
+        .holy-grail {
+            display: flex;
+            min-height: 400px;
+        }
+
+        .holy-grail .main {
+            flex: 1;
+            background: #e3f2fd;
+            padding: 20px;
+            order: 2;
+        }
+
+        .holy-grail .sidebar-left {
+            width: 200px;
+            background: #f3e5f5;
+            padding: 20px;
+            order: 1;
+        }
+
+        .holy-grail .sidebar-right {
+            width: 200px;
+            background: #e8f5e8;
+            padding: 20px;
+            order: 3;
+        }
+
+        /* 2. 双飞翼布局 */
+        .double-wing {
+            display: flex;
+            min-height: 400px;
+        }
+
+        .double-wing .main-wrapper {
+            flex: 1;
+        }
+
+        .double-wing .main-content {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 0 200px;
+            min-height: 360px;
+        }
+
+        .double-wing .left-wing {
+            width: 200px;
+            background: #f3e5f5;
+            padding: 20px;
+            margin-left: -100%;
+        }
+
+        .double-wing .right-wing {
+            width: 200px;
+            background: #e8f5e8;
+            padding: 20px;
+            margin-left: -200px;
+        }
+
+        /* 3. Flexbox布局 */
+        .flex-layout {
+            display: flex;
+            gap: 20px;
+            min-height: 400px;
+        }
+
+        .flex-sidebar {
+            flex: 0 0 200px;
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .flex-main {
+            flex: 1;
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* 4. Grid布局 */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            min-height: 400px;
+            padding: 20px;
+        }
+
+        .grid-header {
+            grid-column: 1 / -1;
+            background: #fff3e0;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .grid-sidebar-left {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .grid-main {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .grid-sidebar-right {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .grid-footer {
+            grid-column: 1 / -1;
+            background: #fce4ec;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        /* 5. 卡片布局 */
+        .card-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        /* 6. 瀑布流布局 */
+        .masonry-layout {
+            column-count: 3;
+            column-gap: 20px;
+            padding: 20px;
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .masonry-item:hover {
+            transform: scale(1.02);
+        }
+
+        .masonry-item:nth-child(odd) {
+            height: 200px;
+        }
+
+        .masonry-item:nth-child(even) {
+            height: 150px;
+        }
+
+        .masonry-item:nth-child(3n) {
+            height: 250px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .holy-grail, .double-wing, .flex-layout {
+                flex-direction: column;
+            }
+
+            .holy-grail .sidebar-left, .holy-grail .sidebar-right,
+            .double-wing .left-wing, .double-wing .right-wing,
+            .flex-sidebar {
+                width: 100%;
+                order: initial;
+            }
+
+            .double-wing .main-content {
+                margin: 0;
+            }
+
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .masonry-layout {
+                column-count: 1;
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav button {
+                width: 100%;
+            }
+        }
+
+        .code-snippet {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .description {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>经典CSS页面布局示例</h1>
+            <nav class="nav">
+                <button onclick="showLayout('holy-grail')" class="active">圣杯布局</button>
+                <button onclick="showLayout('flexbox')">Flexbox布局</button>
+                <button onclick="showLayout('grid')">Grid布局</button>
+                <button onclick="showLayout('cards')">卡片布局</button>
+                <button onclick="showLayout('masonry')">瀑布流布局</button>
+            </nav>
+        </div>
+
+        <!-- 圣杯布局 -->
+        <div id="holy-grail" class="layout-section active">
+            <h2 class="layout-title">圣杯布局 (Holy Grail Layout)</h2>
+            <div class="description">
+                <strong>特点：</strong>三栏布局，中间内容优先加载，两侧边栏固定宽度。使用Flexbox实现，简单高效。
+            </div>
+            <div class="demo-container">
+                <div class="holy-grail">
+                    <aside class="sidebar-left">
+                        <h3>左侧边栏</h3>
+                        <p>固定宽度200px</p>
+                        <p>导航菜单</p>
+                        <p>侧边广告</p>
+                    </aside>
+                    <main class="main">
+                        <h3>主要内容区域</h3>
+                        <p>这是主要内容区域，会自动扩展填充剩余空间。</p>
+                        <p>内容优先加载，响应式友好。</p>
+                        <p>在移动设备上会自动堆叠显示。</p>
+                    </main>
+                    <aside class="sidebar-right">
+                        <h3>右侧边栏</h3>
+                        <p>固定宽度200px</p>
+                        <p>相关链接</p>
+                        <p>推荐内容</p>
+                    </aside>
+                </div>
+            </div>
+            <div class="code-snippet">
+.holy-grail {
+    display: flex;
+    min-height: 400px;
+}
+.main { flex: 1; order: 2; }
+.sidebar-left { width: 200px; order: 1; }
+.sidebar-right { width: 200px; order: 3; }
+            </div>
+        </div>
+
+        <!-- Flexbox布局 -->
+        <div id="flexbox" class="layout-section">
+            <h2 class="layout-title">Flexbox弹性布局</h2>
+            <div class="description">
+                <strong>特点：</strong>现代CSS布局方案，灵活性强，支持各种对齐方式，响应式设计的首选。
+            </div>
+            <div class="demo-container">
+                <div class="flex-layout">
+                    <aside class="flex-sidebar">
+                        <h3>弹性侧边栏</h3>
+                        <p>flex: 0 0 200px</p>
+                        <p>不伸缩，固定宽度</p>
+                    </aside>
+                    <main class="flex-main">
+                        <h3>弹性主内容</h3>
+                        <p>flex: 1 - 自动扩展</p>
+                        <p>Flexbox提供了强大的对齐能力：</p>
+                        <ul>
+                            <li>justify-content: 主轴对齐</li>
+                            <li>align-items: 交叉轴对齐</li>
+                            <li>flex-direction: 方向控制</li>
+                            <li>flex-wrap: 换行控制</li>
+                        </ul>
+                    </main>
+                </div>
+            </div>
+            <div class="code-snippet">
+.flex-layout {
+    display: flex;
+    gap: 20px;
+}
+.flex-sidebar { flex: 0 0 200px; }
+.flex-main { flex: 1; }
+            </div>
+        </div>
+
+        <!-- Grid布局 -->
+        <div id="grid" class="layout-section">
+            <h2 class="layout-title">CSS Grid网格布局</h2>
+            <div class="description">
+                <strong>特点：</strong>二维布局系统，可以同时控制行和列，适合复杂的页面布局。
+            </div>
+            <div class="demo-container">
+                <div class="grid-layout">
+                    <header class="grid-header">
+                        <h3>页面头部</h3>
+                        <p>grid-column: 1 / -1 (跨越所有列)</p>
+                    </header>
+                    <aside class="grid-sidebar-left">
+                        <h4>左侧导航</h4>
+                        <p>200px宽度</p>
+                    </aside>
+                    <main class="grid-main">
+                        <h4>主要内容</h4>
+                        <p>Grid布局的优势：</p>
+                        <ul>
+                            <li>精确控制行列</li>
+                            <li>网格对齐</li>
+                            <li>隐式网格</li>
+                            <li>命名网格线</li>
+                        </ul>
+                    </main>
+                    <aside class="grid-sidebar-right">
+                        <h4>右侧边栏</h4>
+                        <p>200px宽度</p>
+                    </aside>
+                    <footer class="grid-footer">
+                        <h4>页面底部</h4>
+                        <p>grid-column: 1 / -1 (跨越所有列)</p>
+                    </footer>
+                </div>
+            </div>
+            <div class="code-snippet">
+.grid-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-rows: auto 1fr auto;
+    gap: 20px;
+}
+.grid-header, .grid-footer {
+    grid-column: 1 / -1;
+}
+            </div>
+        </div>
+
+        <!-- 卡片布局 -->
+        <div id="cards" class="layout-section">
+            <h2 class="layout-title">响应式卡片布局</h2>
+            <div class="description">
+                <strong>特点：</strong>使用Grid的auto-fit和minmax功能，实现自适应卡片布局，常用于产品展示、文章列表等。
+            </div>
+            <div class="demo-container">
+                <div class="card-layout">
+                    <div class="card">
+                        <h3>卡片标题 1</h3>
+                        <p>这是卡片内容描述。卡片会根据屏幕宽度自动调整布局，最小宽度300px。</p>
+                    </div>
+                    <div class="card">
+                        <h3>卡片标题 2</h3>
+                        <p>响应式设计让卡片在不同设备上都有良好的显示效果。</p>
+                    </div>
+                    <div class="card">
+                        <h3>卡片标题 3</h3>
+                        <p>每个卡片都有悬停效果，提升用户交互体验。</p>
+                    </div>
+                    <div class="card">
+                        <h3>卡片标题 4</h3>
+                        <p>Grid布局让卡片排列更加灵活和美观。</p>
+                    </div>
+                    <div class="card">
+                        <h3>卡片标题 5</h3>
+                        <p>适用于产品展示、文章列表、团队介绍等各种场景。</p>
+                    </div>
+                    <div class="card">
+                        <h3>卡片标题 6</h3>
+                        <p>现代网页设计的常用布局方式。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="code-snippet">
+.card-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+            </div>
+        </div>
+
+        <!-- 瀑布流布局 -->
+        <div id="masonry" class="layout-section">
+            <h2 class="layout-title">瀑布流布局 (Masonry)</h2>
+            <div class="description">
+                <strong>特点：</strong>使用CSS多列布局实现瀑布流效果，适合图片展示、Pinterest风格的内容布局。
+            </div>
+            <div class="demo-container">
+                <div class="masonry-layout">
+                    <div class="masonry-item">
+                        <h4>项目 1</h4>
+                        <p>瀑布流布局让内容以瀑布的形式流动排列。</p>
+                    </div>
+                    <div class="masonry-item">
+                        <h4>项目 2</h4>
+                        <p>不同高度的内容会自动填充空隙。</p>
+                    </div>
+                    <div class="masonry-item">
+                        <h4>项目 3</h4>
+                        <p>这种布局特别适合展示图片或者长度不一的文本内容，营造出错落有致的视觉效果。</p>
+                    </div>
+                    <div class="masonry-item">
+                        <h4>项目 4</h4>
+                        <p>Pinterest就是这种布局的典型应用。</p>
+                    </div>
+                    <div class="masonry-item">
+                        <h4>项目 5</h4>
+                        <p>CSS column-count属性让实现变得简单。</p>
+                    </div>
+                    <div class="masonry-item">
+                        <h4>项目 6</h4>
+                        <p>响应式设计可以调整列数以适应不同屏幕。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="code-snippet">
+.masonry-layout {
+    column-count: 3;
+    column-gap: 20px;
+}
+.masonry-item {
+    break-inside: avoid;
+    margin-bottom: 20px;
+}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLayout(layoutId) {
+            // 隐藏所有布局
+            const sections = document.querySelectorAll('.layout-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // 显示选中的布局
+            document.getElementById(layoutId).classList.add('active');
+            
+            // 更新按钮状态
+            const buttons = document.querySelectorAll('.nav button');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
