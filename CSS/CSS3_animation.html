@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS3动画效果大全</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+            to { text-shadow: 2px 2px 20px rgba(255,255,255,0.5); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .nav button:hover, .nav button.active {
+            background: white;
+            color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            display: none;
+            padding: 3rem 2rem;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .animation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .animation-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .animation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .animation-card h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .animation-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .code-snippet {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+            text-align: left;
+        }
+
+        /* 基础动画效果 */
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-30px,0); }
+            70% { transform: translate3d(0,-15px,0); }
+            90% { transform: translate3d(0,-4px,0); }
+        }
+
+        .shake {
+            animation: shake 1s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .swing {
+            animation: swing 1s infinite;
+            transform-origin: top center;
+        }
+
+        @keyframes swing {
+            20% { transform: rotate(15deg); }
+            40% { transform: rotate(-10deg); }
+            60% { transform: rotate(5deg); }
+            80% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* 旋转动画 */
+        .rotate {
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .flip {
+            animation: flip 2s infinite;
+        }
+
+        @keyframes flip {
+            0% { transform: perspective(400px) rotateY(0); }
+            40% { transform: perspective(400px) rotateY(-180deg); }
+            100% { transform: perspective(400px) rotateY(-180deg); }
+        }
+
+        .wobble {
+            animation: wobble 1s infinite;
+        }
+
+        @keyframes wobble {
+            0% { transform: translateX(0%); }
+            15% { transform: translateX(-25%) rotate(-5deg); }
+            30% { transform: translateX(20%) rotate(3deg); }
+            45% { transform: translateX(-15%) rotate(-3deg); }
+            60% { transform: translateX(10%) rotate(2deg); }
+            75% { transform: translateX(-5%) rotate(-1deg); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* 缩放动画 */
+        .zoom-in {
+            animation: zoomIn 1s infinite alternate;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(1); }
+            to { transform: scale(1.3); }
+        }
+
+        .zoom-out {
+            animation: zoomOut 1s infinite alternate;
+        }
+
+        @keyframes zoomOut {
+            from { transform: scale(1.3); }
+            to { transform: scale(1); }
+        }
+
+        /* 渐变动画 */
+        .fade-in {
+            animation: fadeIn 2s infinite alternate;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 2s infinite alternate;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 滑动动画 */
+        .slide-in-left {
+            animation: slideInLeft 2s infinite alternate;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 2s infinite alternate;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* 彩虹色彩动画 */
+        .rainbow {
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background: linear-gradient(135deg, #ff0000, #ff8000); }
+            14% { background: linear-gradient(135deg, #ff8000, #ffff00); }
+            28% { background: linear-gradient(135deg, #ffff00, #80ff00); }
+            42% { background: linear-gradient(135deg, #80ff00, #00ff80); }
+            57% { background: linear-gradient(135deg, #00ff80, #0080ff); }
+            71% { background: linear-gradient(135deg, #0080ff, #8000ff); }
+            85% { background: linear-gradient(135deg, #8000ff, #ff0080); }
+            100% { background: linear-gradient(135deg, #ff0080, #ff0000); }
+        }
+
+        /* 心跳动画 */
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        /* 弹跳进入 */
+        .bounce-in {
+            animation: bounceIn 2s infinite alternate;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% { transform: scale(0.9); }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 翻转效果 */
+        .flip-in-x {
+            animation: flipInX 2s infinite alternate;
+        }
+
+        @keyframes flipInX {
+            0% {
+                transform: perspective(400px) rotateX(90deg);
+                opacity: 0;
+            }
+            40% {
+                transform: perspective(400px) rotateX(-20deg);
+            }
+            60% {
+                transform: perspective(400px) rotateX(10deg);
+                opacity: 1;
+            }
+            80% {
+                transform: perspective(400px) rotateX(-5deg);
+            }
+            100% {
+                transform: perspective(400px) rotateX(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* 光晕效果 */
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px #667eea;
+            }
+            to {
+                box-shadow: 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea;
+            }
+        }
+
+        /* 悬浮效果 */
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* 打字效果 */
+        .typing {
+            width: 150px;
+            height: 80px;
+            background: #2d3748;
+            color: #00ff00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .typing::after {
+            content: 'Hello World!';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid #00ff00;
+            animation: typing 4s steps(12) infinite, blink 1s step-end infinite;
+        }
+
+        @keyframes typing {
+            0% { width: 0; }
+            50% { width: 100px; }
+            100% { width: 0; }
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: #00ff00; }
+            51%, 100% { border-color: transparent; }
+        }
+
+        /* 按钮动画组 */
+        .button-effects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .btn-effect {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-ripple {
+            background: #667eea;
+            position: relative;
+        }
+
+        .btn-ripple::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-ripple:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-neon {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            text-shadow: 0 0 10px #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-neon:hover {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 0 30px #667eea, 0 0 60px #667eea;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .nav button {
+                width: 100%;
+            }
+            
+            .animation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .control-panel h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CSS3动画效果大全</h1>
+            <p class="subtitle">探索现代Web动画的无限可能</p>
+            <nav class="nav">
+                <button onclick="showSection('basic')" class="active">基础动画</button>
+                <button onclick="showSection('transform')">变换动画</button>
+                <button onclick="showSection('entrance')">进入动画</button>
+                <button onclick="showSection('special')">特效动画</button>
+                <button onclick="showSection('buttons')">按钮动效</button>
+            </nav>
+        </div>
+
+        <!-- 基础动画 -->
+        <div id="basic" class="section active">
+            <h2 class="section-title">基础动画效果</h2>
+            <div class="animation-grid">
+                <div class="animation-card">
+                    <h3>弹跳动画</h3>
+                    <div class="animation-box bounce">Bounce</div>
+                    <p>经典的弹跳效果，常用于按钮和提示</p>
+                    <div class="code-snippet">@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% { 
+    transform: translate3d(0,0,0); 
+  }
+  40%, 43% { 
+    transform: translate3d(0,-30px,0); 
+  }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>震动动画</h3>
+                    <div class="animation-box shake">Shake</div>
+                    <p>震动效果，用于错误提示或引起注意</p>
+                    <div class="code-snippet">@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { 
+    transform: translateX(-10px); 
+  }
+  20%, 40%, 60%, 80% { 
+    transform: translateX(10px); 
+  }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>脉冲动画</h3>
+                    <div class="animation-box pulse">Pulse</div>
+                    <p>心跳般的脉冲效果，突出重要元素</p>
+                    <div class="code-snippet">@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>摆动动画</h3>
+                    <div class="animation-box swing">Swing</div>
+                    <p>钟摆式摆动，优雅的自然运动</p>
+                    <div class="code-snippet">@keyframes swing {
+  20% { transform: rotate(15deg); }
+  40% { transform: rotate(-10deg); }
+  60% { transform: rotate(5deg); }
+  80% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 变换动画 -->
+        <div id="transform" class="section">
+            <h2 class="section-title">变换动画效果</h2>
+            <div class="animation-grid">
+                <div class="animation-card">
+                    <h3>旋转动画</h3>
+                    <div class="animation-box rotate">Rotate</div>
+                    <p>360度持续旋转，加载动画的经典选择</p>
+                    <div class="code-snippet">@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>翻转动画</h3>
+                    <div class="animation-box flip">Flip</div>
+                    <p>3D翻转效果，展示卡片正反面</p>
+                    <div class="code-snippet">@keyframes flip {
+  0% { transform: perspective(400px) rotateY(0); }
+  40% { transform: perspective(400px) rotateY(-180deg); }
+  100% { transform: perspective(400px) rotateY(-180deg); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>摇摆动画</h3>
+                    <div class="animation-box wobble">Wobble</div>
+                    <p>不规则摇摆，生动有趣的动画效果</p>
+                    <div class="code-snippet">@keyframes wobble {
+  0% { transform: translateX(0%); }
+  15% { transform: translateX(-25%) rotate(-5deg); }
+  30% { transform: translateX(20%) rotate(3deg); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>悬浮动画</h3>
+                    <div class="animation-box float">Float</div>
+                    <p>轻柔的上下浮动，营造轻盈感</p>
+                    <div class="code-snippet">@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 进入动画 -->
+        <div id="entrance" class="section">
+            <h2 class="section-title">进入动画效果</h2>
+            <div class="animation-grid">
+                <div class="animation-card">
+                    <h3>淡入动画</h3>
+                    <div class="animation-box fade-in">Fade In</div>
+                    <p>渐现效果，温和的出现方式</p>
+                    <div class="code-snippet">@keyframes fadeIn {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>上滑淡入</h3>
+                    <div class="animation-box fade-in-up">Fade Up</div>
+                    <p>从下方滑入并淡现</p>
+                    <div class="code-snippet">@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>左滑进入</h3>
+                    <div class="animation-box slide-in-left">Slide Left</div>
+                    <p>从左侧滑动进入</p>
+                    <div class="code-snippet">@keyframes slideInLeft {
+  from { 
+    transform: translateX(-100px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>弹跳进入</h3>
+                    <div class="animation-box bounce-in">Bounce In</div>
+                    <p>弹性进入效果，活泼有趣</p>
+                    <div class="code-snippet">@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 特效动画 -->
+        <div id="special" class="section">
+            <h2 class="section-title">特效动画</h2>
+            <div class="animation-grid">
+                <div class="animation-card">
+                    <h3>彩虹色彩</h3>
+                    <div class="animation-box rainbow">Rainbow</div>
+                    <p>彩虹色彩变换，绚丽夺目</p>
+                    <div class="code-snippet">@keyframes rainbow {
+  0% { background: linear-gradient(135deg, #ff0000, #ff8000); }
+  14% { background: linear-gradient(135deg, #ff8000, #ffff00); }
+  28% { background: linear-gradient(135deg, #ffff00, #80ff00); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>心跳动画</h3>
+                    <div class="animation-box heartbeat">❤️</div>
+                    <p>心跳节奏，表达情感共鸣</p>
+                    <div class="code-snippet">@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.3); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.3); }
+  70% { transform: scale(1); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>光晕效果</h3>
+                    <div class="animation-box glow">Glow</div>
+                    <p>发光效果，科技感十足</p>
+                    <div class="code-snippet">@keyframes glow {
+  from {
+    box-shadow: 0 0 10px #667eea;
+  }
+  to {
+    box-shadow: 0 0 20px #667eea, 
+                0 0 30px #667eea, 
+                0 0 40px #667eea;
+  }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>打字效果</h3>
+                    <div class="animation-box typing"></div>
+                    <p>模拟打字机效果，复古有趣</p>
+                    <div class="code-snippet">@keyframes typing {
+  0% { width: 0; }
+  50% { width: 100px; }
+  100% { width: 0; }
+}
+@keyframes blink {
+  0%, 50% { border-color: #00ff00; }
+  51%, 100% { border-color: transparent; }
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 按钮动效 -->
+        <div id="buttons" class="section">
+            <h2 class="section-title">按钮动效</h2>
+            <div class="control-panel">
+                <h3>交互式按钮效果</h3>
+                <p>鼠标悬停查看效果</p>
+                <div class="button-effects">
+                    <button class="btn-effect btn-gradient">渐变按钮</button>
+                    <button class="btn-effect btn-ripple">水波纹按钮</button>
+                    <button class="btn-effect btn-neon">霓虹按钮</button>
+                </div>
+            </div>
+
+            <div class="animation-grid">
+                <div class="animation-card">
+                    <h3>缩放动画</h3>
+                    <div class="animation-box zoom-in">Zoom</div>
+                    <p>放大缩小效果，突出重点</p>
+                    <div class="code-snippet">@keyframes zoomIn {
+  from { transform: scale(1); }
+  to { transform: scale(1.3); }
+}</div>
+                </div>
+
+                <div class="animation-card">
+                    <h3>X轴翻转</h3>
+                    <div class="animation-box flip-in-x">Flip X</div>
+                    <p>沿X轴翻转进入</p>
+                    <div class="code-snippet">@keyframes flipInX {
+  0% {
+    transform: perspective(400px) rotateX(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(400px) rotateX(0deg);
+    opacity: 1;
+  }
+}</div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <h3>动画控制</h3>
+                <p>点击按钮重新播放动画</p>
+                <button class="play-btn" onclick="restartAnimations()">重新播放所有动画</button>
+                <button class="play-btn" onclick="pauseAnimations()">暂停动画</button>
+                <button class="play-btn" onclick="resumeAnimations()">恢复动画</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 显示指定的动画section
+        function showSection(sectionId) {
+            // 隐藏所有section
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // 显示选中的section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 更新导航按钮状态
+            const buttons = document.querySelectorAll('.nav button');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // 重新播放所有动画
+        function restartAnimations() {
+            const animationBoxes = document.querySelectorAll('.animation-box');
+            animationBoxes.forEach(box => {
+                // 移除所有动画类
+                const animationClasses = [
+                    'bounce', 'shake', 'pulse', 'swing', 'rotate', 'flip', 'wobble',
+                    'zoom-in', 'zoom-out', 'fade-in', 'fade-in-up', 'slide-in-left',
+                    'slide-in-right', 'rainbow', 'heartbeat', 'bounce-in', 'flip-in-x',
+                    'glow', 'float', 'typing'
+                ];
+                
+                animationClasses.forEach(className => {
+                    box.classList.remove(className);
+                });
+                
+                // 强制重排
+                box.offsetHeight;
+                
+                // 重新添加动画类
+                setTimeout(() => {
+                    animationClasses.forEach(className => {
+                        if (box.classList.contains(className.replace('-', ''))) {
+                            box.classList.add(className);
+                        }
+                    });
+                    
+                    // 根据原始类名重新添加动画
+                    if (box.textContent === 'Bounce') box.classList.add('bounce');
+                    if (box.textContent === 'Shake') box.classList.add('shake');
+                    if (box.textContent === 'Pulse') box.classList.add('pulse');
+                    if (box.textContent === 'Swing') box.classList.add('swing');
+                    if (box.textContent === 'Rotate') box.classList.add('rotate');
+                    if (box.textContent === 'Flip') box.classList.add('flip');
+                    if (box.textContent === 'Wobble') box.classList.add('wobble');
+                    if (box.textContent === 'Float') box.classList.add('float');
+                    if (box.textContent === 'Fade In') box.classList.add('fade-in');
+                    if (box.textContent === 'Fade Up') box.classList.add('fade-in-up');
+                    if (box.textContent === 'Slide Left') box.classList.add('slide-in-left');
+                    if (box.textContent === 'Bounce In') box.classList.add('bounce-in');
+                    if (box.textContent === 'Rainbow') box.classList.add('rainbow');
+                    if (box.textContent === '❤️') box.classList.add('heartbeat');
+                    if (box.textContent === 'Glow') box.classList.add('glow');
+                    if (box.classList.contains('typing')) box.classList.add('typing');
+                    if (box.textContent === 'Zoom') box.classList.add('zoom-in');
+                    if (box.textContent === 'Flip X') box.classList.add('flip-in-x');
+                }, 50);
+            });
+        }
+
+        // 暂停所有动画
+        function pauseAnimations() {
+            const animationBoxes = document.querySelectorAll('.animation-box');
+            animationBoxes.forEach(box => {
+                box.style.animationPlayState = 'paused';
+            });
+        }
+
+        // 恢复所有动画
+        function resumeAnimations() {
+            const animationBoxes = document.querySelectorAll('.animation-box');
+            animationBoxes.forEach(box => {
+                box.style.animationPlayState = 'running';
+            });
+        }
+
+        // 为动画盒子添加点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const animationBoxes = document.querySelectorAll('.animation-box');
+            animationBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    // 重新播放当前动画
+                    const animationName = this.style.animationName || getComputedStyle(this).animationName;
+                    this.style.animation = 'none';
+                    this.offsetHeight; // 触发重排
+                    this.style.animation = null;
+                });
+            });
+
+            // 添加按钮水波纹效果
+            const rippleButtons = document.querySelectorAll('.btn-ripple');
+            rippleButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple-effect');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+
+        // 添加水波纹效果的CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple-effect {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
