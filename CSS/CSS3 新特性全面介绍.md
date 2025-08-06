@@ -209,7 +209,7 @@ column-rule: 1px solid lightblue;
 }
 ```
 
-八、其他重要特性:(1)变量，（2）计算函数：
+八、其他重要特性:(1)变量，（2）计算函数：width: calc(100% - 80px); (3)滤镜效果
 ```
 :root {
   --main-color: #06c;
@@ -219,7 +219,19 @@ column-rule: 1px solid lightblue;
 #foo h1 {
   color: var(--main-color);
 }
+
+滤镜效果
+filter: blur(5px);
+filter: brightness(0.4);
+filter: contrast(200%);
+filter: drop-shadow(16px 16px 20px blue);
+filter: grayscale(50%);
+filter: hue-rotate(90deg);
+filter: invert(75%);
+filter: opacity(25%);
+filter: saturate(30%);
+filter: sepia(60%);
 ```
 
-
+总结：CSS3 的这些新特性极大地扩展了网页设计的可能性，使开发者能够创建更加丰富、动态和响应式的用户界面。现代网页设计几乎离不开这些 CSS3 特性，它们已经成为前端开发的必备技能。
 
