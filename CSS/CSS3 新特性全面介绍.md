@@ -1,6 +1,6 @@
 ## CSS3 新特性全面介绍
 
-1、增强了很多选择器
+一、增强了很多选择器
 ```
 /* 匹配具有特定属性的元素 */
 [attribute] { ... }
@@ -72,9 +72,9 @@
 :optional { ... }
 ```
 
-2、盒模型与布局：（1）弹性盒模型 (Flexbox)，（2）网格布局 (Grid)；（3）多列布局
+二、盒模型与布局：（1）弹性盒模型 (Flexbox)，（2）网格布局 (Grid)；（3）多列布局
 
-3、视觉增强：边框增强，背景增强等：
+三、视觉增强：边框增强，背景增强等：
 ```
 /* 圆角 */
 border-radius: 10px; /* 所有角 */
@@ -115,7 +115,39 @@ background: radial-gradient(circle at center, red, yellow);
 background: repeating-linear-gradient(45deg, blue, blue 10px, white 10px, white 20px);
 ```
 
+四、过渡与动画
+```
+过渡
+div {
+  transition-property: width, height;
+  transition-duration: 1s, 2s;
+  transition-timing-function: ease-in, ease-out;
+  transition-delay: 0s, 1s;
+  
+  /* 简写 */
+  transition: all 0.5s ease-out;
+}
 
+动画
+@keyframes example {
+  0%   {background-color: red;}
+  25%  {background-color: yellow;}
+  50%  {background-color: blue;}
+  100% {background-color: green;}
+}
+
+div {
+  animation-name: example;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  
+  /* 简写 */
+  animation: example 4s ease-in-out 2s infinite alternate;
+}
+```
 
 
 
