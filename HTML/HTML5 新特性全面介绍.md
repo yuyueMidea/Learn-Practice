@@ -125,4 +125,12 @@ function drop(ev) {
 
 //4. Web Workers
 //5. WebSocket
+//6、历史记录API
+// 添加历史记录
+history.pushState({page: 1}, "title 1", "?page=1");
+
+// 监听popstate事件
+window.onpopstate = function(event) {
+  console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+};
 ```
