@@ -184,3 +184,31 @@ column-gap: 40px;
 column-rule: 1px solid lightblue;
 ```
 
+七、媒体查询与响应式设计:
+```
+/* 设备宽度小于600px时的样式 */
+@media screen and (max-width: 600px) {
+  body {
+    background-color: lightblue;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  body {
+    font-size: 12pt;
+    color: black;
+  }
+}
+
+/* 设备方向 */
+@media (orientation: landscape) {
+  body {
+    flex-direction: row;
+  }
+}
+```
+
+
+
+
