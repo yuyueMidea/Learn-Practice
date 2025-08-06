@@ -134,3 +134,25 @@ window.onpopstate = function(event) {
   console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
 };
 ```
+
+**五、其他重要特性**
+- 1、内容可编辑: `<div contenteditable="true">你可以编辑这段文字</div>`
+- 2、离线应用
+```
+<!DOCTYPE html>
+<html manifest="example.appcache">
+...
+</html>
+```
+- 3、web components
+```
+// 定义自定义元素
+class MyElement extends HTMLElement {
+  constructor() {
+    super();
+    // 元素功能
+  }
+}
+
+customElements.define('my-element', MyElement);
+```
