@@ -103,6 +103,16 @@ background-origin: border-box | padding-box | content-box;
 
 /* 背景裁剪 */
 background-clip: border-box | padding-box | content-box | text;
+
+渐变
+/* 线性渐变 */
+background: linear-gradient(to right, red, yellow);
+
+/* 径向渐变 */
+background: radial-gradient(circle at center, red, yellow);
+
+/* 重复渐变 */
+background: repeating-linear-gradient(45deg, blue, blue 10px, white 10px, white 20px);
 ```
 
 
