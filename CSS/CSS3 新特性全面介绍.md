@@ -71,3 +71,27 @@
 /* 可选的字段 */
 :optional { ... }
 ```
+
+2、盒模型与布局：（1）弹性盒模型 (Flexbox)，（2）网格布局 (Grid)；（3）多列布局
+
+3、视觉增强：边框增强，背景增强等：
+```
+/* 圆角 */
+border-radius: 10px; /* 所有角 */
+border-radius: 10px 5px 15px 20px; /* 分别设置 */
+
+/* 边框图片 */
+border-image: url(border.png) 30 round;
+
+/* 盒子阴影 */
+box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+box-shadow: inset 0 0 10px #000;
+
+/* 多重阴影 */
+box-shadow: 3px 3px red, -1em 0 0.4em olive;
+```
+
+
+
+
+
