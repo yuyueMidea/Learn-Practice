@@ -156,5 +156,12 @@ transform: rotate(20deg); /* 旋转 */
 transform: scale(2, 3); /* 缩放 */
 transform: skew(20deg, 10deg); /* 倾斜 */
 transform: matrix(1, -0.3, 0, 1, 0, 0); /* 矩阵变换 */
+
+3D变换
+transform: rotateX(120deg);
+transform: rotateY(130deg);
+transform: rotateZ(90deg);
+transform: translate3d(12px, 50%, 3em);
+transform: perspective(500px) rotateY(45deg);
 ```
 
