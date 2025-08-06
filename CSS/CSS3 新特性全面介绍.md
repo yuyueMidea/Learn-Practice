@@ -165,3 +165,22 @@ transform: translate3d(12px, 50%, 3em);
 transform: perspective(500px) rotateY(45deg);
 ```
 
+六、字体与排版：
+```
+文本效果
+/* 文本阴影 */
+text-shadow: 2px 2px 5px red;
+
+/* 文本溢出 */
+text-overflow: ellipsis | clip;
+
+/* 文字换行 */
+word-wrap: break-word;
+word-break: break-all;
+
+/* 多列文本 */
+column-count: 3;
+column-gap: 40px;
+column-rule: 1px solid lightblue;
+```
+
