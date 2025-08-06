@@ -82,3 +82,24 @@ svg支持
 <progress value="70" max="100"></progress>
 <meter value="2" min="0" max="10">2 out of 10</meter>
 ```
+
+**四、API增强**
+```
+//本地存储----
+// localStorage - 长期存储
+localStorage.setItem('name', 'John');
+const name = localStorage.getItem('name');
+
+// sessionStorage - 会话期间存储
+sessionStorage.setItem('sessionName', 'value');
+
+//地理位置API
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(showPosition);
+}
+
+function showPosition(position) {
+  console.log("纬度: " + position.coords.latitude + 
+              " 经度: " + position.coords.longitude);
+}
+```
