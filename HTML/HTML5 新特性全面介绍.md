@@ -48,3 +48,37 @@ svg支持
   <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
 </svg>
 ```
+
+**三、表单增强**
+```
+//新的输入类型
+<input type="color">       <!-- 颜色选择器 -->
+<input type="date">        <!-- 日期选择器 -->
+<input type="datetime-local"> <!-- 本地日期时间 -->
+<input type="email">       <!-- 邮箱地址 -->
+<input type="month">       <!-- 年月选择 -->
+<input type="number">      <!-- 数字输入 -->
+<input type="range">       <!-- 滑块控件 -->
+<input type="search">      <!-- 搜索框 -->
+<input type="tel">         <!-- 电话号码 -->
+<input type="time">        <!-- 时间选择 -->
+<input type="url">         <!-- URL地址 -->
+<input type="week">        <!-- 周选择 -->
+
+//表单属性和元素
+<!-- 表单验证 -->
+<input type="text" required>
+<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+
+<!-- 表单元素 -->
+<datalist id="browsers">
+  <option value="Chrome">
+  <option value="Firefox">
+  <option value="Safari">
+</datalist>
+<input list="browsers">
+
+<output name="result" for="a b"></output>
+<progress value="70" max="100"></progress>
+<meter value="2" min="0" max="10">2 out of 10</meter>
+```
