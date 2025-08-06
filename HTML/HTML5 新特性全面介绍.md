@@ -163,3 +163,5 @@ customElements.define('my-element', MyElement);
   <span itemprop="jobTitle">Web Developer</span>
 </div>
 ```
+
+总结：HTML5 的这些新特性极大地丰富了 Web 开发的可能性，使开发者能够创建更加强大、交互性更强的 Web 应用。现代 Web 开发几乎都基于 HTML5 标准，它已经成为前端开发的基石。
