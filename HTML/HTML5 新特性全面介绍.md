@@ -156,3 +156,10 @@ class MyElement extends HTMLElement {
 
 customElements.define('my-element', MyElement);
 ```
+- 4、微数据:
+```
+<div itemscope itemtype="http://schema.org/Person">
+  <span itemprop="name">John Doe</span>
+  <span itemprop="jobTitle">Web Developer</span>
+</div>
+```
