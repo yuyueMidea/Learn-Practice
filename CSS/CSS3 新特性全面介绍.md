@@ -1,6 +1,6 @@
 ## CSS3 新特性全面介绍
 
-一、增强了很多选择器
+**一、增强了很多选择器**
 ```
 /* 匹配具有特定属性的元素 */
 [attribute] { ... }
@@ -72,9 +72,9 @@
 :optional { ... }
 ```
 
-二、盒模型与布局：（1）弹性盒模型 (Flexbox)，（2）网格布局 (Grid)；（3）多列布局；（4）`box-sizing: border-box;` , 让 padding 和 border 不再影响盒子的总宽高，简化布局。
+**二、盒模型与布局：（1）弹性盒模型 (Flexbox)，（2）网格布局 (Grid)；（3）多列布局；（4）`box-sizing: border-box;` , 让 padding 和 border 不再影响盒子的总宽高，简化布局。**
 
-三、视觉增强：边框增强，背景增强等：
+**三、视觉增强：边框增强，背景增强等**
 ```
 /* 圆角 */
 border-radius: 10px; /* 所有角 */
@@ -115,7 +115,7 @@ background: radial-gradient(circle at center, red, yellow);
 background: repeating-linear-gradient(45deg, blue, blue 10px, white 10px, white 20px);
 ```
 
-四、过渡与动画
+**四、过渡与动画**
 ```
 过渡
 div {
@@ -149,7 +149,7 @@ div {
 }
 ```
 
-五、2D/3D变换
+**五、2D/3D变换**
 ```
 transform: translate(50px, 100px); /* 移动 */
 transform: rotate(20deg); /* 旋转 */
@@ -165,7 +165,7 @@ transform: translate3d(12px, 50%, 3em);
 transform: perspective(500px) rotateY(45deg);
 ```
 
-六、字体与排版：
+**六、字体与排版**
 ```
 文本效果
 /* 文本阴影 */
@@ -184,7 +184,7 @@ column-gap: 40px;
 column-rule: 1px solid lightblue;
 ```
 
-七、媒体查询与响应式设计:
+**七、媒体查询与响应式设计**
 ```
 /* 设备宽度小于600px时的样式 */
 @media screen and (max-width: 600px) {
@@ -209,7 +209,7 @@ column-rule: 1px solid lightblue;
 }
 ```
 
-八、其他重要特性:(1)变量，（2）计算函数：width: calc(100% - 80px); (3)滤镜效果
+**八、其他重要特性:(1)变量，（2）计算函数：width: calc(100% - 80px); (3)滤镜效果**
 ```
 :root {
   --main-color: #06c;
