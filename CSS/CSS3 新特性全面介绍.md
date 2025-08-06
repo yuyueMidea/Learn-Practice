@@ -209,6 +209,17 @@ column-rule: 1px solid lightblue;
 }
 ```
 
+八、其他重要特性:(1)变量，（2）计算函数：
+```
+:root {
+  --main-color: #06c;
+  --accent-color: #006;
+}
+
+#foo h1 {
+  color: var(--main-color);
+}
+```
 
 
 
