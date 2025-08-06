@@ -89,6 +89,20 @@ box-shadow: inset 0 0 10px #000;
 
 /* 多重阴影 */
 box-shadow: 3px 3px red, -1em 0 0.4em olive;
+
+背景增强
+/* 多重背景 */
+background: url(bg1.png) top left no-repeat, 
+            url(bg2.png) bottom right no-repeat;
+
+/* 背景大小 */
+background-size: cover | contain | 100px 100px;
+
+/* 背景原点 */
+background-origin: border-box | padding-box | content-box;
+
+/* 背景裁剪 */
+background-clip: border-box | padding-box | content-box | text;
 ```
 
 
