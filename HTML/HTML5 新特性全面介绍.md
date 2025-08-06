@@ -102,4 +102,27 @@ function showPosition(position) {
   console.log("纬度: " + position.coords.latitude + 
               " 经度: " + position.coords.longitude);
 }
+
+//拖放API
+<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+<img id="drag1" src="img_logo.gif" draggable="true" ondragstart="drag(event)">
+
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+}
+</script>
+
+//4. Web Workers
+//5. WebSocket
 ```
