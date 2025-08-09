@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Typography, Button, Paper, Table, TableBody, TableCell, TableHead, TableRow,
+  Typography, Button, Paper, Table, TableBody, TableCell, TableHead, TableRow, TableContainer,
   Dialog, DialogActions, DialogContent, DialogTitle, TextField, IconButton
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -46,20 +46,28 @@ export default function Users() {
         添加用户
       </Button>
 
-      <Paper>
+      <TableContainer
+        component={Paper}
+        sx={{
+            maxHeight: 480, // 固定高度
+            overflow: 'auto'
+        }}
+        >
         <Table
-            size="small" // 紧凑模式
+            size="small"
+            stickyHeader // 表头固定
             sx={{
             '& tbody tr:hover': {
-                backgroundColor: 'rgba(25, 118, 210, 0.08)' // hover 高亮
+                backgroundColor: 'rgba(25, 118, 210, 0.08)'
             },
             '& tbody tr:nth-of-type(odd)': {
-                backgroundColor: '#fafafa' // 条纹背景
+                backgroundColor: '#fafafa'
             }
             }}
         >
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f0f0f0' }}>
+              <TableCell>index</TableCell>
               <TableCell>ID</TableCell>
               <TableCell>姓名</TableCell>
               <TableCell>Email</TableCell>
@@ -67,24 +75,30 @@ export default function Users() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
+            {users.map((user, i) => (
+              <TableRow
+                key={user.id}
+                sx={{
+                    height: 36, // 进一步缩小行高
+                }}
+                >
+                <TableCell style={{ width: '60px' }}>{i}</TableCell>
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell align="right">
-                  <IconButton color="primary" onClick={() => handleOpen(user)}>
-                    <EditIcon />
+                  <IconButton color="primary" size="small" onClick={() => handleOpen(user)}>
+                    <EditIcon fontSize="small" />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(user.id)}>
-                    <DeleteIcon />
+                  <IconButton color="error" size="small" onClick={() => handleDelete(user.id)}>
+                    <DeleteIcon fontSize="small" />
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Paper>
+        </TableContainer>
 
       {/* 弹窗表单 */}
       <Dialog open={open} onClose={handleClose}>
