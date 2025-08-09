@@ -47,9 +47,19 @@ export default function Users() {
       </Button>
 
       <Paper>
-        <Table>
+        <Table
+            size="small" // 紧凑模式
+            sx={{
+            '& tbody tr:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.08)' // hover 高亮
+            },
+            '& tbody tr:nth-of-type(odd)': {
+                backgroundColor: '#fafafa' // 条纹背景
+            }
+            }}
+        >
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f0f0f0' }}>
               <TableCell>ID</TableCell>
               <TableCell>姓名</TableCell>
               <TableCell>Email</TableCell>
