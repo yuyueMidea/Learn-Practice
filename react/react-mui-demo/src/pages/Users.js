@@ -6,38 +6,38 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import useUserStore from '../userStore';
 
 export default function Users() {
-  const [users, setUsers] = useState([
-    { id: 1, name: '张三', email: 'zhangsan@example.com' },
-    { id: 2, name: '李四', email: 'lisi@example.com' }
-  ]);
-  const [open, setOpen] = useState(false);
-  const [editUser, setEditUser] = useState(null);
-  const [form, setForm] = useState({ name: '', email: '' });
+    const {users, addUser, updateUser, deleteUser } = useUserStore()
 
-  const handleOpen = (user = null) => {
-    setEditUser(user);
-    setForm(user ? { name: user.name, email: user.email } : { name: '', email: '' });
-    setOpen(true);
-  };
+    const [open, setOpen] = useState(false);
+    const [editUser, setEditUser] = useState(null);
+    const [form, setForm] = useState({ name: '', email: '' });
 
-  const handleClose = () => setOpen(false);
+    const handleOpen = (user = null) => {
+        console.log(user, 9999999)
+        setEditUser(user);
+        setForm(user ? { id: user.id, name: user.name, email: user.email } : { name: '', email: '' });
+        setOpen(true);
+    };
 
-  const handleSave = () => {
-    if (!form.name.trim() || !form.email.trim()) return;
+    const handleClose = () => setOpen(false);
 
-    if (editUser) {
-      setUsers(users.map(u => u.id === editUser.id ? { ...u, ...form } : u));
-    } else {
-      setUsers([...users, { id: Date.now(), ...form }]);
-    }
-    handleClose();
-  };
+    const handleSave = () => {
+        if (!form.name.trim() || !form.email.trim()) return;
+        console.log( 'from_: ', form )
+        if (editUser) {
+            updateUser(form);
+        } else {
+            addUser(form)
+        }
+        handleClose();
+    };
 
-  const handleDelete = (id) => {
-    setUsers(users.filter(u => u.id !== id));
-  };
+    const handleDelete = (did) => {
+        deleteUser(did)
+    };
 
   return (
     <div>
@@ -50,6 +50,7 @@ export default function Users() {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>姓名</TableCell>
               <TableCell>Email</TableCell>
               <TableCell align="right">操作</TableCell>
@@ -58,6 +59,7 @@ export default function Users() {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell align="right">
