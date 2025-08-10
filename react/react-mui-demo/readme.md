@@ -6,3 +6,4 @@
 
 1. 安装依赖： `npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom`
 2. 启动项目: `npm start`
+3. 打包: `npm run build`, 然后运行 `serve -s build` 启动静态服务.
