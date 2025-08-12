@@ -193,6 +193,7 @@ function App() {
       {/* 右侧内容区域 */}
       <Box
         component="main"
+        className='yy3mainbox'
         sx={{
           flexGrow: 1,
           p: 3,
