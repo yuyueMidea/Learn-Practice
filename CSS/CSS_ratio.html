@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元素保持固定的宽高比</title>
+    <style>
+        .box {
+            width: 40vw;
+            aspect-ratio: 4/3;
+            background-color: pink;
+            margin: 0 auto;
+        }
+        .radio-box {
+            position: relative;
+            width: 20%;
+            padding-top: 15%;
+            background-color: aqua;
+        }
+        .radio-box .content {
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+        }
+    </style>
+</head>
+<body>
+    <h3>aspect-ratio 属性（现代推荐）,元素保持固定的宽高比</h3>
+    <div class="box">box</div>
+    <br/><hr/><br/>
+    
+    <div class="radio-box">
+        <div class="content">内容区域</div>
+    </div>
+    
+</body>
+</html>
