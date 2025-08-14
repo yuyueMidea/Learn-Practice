@@ -1,6 +1,4 @@
-# React Express 全栈应用
-
-一个使用 React + TypeScript + MUI 前端和 Express 后端的全栈管理系统项目。
+# React Express 全栈应用，一个使用 React + TypeScript + MUI 前端和 Express 后端的全栈管理系统项目。
 
 ## 🚀 功能特性
 
