@@ -15,16 +15,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="h-screen flex flex-col">
         {/* 顶部状态条 */}
-        <Navbar />
+        <Navbar/>
 
-        {/* 主体部分：左侧菜单 + 右侧内容 */}
-        <div className="layoutContainer">
-          <aside className="sidebar">
-            <Sidebar />
-          </aside>
-          <main className="content">
+        {/* 主体内容：左侧菜单 + 右侧内容 */}
+        <div className="flex flex-1 h-[calc(100vh-3.5rem)] overflow-hidden">
+          {/* 左侧菜单 */}
+          <Sidebar/>
+          {/* 右侧内容 */}
+          <main className="flex-1 overflow-y-auto p-6 bg-white">
             {children}
           </main>
         </div>

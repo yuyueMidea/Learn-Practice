@@ -1,18 +1,5 @@
-/* CSS Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    margin: 0;
-    font-family: sans-serif;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
+@import "tailwindcss";
+
   /* 主体部分：左侧菜单 + 右侧内容 */
   .layoutContainer {
     display: flex;
@@ -42,22 +29,5 @@
     width: 100vw;
     height: calc(100vh - 60px);
     overflow-y: auto;
-  }
-  
-  /* Utility Classes */
-  .flex {
-    display: flex;
-  }
-  
-  .items-center {
-    align-items: center;
-  }
-  
-  .justify-between {
-    justify-content: space-between;
-  }
-  
-  .p-4 {
-    padding: 1rem;
   }
   
