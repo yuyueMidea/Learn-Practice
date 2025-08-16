@@ -1,10 +1,7 @@
 import "./global.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar"; // 新增侧边栏组件
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Next.js Routing Demo",
@@ -17,12 +14,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // <html lang="en">
-    //   <body >
-    //     <Navbar />
-    //     <main className="mainContainer">{children}</main>
-    //   </body>
-    // </html>
     <html lang="en">
       <body>
         {/* 顶部状态条 */}
