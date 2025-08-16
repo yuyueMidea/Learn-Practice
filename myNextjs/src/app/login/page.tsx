@@ -1,38 +1,46 @@
+"use client";
 import Link from "next/link";
 import styles from './styles.module.css'
+import { useState } from "react";
+import useAuthStore from "../store/authStore";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
+  const [uname, setuname] = useState('');
+  const [pwd, setpwd] = useState('');
+  const handleLogin = ()=>{
+    if(uname==='') return
+    login({
+      username: uname,
+      role: uname
+    });
+    redirect('/')
+  }
+  const { login } = useAuthStore();
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-      <form className={styles.formWrapper}>
+      <div className={styles.formWrapper}>
         <div>
-          <label className={styles.formLabel} htmlFor="email">Email</label>
+          <label className={styles.formLabel}>Name</label>
           <input
-            type="email"
-            id="email"
             className={styles.formInput}
-            placeholder="your@email.com"
+            value={uname}
+            onChange={e => setuname(e.target.value)}
           />
         </div>
         <div>
           <label className={styles.formLabel} htmlFor="pwd">Password</label>
           <input
-            type="password"
-            id="pwd"
             className={styles.formInput}
+            value={pwd}
+            onChange={e => setpwd(e.target.value)}
           />
         </div>
         <div>
           <label className={styles.formLabel}></label>
-          <button
-            type="submit"
-            className={styles.submitBtn}
-          >
-            Sign In
-          </button>
+          <button className={styles.submitBtn} onClick={() => handleLogin()}>Sign In</button>
         </div>
-      </form>
+      </div>
       <div className="mt-4 text-center text-sm">
         <Link href="/" className="text-blue-600 hover:underline">
           ← Back to home
