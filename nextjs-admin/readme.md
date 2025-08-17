@@ -9,3 +9,16 @@
 - 现代化: 基于 Next.js 13+ App Router 架构
 
 这个项目提供了一个完整的管理系统基础框架，可以在此基础上添加更多功能和页面。
+
+**项目启动**
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 启动生产服务器
+npm start
