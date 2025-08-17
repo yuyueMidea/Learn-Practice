@@ -7,30 +7,15 @@ import { Table } from '@/components/ui/table'
 import { Modal, ConfirmModal } from '@/components/ui/modal'
 import { Form, FormField } from '@/components/ui/form'
 import { User } from '@/types'
+import { useUserStore } from '../stores/userStore'
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: '张三',
-      email: 'zhangsan@example.com',
-      role: 'admin',
-      createdAt: new Date('2024-01-01')
-    },
-    {
-      id: '2',
-      name: '李四',
-      email: 'lisi@example.com',
-      role: 'user',
-      createdAt: new Date('2024-01-02')
-    }
-  ])
-  
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(false)
+    const { users, addUser, updateUser, deleteUser } = useUserStore();
+
+    const [showAddModal, setShowAddModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
+    const [selectedUser, setSelectedUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState(false)
 
   const columns = [
     { key: 'name', title: '姓名', dataIndex: 'name', sortable: true },
@@ -52,7 +37,6 @@ export default function UsersPage() {
       key: 'createdAt',
       title: '创建时间',
       dataIndex: 'createdAt',
-      render: (value: Date) => value.toLocaleDateString('zh-CN')
     },
     {
       key: 'actions',
@@ -75,11 +59,7 @@ export default function UsersPage() {
             size="sm"
             variant="destructive"
             permission={{ resource: 'users', action: 'delete' }}
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedUser(record)
-              setShowDeleteModal(true)
-            }}
+            onClick={(e) => deleteUser(record.id)}
           >
             删除
           </Button>
@@ -93,16 +73,7 @@ export default function UsersPage() {
     try {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const newUser: User = {
-        id: Date.now().toString(),
-        name: uname,
-        email: uemail,
-        role: urole,
-        createdAt: new Date()
-      }
-      
-      setUsers(prev => [...prev, newUser])
+      addUser({name: uname, email: uemail, role: urole})
       setShowAddModal(false)
     } finally {
       setLoading(false)
@@ -115,29 +86,8 @@ export default function UsersPage() {
     setLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setUsers(prev => prev.map(user => 
-        user.id === selectedUser.id 
-          ? { ...user, ...selectedUser }
-          : user
-      ))
-      
+      updateUser(selectedUser.id, {name: selectedUser.name, email: selectedUser.email, role: selectedUser.role})
       setShowEditModal(false)
-      setSelectedUser(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleDeleteUser = async () => {
-    if (!selectedUser) return
-    
-    setLoading(true)
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setUsers(prev => prev.filter(user => user.id !== selectedUser.id))
-      setShowDeleteModal(false)
       setSelectedUser(null)
     } finally {
       setLoading(false)
@@ -256,19 +206,6 @@ export default function UsersPage() {
             </Form>
           )}
         </Modal>
-
-        {/* 删除确认弹框 */}
-        <ConfirmModal
-          open={showDeleteModal}
-          onClose={() => {
-            setShowDeleteModal(false)
-            setSelectedUser(null)
-          }}
-          onConfirm={handleDeleteUser}
-          title="确认删除"
-          message={`确定要删除用户 "${selectedUser?.name}" 吗？此操作不可恢复。`}
-          loading={loading}
-        />
       </div>
     </MainLayout>
   )
