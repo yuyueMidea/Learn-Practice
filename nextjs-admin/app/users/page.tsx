@@ -96,9 +96,9 @@ export default function UsersPage() {
       
       const newUser: User = {
         id: Date.now().toString(),
-        name: data.name,
-        email: data.email,
-        role: data.role,
+        name: uname,
+        email: uemail,
+        role: urole,
         createdAt: new Date()
       }
       
@@ -118,7 +118,7 @@ export default function UsersPage() {
       
       setUsers(prev => prev.map(user => 
         user.id === selectedUser.id 
-          ? { ...user, ...data }
+          ? { ...user, ...selectedUser }
           : user
       ))
       
@@ -144,13 +144,23 @@ export default function UsersPage() {
     }
   }
 
+  const [uname, setuname] = useState('');
+  const [uemail, setuemail] = useState('');
+  const [urole, seturole] = useState('');
+  const addNewClick = ()=>{
+    setShowAddModal(true)
+    setuname('');
+    setuemail('');
+    seturole('');
+  }
+
   return (
     <MainLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">用户管理</h1>
           <Button
-            onClick={() => setShowAddModal(true)}
+            onClick={addNewClick}
             permission={{ resource: 'users', action: 'create' }}
           >
             添加用户
@@ -182,6 +192,7 @@ export default function UsersPage() {
               name="name"
               required
               placeholder="请输入用户名"
+              value={uname} onChange={e=> setuname(e)}
             />
             <FormField
               label="邮箱"
@@ -189,6 +200,7 @@ export default function UsersPage() {
               type="email"
               required
               placeholder="请输入邮箱"
+              value={uemail} onChange={e=> setuemail(e)}
             />
             <FormField
               label="角色"
@@ -199,6 +211,7 @@ export default function UsersPage() {
                 { value: 'admin', label: '管理员' },
                 { value: 'user', label: '普通用户' }
               ]}
+              value={urole} onChange={e=> seturole(e)}
             />
           </Form>
         </Modal>
@@ -219,7 +232,7 @@ export default function UsersPage() {
                 name="name"
                 required
                 placeholder="请输入用户名"
-                value={selectedUser.name}
+                value={selectedUser.name} onChange={e=>setSelectedUser({...selectedUser, name: e})}
               />
               <FormField
                 label="邮箱"
@@ -227,14 +240,14 @@ export default function UsersPage() {
                 type="email"
                 required
                 placeholder="请输入邮箱"
-                value={selectedUser.email}
+                value={selectedUser.email} onChange={e=>setSelectedUser({...selectedUser, email: e})}
               />
               <FormField
                 label="角色"
                 name="role"
                 type="select"
                 required
-                value={selectedUser.role}
+                value={selectedUser.role} onChange={e=>setSelectedUser({...selectedUser, role: e})}
                 options={[
                   { value: 'admin', label: '管理员' },
                   { value: 'user', label: '普通用户' }
