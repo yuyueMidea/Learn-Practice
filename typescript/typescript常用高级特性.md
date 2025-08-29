@@ -23,3 +23,13 @@ const route = {
   method: 'GET',
 } satisfies Route; // 校验通过且不丢失具体字面量
 ```
+
+**3) keyof、typeof、索引访问类型 T[K]**
+- 是什么：在类型层面拿到对象的键和值。
+```
+const COLOR = { primary: '#1677ff', danger: '#ff4d4f' } as const;
+type ColorName = keyof typeof COLOR;      // 'primary' | 'danger'
+type ColorHex  = typeof COLOR[ColorName]; // '#1677ff' | '#ff4d4f'
+
+type ValueOf<T> = T[keyof T];
+```
