@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bootstrap对齐版 · Schema表单低代码构建器</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html,body{height:100%}
+    body{background-color:#f8f9fa}
+    .app{display:grid; grid-template-rows:56px 1fr; grid-template-columns: 1fr; gap:.75rem; height:100vh; padding:.75rem}
+    header.appbar{grid-row:1/2}
+    .workspace{grid-row:2/3}
+    /* 三栏布局（上+左中右） */
+    .workspace{display:grid; grid-template-columns: 280px 1fr 340px; gap:.75rem; height:100%;}
+    .panel{background:#fff; border:1px solid var(--bs-border-color); border-radius:.5rem; box-shadow:0 .125rem .25rem rgba(0,0,0,.075)}
+
+    /* 左侧组件卡片 */
+    .comp{cursor:grab}
+    .comp .card-body{display:flex; align-items:center; gap:.5rem}
+
+    /* 画布 */
+    .canvas{position:relative; height:100%; overflow:auto; padding:1rem; border:1px dashed var(--bs-border-color); border-radius:.5rem; background:#fff}
+    .drop-hint{position:absolute; inset:1rem; border:2px dashed #ced4da; border-radius:.5rem; display:flex; align-items:center; justify-content:center; color:#6c757d; pointer-events:none}
+
+    .field-item{border:1px solid var(--bs-border-color); border-radius:.5rem; padding:.5rem .75rem; background:#fff}
+    .field-item.active{outline:2px solid rgba(13,110,253,.35)}
+    .field-handle{cursor:grab; color:#6c757d}
+    .chip{font-size:.75rem; background:#f1f3f5; border:1px solid #dee2e6; border-radius:50rem; padding:.1rem .5rem; color:#6c757d}
+
+    /* 右侧区域高度 */
+    .right-pane{display:flex; flex-direction:column; height:100%}
+    .right-pane .panel{flex:1; overflow:auto}
+
+    pre.json{max-height:260px; overflow:auto; white-space:pre; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+
+    /* 让表单栅格在右侧属性编辑里也更紧凑 */
+    .form-label .req{color:#fd7e14; margin-left:.25rem}
+
+    /* 响应式：窄屏堆叠 */
+    @media (max-width: 1200px){ .workspace{grid-template-columns: 240px 1fr 320px;} }
+    @media (max-width: 992px){ .workspace{grid-template-columns: 1fr; grid-template-rows: auto auto auto;} }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- 顶部工具栏 -->
+  <header class="appbar">
+    <div class="d-flex align-items-center gap-2 panel p-2">
+      <button class="btn btn-primary btn-sm" id="btnNew">新建</button>
+      <button class="btn btn-outline-secondary btn-sm" id="btnImport">导入</button>
+      <button class="btn btn-outline-secondary btn-sm" id="btnExport">导出</button>
+      <div class="vr"></div>
+      <button class="btn btn-outline-secondary btn-sm" id="btnSave">保存到本地</button>
+      <button class="btn btn-outline-secondary btn-sm" id="btnLoad">从本地读取</button>
+      <div class="vr"></div>
+      <button class="btn btn-success btn-sm" id="btnPreview" data-bs-toggle="modal" data-bs-target="#previewModal">预览</button>
+      <div class="ms-auto small text-secondary">快捷键：<kbd>Ctrl/Cmd + S</kbd> 导出 · <kbd>Delete</kbd> 删除选中</div>
+      <input type="file" id="fileImport" accept="application/json" hidden>
+    </div>
+  </header>
+
+  <!-- 左中右工作区 -->
+  <section class="workspace">
+    <!-- 左：组件库与表单元信息 -->
+    <aside class="panel p-3 overflow-auto">
+      <h6 class="mb-3">组件库（拖到中间）</h6>
+      <div id="compList" class="row row-cols-1 g-2 mb-3"></div>
+
+      <h6 class="mt-2 mb-2">表单信息</h6>
+      <div class="vstack gap-2">
+        <div>
+          <label class="form-label">表单标题</label>
+          <input type="text" class="form-control" id="metaTitle" placeholder="未命名表单">
+        </div>
+        <div>
+          <label class="form-label">描述</label>
+          <textarea class="form-control" id="metaDesc" rows="3" placeholder="可选的表单描述"></textarea>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 中：画布 -->
+    <main class="panel p-3 d-flex flex-column">
+      <div class="canvas flex-grow-1" id="canvas" tabindex="0" aria-label="画布"></div>
+      <div class="drop-hint" id="dropHint">将左侧组件拖到这里</div>
+    </main>
+
+    <!-- 右：属性 / 预览 / Schema -->
+    <aside class="right-pane">
+      <ul class="nav nav-pills nav-fill gap-2 mb-2">
+        <li class="nav-item"><button class="nav-link active" data-tab="props">属性</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="preview">预览</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="schema">Schema</button></li>
+      </ul>
+      <section class="panel p-3" id="tab-props">
+        <div id="propPanel" class="vstack gap-3">
+          <div class="text-secondary small">在画布中选择一个字段，或拖入新字段后进行配置。</div>
+        </div>
+      </section>
+      <section class="panel p-3 d-none" id="tab-preview">
+        <form id="previewForm" class="vstack gap-3"></form>
+        <div class="d-flex gap-2 mt-2">
+          <button class="btn btn-success btn-sm" id="btnSubmitPreview" type="button">提交（模拟）</button>
+          <button class="btn btn-outline-secondary btn-sm" id="btnResetPreview" type="button">重置</button>
+        </div>
+        <pre id="previewResult" class="json border rounded p-2 mt-2 bg-body-tertiary"></pre>
+      </section>
+      <section class="panel p-3 d-none" id="tab-schema">
+        <pre class="json border rounded p-2 bg-body-tertiary" id="schemaView"></pre>
+        <div class="d-flex gap-2 mt-2">
+          <button class="btn btn-outline-secondary btn-sm" id="btnCopySchema">复制 Schema</button>
+          <button class="btn btn-outline-secondary btn-sm" id="btnBeautify">美化格式</button>
+        </div>
+        <div class="form-text">Schema 结构：{ meta, fields[] }；字段通用：id, type, label, required, hidden, help, width, default；类型特有属性见各字段。</div>
+      </section>
+    </aside>
+  </section>
+</div>
+
+<!-- 预览模态框 -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">表单预览</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="modalPreviewForm" class="vstack gap-3"></form>
+        <pre id="modalPreviewResult" class="json border rounded p-2 mt-3 bg-body-tertiary"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="btnModalSubmit" type="button">提交（模拟）</button>
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+  // ===== 工具 =====
+  const $ = s=>document.querySelector(s);
+  const $$ = s=>Array.from(document.querySelectorAll(s));
+  const uid = (p='f_')=> p + Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-4);
+  const deepClone = o => JSON.parse(JSON.stringify(o));
+  const clamp = (a,b,v)=> Math.max(a, Math.min(b, v));
+  const esc = s => String(s==null? '': s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  const download = (name, text)=>{ const blob=new Blob([text],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); };
+  const copyText = async (t)=>{ try{ await navigator.clipboard.writeText(t); toast('已复制到剪贴板'); }catch(e){ console.warn(e); } };
+  const toast = (msg)=>{ const b=document.createElement('div'); b.className='toast align-items-center text-bg-dark border-0 position-fixed bottom-0 start-50 translate-middle-x'; b.role='status'; b.ariaLive='polite'; b.innerHTML=`<div class="d-flex"><div class="toast-body">${esc(msg)}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`; document.body.appendChild(b); const t=new bootstrap.Toast(b,{delay:1600}); t.show(); b.addEventListener('hidden.bs.toast',()=>b.remove()); };
+
+  // ===== 组件库定义 =====
+  const COMPONENTS = [
+    { type:'text',    name:'输入框',        icon:'bi-input-cursor', defaults:{ placeholder:'请输入', default:'', pattern:'', required:false }},
+    { type:'textarea',name:'多行文本框',    icon:'bi-textarea',     defaults:{ placeholder:'', rows:3, default:'', required:false } },
+    { type:'number',  name:'数字输入',      icon:'bi-123',          defaults:{ min:null, max:null, step:1, default:null, required:false } },
+    { type:'select',  name:'下拉选择',      icon:'bi-caret-down',   defaults:{ multiple:false, options:[{label:'选项A',value:'A'},{label:'选项B',value:'B'}], default:null, required:false } },
+    { type:'checkbox',name:'勾选框(布尔)',  icon:'bi-check2-square',defaults:{ default:false, required:false } },
+    { type:'radio',   name:'单选组',        icon:'bi-record-circle',defaults:{ options:[{label:'是',value:'yes'},{label:'否',value:'no'}], default:null, required:false } },
+    { type:'date',    name:'日期',          icon:'bi-calendar',     defaults:{ default:'', required:false } },
+  ];
+
+  // ===== 状态（Schema） =====
+  let schema = { meta:{ title:'未命名表单', description:'', version:1, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() }, fields:[] };
+  let selectedId = null;
+
+  // ===== 左侧：渲染组件库 =====
+  function renderCompList(){
+    const list = $('#compList'); list.innerHTML='';
+    COMPONENTS.forEach(c=>{
+      const col=document.createElement('div'); col.className='col';
+      col.innerHTML = `<div class="card comp" draggable="true" data-type="${c.type}">
+        <div class="card-body py-2"><span class="badge text-bg-secondary">${esc(c.name)}</span></div>
+      </div>`;
+      const card=col.firstElementChild;
+      card.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', JSON.stringify({__from:'lib', type:c.type})); });
+      card.addEventListener('click', ()=> addField(c.type));
+      list.appendChild(col);
+    });
+  }
+
+  // ===== 画布：拖拽、渲染 =====
+  const canvas = $('#canvas');
+  function bindCanvasDnD(){
+    canvas.addEventListener('dragover', e=>{ e.preventDefault(); $('#dropHint').classList.add('d-none'); });
+    canvas.addEventListener('dragleave', ()=>{ if(!schema.fields.length) $('#dropHint').classList.remove('d-none'); });
+    canvas.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      try{
+        const payload = JSON.parse(e.dataTransfer.getData('text/plain')||'{}');
+        if(payload.__from==='lib' && payload.type){ addField(payload.type); }
+        if(payload.__from==='reorder' && payload.id){
+          const target = e.target.closest('.field-item');
+          const toIndex = target? Number(target.dataset.index) : schema.fields.length;
+          moveField(payload.id, toIndex);
+        }
+      }catch(err){ console.warn(err); }
+    });
+  }
+
+  function renderCanvas(){
+    const list = schema.fields;
+    $('#dropHint').classList.toggle('d-none', !!list.length);
+    canvas.innerHTML='';
+    list.forEach((f,idx)=>{
+      const item=document.createElement('div'); item.className='field-item mb-2' + (selectedId===f.id? ' active':''); item.dataset.id=f.id; item.dataset.index=idx;
+      item.innerHTML = `
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light btn-sm field-handle" title="拖拽排序" draggable="true">≡</button>
+          <div class="flex-grow-1">
+            <div class="fw-semibold">${esc(f.label||'(未命名)')} <span class="chip">${esc(f.type)}</span> ${f.required? '<span class="badge text-bg-danger ms-1">必填</span>':''}</div>
+            <div class="text-secondary small">${esc(f.help||'')}</div>
+          </div>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" data-act="dup">复制</button>
+            <button class="btn btn-outline-secondary" data-act="up">上移</button>
+            <button class="btn btn-outline-secondary" data-act="down">下移</button>
+            <button class="btn btn-outline-danger" data-act="del">删除</button>
+          </div>
+        </div>`;
+
+      // 交互：选择
+      item.addEventListener('click', (ev)=>{ if(ev.target.closest('.btn-group')) return; selectedId=f.id; renderAll(); scrollIntoViewIfNeeded(item); });
+
+      // 交互：按钮
+      item.querySelectorAll('[data-act]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const act=e.currentTarget.dataset.act;
+          if(act==='del') deleteField(f.id);
+          if(act==='dup') duplicateField(f.id);
+          if(act==='up') moveField(f.id, Math.max(0, idx-1));
+          if(act==='down') moveField(f.id, Math.min(schema.fields.length-1, idx+1));
+        });
+      });
+
+      // 交互：拖拽排序
+      const handle=item.querySelector('.field-handle');
+      handle.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', JSON.stringify({__from:'reorder', id:f.id})); });
+
+      canvas.appendChild(item);
+    });
+  }
+  function scrollIntoViewIfNeeded(el){ const r=el.getBoundingClientRect(), pr=canvas.getBoundingClientRect(); if(r.top<pr.top||r.bottom>pr.bottom) el.scrollIntoView({block:'nearest'}); }
+
+  // ===== 字段 CRUD =====
+  function addField(type){
+    const def = COMPONENTS.find(c=>c.type===type); if(!def){ toast('未知组件: '+type); return; }
+    const common = { id:uid(), type, label:def.name, required:false, hidden:false, width:12, help:'', default:null };
+    const specific = deepClone(def.defaults||{});
+    // 规整默认值
+    if(type==='text'){ specific.default=''; specific.placeholder ||= '请输入'; specific.pattern ||= ''; }
+    if(type==='textarea'){ specific.default=''; specific.rows ||= 3; }
+    if(type==='number'){ specific.default = null; }
+    if(type==='checkbox'){ specific.default = false; }
+    if(type==='select'){ specific.options ||= [{label:'选项A',value:'A'}]; specific.multiple ||= false; }
+    if(type==='radio'){ specific.options ||= [{label:'是',value:'yes'}]; }
+    schema.fields.push({...common, ...specific});
+    selectedId = schema.fields.at(-1).id; touch(); renderAll();
+  }
+  function deleteField(id){ const i=schema.fields.findIndex(x=>x.id===id); if(i<0) return; schema.fields.splice(i,1); if(selectedId===id){ selectedId=schema.fields[i]?.id||schema.fields[i-1]?.id||null; } touch(); renderAll(); }
+  function duplicateField(id){ const i=schema.fields.findIndex(x=>x.id===id); if(i<0) return; const c=deepClone(schema.fields[i]); c.id=uid(); c.label += '（副本）'; schema.fields.splice(i+1,0,c); selectedId=c.id; touch(); renderAll(); }
+  function moveField(id, toIndex){ const from=schema.fields.findIndex(x=>x.id===id); if(from<0) return; const it=schema.fields.splice(from,1)[0]; const clamped=Math.max(0, Math.min(toIndex, schema.fields.length)); schema.fields.splice(clamped,0,it); touch(); renderAll(); }
+
+  // ===== 右侧：属性面板 =====
+  function renderPropPanel(){
+    const panel = $('#propPanel');
+    const field = schema.fields.find(f=>f.id===selectedId);
+    if(!field){ panel.innerHTML='<div class="text-secondary small">未选中字段。</div>'; return; }
+
+    const common = `
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">名称/标签 <span class="req">*</span></label>
+          <input type="text" class="form-control" id="pp-label" value="${esc(field.label)}" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">字段ID（只读）</label>
+          <input type="text" class="form-control" id="pp-id" value="${esc(field.id)}" readonly />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">必填</label>
+          <select class="form-select" id="pp-required"><option value="false">否</option><option value="true">是</option></select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">隐藏</label>
+          <select class="form-select" id="pp-hidden"><option value="false">否</option><option value="true">是</option></select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">宽度（1-12）</label>
+          <input type="number" class="form-control" id="pp-width" min="1" max="12" value="${field.width||12}" />
+        </div>
+        <div class="col-12">
+          <label class="form-label">帮助文字</label>
+          <input type="text" class="form-control" id="pp-help" value="${esc(field.help||'')}" placeholder="在表单中展示的说明" />
+        </div>
+      </div>`;
+
+    let spec = '';
+    if(field.type==='text'){
+      spec += `
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">占位提示</label><input type="text" class="form-control" id="pp-placeholder" value="${esc(field.placeholder||'')}" /></div>
+        <div class="col-md-6"><label class="form-label">默认值</label><input type="text" class="form-control" id="pp-default" value="${esc(field.default??'')}" /></div>
+        <div class="col-12"><label class="form-label">正则校验（可选）</label><input type="text" class="form-control" id="pp-pattern" value="${esc(field.pattern||'')}" placeholder="^\\\d{11}$ 等"/></div>
+      </div>`;
+    }
+    if(field.type==='textarea'){
+      spec += `
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">占位提示</label><input type="text" class="form-control" id="pp-placeholder" value="${esc(field.placeholder||'')}" /></div>
+        <div class="col-md-6"><label class="form-label">行数</label><input type="number" class="form-control" id="pp-rows" min="2" max="12" value="${field.rows||3}" /></div>
+        <div class="col-12"><label class="form-label">默认值</label><textarea class="form-control" id="pp-default" rows="3">${esc(field.default??'')}</textarea></div>
+      </div>`;
+    }
+    if(field.type==='number'){
+      spec += `
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-4"><label class="form-label">最小值</label><input type="number" class="form-control" id="pp-min" value="${field.min??''}" /></div>
+        <div class="col-md-4"><label class="form-label">最大值</label><input type="number" class="form-control" id="pp-max" value="${field.max??''}" /></div>
+        <div class="col-md-4"><label class="form-label">步长</label><input type="number" class="form-control" id="pp-step" value="${field.step??1}" /></div>
+        <div class="col-12"><label class="form-label">默认值</label><input type="number" class="form-control" id="pp-default" value="${field.default??''}" /></div>
+      </div>`;
+    }
+    if(field.type==='checkbox'){
+      spec += `
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">默认值</label><select class="form-select" id="pp-default"><option value="false">未勾选</option><option value="true">已勾选</option></select></div>
+      </div>`;
+    }
+    if(field.type==='select' || field.type==='radio'){
+      spec += `
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">默认值</label><input type="text" class="form-control" id="pp-default" value="${esc(field.default??'')}" placeholder="与某个选项的 value 对应"></div>
+        ${field.type==='select' ? `<div class="col-md-6"><label class="form-label">是否多选</label><select class="form-select" id="pp-multiple"><option value="false">否</option><option value="true">是</option></select></div>`:''}
+      </div>
+      <div class="mt-2">
+        <div class="d-flex align-items-center gap-2 mb-2"><strong>选项</strong><button class="btn btn-outline-secondary btn-sm" id="btnAddOpt" type="button">新增选项</button></div>
+        <div id="optList" class="vstack gap-2"></div>
+      </div>`;
+    }
+    if(field.type==='date'){
+      spec += `
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">默认值</label><input type="text" class="form-control" id="pp-default" value="${esc(field.default??'')}" placeholder="YYYY-MM-DD"/></div>
+      </div>`;
+    }
+
+    panel.innerHTML = `<div class="vstack gap-3">${common}${spec}</div>`;
+
+    // 赋初值
+    $('#pp-required').value = String(!!field.required);
+    $('#pp-hidden').value = String(!!field.hidden);
+    if(field.type==='checkbox') $('#pp-default').value = String(!!field.default);
+    if(field.type==='select' && $('#pp-multiple')) $('#pp-multiple').value = String(!!field.multiple);
+
+    // 事件（通用）
+    $('#pp-label').addEventListener('input', e=>{ field.label=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+    $('#pp-help').addEventListener('input', e=>{ field.help=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+    $('#pp-width').addEventListener('change', e=>{ field.width = clamp(1,12, Number(e.target.value||12)); touch(); renderAll(); });
+    $('#pp-required').addEventListener('change', e=>{ field.required = e.target.value==='true'; touch(); renderAll(); });
+    $('#pp-hidden').addEventListener('change', e=>{ field.hidden = e.target.value==='true'; touch(); renderAll(); });
+
+    // 事件（特有）
+    if(field.type==='text'){
+      $('#pp-placeholder').addEventListener('input', e=>{ field.placeholder=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+      $('#pp-default').addEventListener('input', e=>{ field.default=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+      $('#pp-pattern').addEventListener('input', e=>{ field.pattern=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+    }
+    if(field.type==='textarea'){
+      $('#pp-placeholder').addEventListener('input', e=>{ field.placeholder=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+      $('#pp-rows').addEventListener('change', e=>{ field.rows = clamp(2,12, Number(e.target.value||3)); touch(); renderAll(); });
+      $('#pp-default').addEventListener('input', e=>{ field.default=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+    }
+    if(field.type==='number'){
+      $('#pp-min').addEventListener('change', e=>{ field.min = e.target.value===''? null:Number(e.target.value); touch(); renderAll(); });
+      $('#pp-max').addEventListener('change', e=>{ field.max = e.target.value===''? null:Number(e.target.value); touch(); renderAll(); });
+      $('#pp-step').addEventListener('change', e=>{ field.step = Number(e.target.value||1); touch(); renderAll(); });
+      $('#pp-default').addEventListener('change', e=>{ field.default = e.target.value===''? null:Number(e.target.value); touch(); renderAll(); });
+    }
+    if(field.type==='checkbox'){
+      $('#pp-default').addEventListener('change', e=>{ field.default = e.target.value==='true'; touch(); renderAll(); });
+    }
+    if(field.type==='select' || field.type==='radio'){
+      if(field.type==='select' && $('#pp-multiple')) $('#pp-multiple').addEventListener('change', e=>{ field.multiple = e.target.value==='true'; if(field.multiple && field.default && !Array.isArray(field.default)){ field.default=[field.default]; } if(!field.multiple && Array.isArray(field.default)) field.default = field.default[0]??null; touch(); renderAll(); });
+      $('#pp-default').addEventListener('input', e=>{ field.default = e.target.value || null; if(e.isComposing) return; touch(); renderAll(); });
+
+      const optList = $('#optList');
+      const redraw = ()=>{
+        optList.innerHTML='';
+        (field.options||[]).forEach((opt,i)=>{
+          const row=document.createElement('div'); row.className='row g-2 align-items-center';
+          row.innerHTML = `
+            <div class="col"><input type="text" class="form-control" placeholder="标签 label" value="${esc(opt.label)}" data-k="label" data-i="${i}"></div>
+            <div class="col"><input type="text" class="form-control" placeholder="值 value" value="${esc(opt.value)}" data-k="value" data-i="${i}"></div>
+            <div class="col-auto">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary" data-act="up" data-i="${i}">↑</button>
+                <button class="btn btn-outline-secondary" data-act="down" data-i="${i}">↓</button>
+                <button class="btn btn-outline-danger" data-act="del" data-i="${i}">删</button>
+              </div>
+            </div>`;
+          row.querySelectorAll('input').forEach(inp=>{
+            inp.addEventListener('input', ev=>{ if(ev.isComposing) return; const k=ev.target.dataset.k; const idx=Number(ev.target.dataset.i); field.options[idx][k]=ev.target.value; touch(); renderAll(); redraw(); });
+          });
+          row.querySelectorAll('button').forEach(btn=>{
+            btn.addEventListener('click', ev=>{
+              const act=ev.currentTarget.dataset.act; const idx=Number(ev.currentTarget.dataset.i);
+              if(act==='del') field.options.splice(idx,1);
+              if(act==='up'){ const to=Math.max(0,idx-1); const it=field.options.splice(idx,1)[0]; field.options.splice(to,0,it); }
+              if(act==='down'){ const to=Math.min(field.options.length-1, idx+1); const it=field.options.splice(idx,1)[0]; field.options.splice(to,0,it); }
+              touch(); renderAll(); redraw();
+            });
+          });
+          optList.appendChild(row);
+        });
+      };
+      redraw();
+      $('#btnAddOpt').addEventListener('click', ()=>{ (field.options||(field.options=[])).push({label:'新选项', value:'opt_'+(field.options.length+1)}); touch(); renderAll(); redraw(); });
+    }
+  }
+
+  // ===== 右侧：预览、Schema =====
+  function createInputFromField(f){
+    let el;
+    if(f.type==='text'){
+      el = document.createElement('input'); el.type='text'; el.className='form-control'; el.placeholder=f.placeholder||''; el.value=f.default??''; if(f.pattern){ try{ el.pattern=f.pattern; }catch{} }
+    }
+    if(f.type==='textarea'){
+      el = document.createElement('textarea'); el.className='form-control'; el.rows=f.rows||3; el.placeholder=f.placeholder||''; el.value=f.default??'';
+    }
+    if(f.type==='number'){
+      el = document.createElement('input'); el.type='number'; el.className='form-control'; if(f.min!=null) el.min=f.min; if(f.max!=null) el.max=f.max; if(f.step!=null) el.step=f.step; if(f.default!=null) el.value=f.default;
+    }
+    if(f.type==='checkbox'){
+      const wrap=document.createElement('div'); wrap.className='form-check';
+      const inp=document.createElement('input'); inp.className='form-check-input'; inp.type='checkbox'; inp.checked=!!f.default; inp.id='pv_'+f.id;
+      const lab=document.createElement('label'); lab.className='form-check-label'; lab.setAttribute('for',inp.id); lab.textContent=f.label||'';
+      wrap.appendChild(inp); wrap.appendChild(lab); wrap.dataset.wrap='1'; el=wrap; // 特例：整体作为控件
+    }
+    if(f.type==='select'){
+      el = document.createElement('select'); el.className='form-select'; if(f.multiple) el.multiple=true;
+      (f.options||[]).forEach(o=>{ const opt=document.createElement('option'); opt.value=o.value; opt.textContent=o.label; if(!f.multiple && f.default!=null && f.default===o.value) opt.selected=true; if(f.multiple && Array.isArray(f.default) && f.default.includes(o.value)) opt.selected=true; el.appendChild(opt); });
+    }
+    if(f.type==='radio'){
+      el = document.createElement('div'); el.className='d-flex gap-3';
+      (f.options||[]).forEach((o,i)=>{ const wrap=document.createElement('div'); wrap.className='form-check'; const r=document.createElement('input'); r.className='form-check-input'; r.type='radio'; r.name=f.id; r.id=f.id+'_'+i; r.value=o.value; if(f.default!=null && f.default===o.value) r.checked=true; const lab=document.createElement('label'); lab.className='form-check-label'; lab.setAttribute('for', r.id); lab.textContent=o.label; wrap.appendChild(r); wrap.appendChild(lab); el.appendChild(wrap); });
+    }
+    if(f.type==='date'){
+      el = document.createElement('input'); el.type='date'; el.className='form-control'; if(f.default) el.value=f.default;
+    }
+    // 非 checkbox/radio 情况下标签单独渲染
+    if(f.type!=='checkbox' && f.type!=='radio') el.name=f.id; else if(el.dataset.wrap==='1') el.querySelector('input').name=f.id;
+    if(f.required && el instanceof HTMLElement){ if(el.tagName==='DIV'){ const inp=el.querySelector('input,select,textarea'); if(inp) inp.required=true; } else el.required=true; }
+    return el;
+  }
+
+  function renderPreview(into){
+    const form = into; form.innerHTML='';
+    schema.fields.filter(f=>!f.hidden).forEach(f=>{
+      const group=document.createElement('div'); group.className='mb-3';
+      if(f.type!=='checkbox'){ const lab=document.createElement('label'); lab.className='form-label'; lab.textContent=f.label||(f.id); if(f.required){ const star=document.createElement('span'); star.className='text-danger ms-1'; star.textContent='*'; lab.appendChild(star);} group.appendChild(lab); }
+      const ctrl = createInputFromField(f); group.appendChild(ctrl);
+      if(f.help && f.type!=='checkbox'){ const ft=document.createElement('div'); ft.className='form-text'; ft.textContent=f.help; group.appendChild(ft); }
+      form.appendChild(group);
+    });
+  }
+
+  function renderSchemaView(){ $('#schemaView').textContent = JSON.stringify(schema, null, 2); }
+
+  // ===== 顶部：导入/导出/本地/预览 =====
+  $('#btnExport').addEventListener('click', ()=> download((schema.meta.title||'form')+'.schema.json', JSON.stringify(schema,null,2)) );
+  $('#btnBeautify').addEventListener('click', ()=>{ renderSchemaView(); toast('已美化'); });
+  $('#btnCopySchema').addEventListener('click', ()=> copyText(JSON.stringify(schema,null,2)) );
+
+  $('#btnImport').addEventListener('click', ()=> $('#fileImport').click());
+  $('#fileImport').addEventListener('change', (e)=>{
+    const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload=()=>{
+      try{
+        const obj = JSON.parse(String(reader.result||'{}'));
+        if(!obj || !Array.isArray(obj.fields)) throw new Error('不符合 Schema 结构');
+        obj.fields.forEach(ff=>{ ff.id ||= uid(); ff.type ||= 'text'; ff.width ||= 12; });
+        schema = obj; selectedId = obj.fields[0]?.id || null; touch(); renderAll(); toast('导入成功');
+      }catch(err){ alert('导入失败：'+err.message); }
+    }; reader.readAsText(f,'utf-8'); e.target.value='';
+  });
+
+  $('#btnNew').addEventListener('click', ()=>{ if(confirm('确定清空当前表单？')){ schema={ meta:{...schema.meta, title:'未命名表单', description:'', updatedAt:new Date().toISOString()}, fields:[] }; selectedId=null; renderAll(); }});
+  $('#btnSave').addEventListener('click', ()=>{ localStorage.setItem('formBuilderSchema', JSON.stringify(schema)); toast('已保存到浏览器本地'); });
+  $('#btnLoad').addEventListener('click', ()=>{ const raw=localStorage.getItem('formBuilderSchema'); if(!raw){ toast('本地没有保存的内容'); return; } try{ schema=JSON.parse(raw); selectedId=schema.fields[0]?.id||null; renderAll(); toast('已加载'); }catch{ toast('加载失败'); } });
+
+  // 模态预览：打开时渲染
+  const modalEl = document.getElementById('previewModal');
+  modalEl.addEventListener('show.bs.modal', ()=>{ $('#modalTitle').textContent = schema.meta.title || '表单预览'; renderPreview($('#modalPreviewForm')); $('#modalPreviewResult').textContent=''; });
+
+  $('#btnSubmitPreview').addEventListener('click', ()=> collectAndShow($('#previewForm'), $('#previewResult')) );
+  $('#btnResetPreview').addEventListener('click', ()=>{ $('#previewForm').reset(); $('#previewResult').textContent=''; });
+  $('#btnModalSubmit').addEventListener('click', ()=> collectAndShow($('#modalPreviewForm'), $('#modalPreviewResult')) );
+
+  function collectAndShow(formEl, outEl){
+    const data={}; let ok=true; let msg='';
+    for(const f of schema.fields.filter(x=>!x.hidden)){
+      const name=f.id; let val=null;
+      if(f.type==='radio'){
+        const r = formEl.querySelectorAll(`input[name="${CSS.escape(name)}"]`);
+        const checked = Array.from(r).find(x=>x.checked); val = checked? checked.value : null;
+      }else{
+        let el;
+        if(f.type==='checkbox'){ el = formEl.querySelector(`#pv_${CSS.escape(name)}`); }
+        else el = formEl.querySelector(`[name="${CSS.escape(name)}"]`);
+        if(!el){ continue; }
+        if(f.type==='checkbox') val = el.checked;
+        else if(f.type==='select' && el.multiple){ val = Array.from(el.selectedOptions).map(o=>o.value); }
+        else val = el.value;
+        if(f.type==='number' && val!=='') val = Number(val);
+      }
+      if(f.required && (val==='' || val==null || (Array.isArray(val)&&val.length===0))){ ok=false; msg='请填写：'+(f.label||f.id); break; }
+      if(f.type==='text' && f.pattern){ try{ const re=new RegExp(f.pattern); if(val && !re.test(val)){ ok=false; msg='格式不正确：'+(f.label||f.id); break; } }catch{}
+      }
+      data[name]=val;
+    }
+    if(!ok){ alert(msg); return; }
+    outEl.textContent = JSON.stringify({meta:{title:schema.meta.title}, data}, null, 2);
+  }
+
+  // ===== Tabs =====
+  $$('.nav-link[data-tab]').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      $$('.nav-link[data-tab]').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
+      const name=tab.dataset.tab; $('#tab-props').classList.toggle('d-none', name!=='props'); $('#tab-preview').classList.toggle('d-none', name!=='preview'); $('#tab-schema').classList.toggle('d-none', name!=='schema');
+      if(name==='preview') renderPreview($('#previewForm'));
+      if(name==='schema') renderSchemaView();
+    });
+  });
+
+  // ===== 元信息绑定 =====
+  $('#metaTitle').addEventListener('input', e=>{ schema.meta.title=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+  $('#metaDesc').addEventListener('input', e=>{ schema.meta.description=e.target.value; if(e.isComposing) return; touch(); renderAll(); });
+
+  // ===== 快捷键 =====
+  window.addEventListener('keydown', (e)=>{
+    const tag = (document.activeElement?.tagName||'').toLowerCase();
+    const isTyping = ['input','textarea','select'].includes(tag);
+    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); download((schema.meta.title||'form')+'.schema.json', JSON.stringify(schema,null,2)); }
+    if(e.key==='Delete' && selectedId && !isTyping){ deleteField(selectedId); }
+  });
+
+  // ===== 统一渲染 & 触达 =====
+  function touch(){ schema.meta.updatedAt = new Date().toISOString(); }
+  function renderAll(opts={}){
+    // 避免在属性面板编辑时重绘属性面板，保护输入（尤其中文输入法）
+    let skipProps = opts.skipProps; if(skipProps==null){ skipProps = $('#propPanel')?.contains(document.activeElement); }
+    // 左侧元信息填充
+    $('#metaTitle').value = schema.meta.title||''; $('#metaDesc').value = schema.meta.description||'';
+    // 中间画布
+    renderCanvas();
+    // 右侧属性
+    if(!skipProps) renderPropPanel();
+    // 右侧预览/Schema（懒）
+    const active = document.querySelector('.nav-link.active')?.dataset.tab;
+    if(active==='preview') renderPreview($('#previewForm'));
+    if(active==='schema') renderSchemaView();
+  }
+
+  // ===== 初始化 & 自检 =====
+  function init(){
+    renderCompList(); bindCanvasDnD();
+    // 示例字段（便于首次打开就能操作）
+    addField('text'); schema.fields[0].label='姓名'; schema.fields[0].required=true; schema.fields[0].placeholder='请输入姓名';
+    addField('number'); schema.fields[1].label='年龄'; schema.fields[1].min=0; schema.fields[1].max=120; schema.fields[1].step=1;
+    addField('select'); schema.fields[2].label='城市'; schema.fields[2].options=[{label:'北京',value:'bj'},{label:'上海',value:'sh'},{label:'深圳',value:'sz'}];
+    selectedId = schema.fields[2].id; touch(); renderAll();
+    selfCheck();
+  }
+
+  function selfCheck(){
+    let ok=true; const errs=[];
+    try{
+      // 组件定义完整
+      if(!Array.isArray(COMPONENTS) || COMPONENTS.length<3) throw new Error('组件库异常');
+      // 克隆 Schema 做离线测试，避免污染真实状态
+      const bak = deepClone(schema);
+      // CRUD
+      addField('text'); const newId = schema.fields.at(-1).id; if(!newId) throw new Error('新增失败');
+      duplicateField(newId); moveField(newId, 0); deleteField(newId);
+      // 预览渲染
+      renderPreview(document.createElement('form'));
+      // 导出/导入（往返）
+      const raw = JSON.stringify(schema); const obj = JSON.parse(raw); if(!obj.fields) throw new Error('导出结构异常');
+      // 还原备份
+      schema = bak; renderAll();
+    }catch(e){ ok=false; errs.push(e.message||String(e)); }
+    if(ok) toast('自检通过 ✅'); else alert('自检失败：\n'+errs.join('\n'));
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
