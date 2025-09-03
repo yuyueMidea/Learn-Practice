@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>grid-layout1</title>
+    <style>
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 第一列宽度为2倍，第二列为1倍 */
+            grid-template-rows: auto; /* 自动行高 */
+            gap: 20px;
+        }
+        .box {
+            background-color: #3498db;
+            height: 100px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">box1</div>
+        <div class="box">box2</div>
+        <div class="box">box3</div>
+        <div class="box">box4</div>
+        <div class="box">box5</div>
+    </div>
+    
+</body>
+</html>
