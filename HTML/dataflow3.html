@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data Flow Editor — HTML+CSS+JS(Canvas)</title>
+    <style>
+        :root {
+            --bg: #0f1226;
+            --panel: #181b36;
+            --muted: #9aa3b2;
+            --primary: #7c5cff;
+            --primary-2: #4fd1c5;
+            --danger: #ff5d6c;
+            --border: #2a2f4a;
+            --text: #ecf0ff;
+            --text-2: #d6daf0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 12px;
+            height: 100%;
+            padding: 12px;
+            box-sizing: border-box
+        }
+
+        .canvas-wrap {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: radial-gradient(1000px 600px at 20% 10%, #1a1f46 0%, #121531 60%, #0f1226 100%);
+        }
+
+        .toolbar {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(24, 27, 54, .7);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(6px);
+            border-radius: 10px;
+        }
+
+        .toolbar .btn {
+            background: #232750;
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none
+        }
+
+        .toolbar .btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: transparent
+        }
+
+        .toolbar .btn.danger {
+            background: #3a1f2a;
+            border-color: #5b2230;
+            color: #ffd9de
+        }
+
+        .toolbar .btn:disabled {
+            opacity: .55;
+            cursor: not-allowed
+        }
+
+        .hint {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            font-size: 12px;
+            color: var(--muted);
+            background: rgba(24, 27, 54, .7);
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(6px);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%
+        }
+
+        .panel {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--panel);
+            display: flex;
+            flex-direction: column;
+            min-height: 0
+        }
+
+        .panel h3 {
+            margin: 12px 12px 6px 12px;
+            font-size: 14px;
+            color: var(--text-2);
+            font-weight: 600
+        }
+
+        .panel .section {
+            padding: 8px 12px;
+            border-top: 1px solid var(--border)
+        }
+
+        .panel textarea {
+            width: 100%;
+            min-height: 120px;
+            background: #0f1226;
+            color: var(--text-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px;
+            box-sizing: border-box
+        }
+
+        .panel .row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .panel .btn {
+            background: #232750;
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+        .panel .btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: transparent
+        }
+
+        .panel .btn.ghost {
+            background: transparent
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 12px;
+            color: #cfd6ff
+        }
+
+        th,
+        td {
+            border-top: 1px solid var(--border);
+            padding: 6px 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        th {
+            color: #8ea2ff;
+            text-align: left;
+            background: #1a1f46
+        }
+
+        tr.sel {
+            background: rgba(124, 92, 255, .15)
+        }
+
+        .kbd {
+            display: inline-block;
+            background: #10132b;
+            border: 1px solid #2a2f4a;
+            border-bottom-color: #1b1e35;
+            color: #a8b1d8;
+            border-radius: 6px;
+            padding: 1px 6px;
+            margin: 0 2px
+        }
+
+        /* 文本编辑输入框（双击节点） */
+        #editBox {
+            position: absolute;
+            z-index: 10;
+            display: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #0f1226;
+            color: var(--text);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .35)
+        }
+
+        #editInput {
+            width: 260px;
+            max-width: 320px;
+            background: transparent;
+            color: inherit;
+            border: none;
+            outline: none
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="c"></canvas>
+            <div class="toolbar">
+                <button class="btn primary" id="btnAdd">＋ 新建节点</button>
+                <button class="btn" id="btnConnect">连接模式：关闭</button>
+                <button class="btn" id="btnResetView">重置视图</button>
+                <button class="btn" id="btnExport">导出JSON</button>
+                <button class="btn" id="btnImport">导入JSON</button>
+                <button class="btn danger" id="btnDelete">删除所选</button>
+            </div>
+            <div class="hint">
+                <div>🖱️ <span class="kbd">滚轮</span> 缩放，<span class="kbd">Space</span> 或 <span class="kbd">中键</span>
+                    拖动画布</div>
+                <div>🖱️ <span class="kbd">双击</span> 节点编辑文本；点击边/节点可选中，<span class="kbd">Delete</span> 删除</div>
+                <div>🧩 连接模式：点击节点作为起点 → 再点目标节点</div>
+            </div>
+            <!-- 双击节点时的文本编辑框 -->
+            <div id="editBox"><input id="editInput" /></div>
+        </div>
+
+        <div class="panel">
+            <h3>节点列表</h3>
+            <div class="section" style="overflow:auto;min-height:120px;max-height:36%;">
+                <table id="nodesTable">
+                    <thead>
+                        <tr>
+                            <th style="width:60px">ID</th>
+                            <th>文本</th>
+                            <th style="width:70px">X</th>
+                            <th style="width:70px">Y</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <h3>连线列表</h3>
+            <div class="section" style="overflow:auto;min-height:120px;max-height:36%;">
+                <table id="edgesTable">
+                    <thead>
+                        <tr>
+                            <th style="width:60px">ID</th>
+                            <th>从</th>
+                            <th>到</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <h3>导入 / 导出</h3>
+            <div class="section">
+                <div class="row" style="margin-bottom:6px">
+                    <button class="btn" id="btnCopy">复制导出内容</button>
+                    <button class="btn" id="btnLoadTextarea">从文本加载</button>
+                    <button class="btn ghost" id="btnSample">示例数据</button>
+                </div>
+                <textarea id="ioArea" placeholder="点击『导出JSON』或粘贴配置后点『从文本加载』"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ====================== 基础数据结构 ====================== */
+        const state = {
+            nodes: [],         // {id, x, y, w, h, text}
+            edges: [],         // {id, from, to}
+            selection: { nodeId: null, edgeId: null },
+            view: { scale: 1, offsetX: 0, offsetY: 0 }, // 画布视图
+            nextNodeId: 1,
+            nextEdgeId: 1,
+            connectMode: false,
+            connectFrom: null,  // 节点id
+        };
+
+        const DEFAULT_NODE = { w: 160, h: 60 };
+        const COLORS = {
+            nodeFill: '#212755',
+            nodeStroke: '#4753a9',
+            nodeText: '#e6ebff',
+            nodeSel: '#7c5cff',
+            grid: 'rgba(255,255,255,0.04)',
+            edge: '#8aa4ff',
+            edgeSel: '#ffb86b',
+            edgeTemp: '#4fd1c5'
+        };
+
+        /* ====================== 画布 & 坐标换算 ====================== */
+        const wrap = document.getElementById('canvasWrap');
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const dpr = Math.max(1, window.devicePixelRatio || 1);
+            const w = wrap.clientWidth, h = wrap.clientHeight;
+            canvas.width = Math.floor(w * dpr);
+            canvas.height = Math.floor(h * dpr);
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // 先缩放到 CSS 像素
+            draw();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        /** 画布 -> 世界坐标 */
+        function screenToWorld(x, y) {
+            const { scale, offsetX, offsetY } = state.view;
+            return {
+                x: (x - offsetX) / scale,
+                y: (y - offsetY) / scale
+            };
+        }
+        /** 世界 -> 画布坐标 */
+        function worldToScreen(x, y) {
+            const { scale, offsetX, offsetY } = state.view;
+            return {
+                x: x * scale + offsetX,
+                y: y * scale + offsetY
+            };
+        }
+
+        /* ====================== 绘制 ====================== */
+        function drawGrid() {
+            const { scale, offsetX, offsetY } = state.view;
+            const step = 32 * scale;
+            const w = canvas.clientWidth, h = canvas.clientHeight;
+            ctx.save();
+            ctx.fillStyle = COLORS.grid;
+            // 对齐偏移
+            const startX = (-offsetX % step), startY = (-offsetY % step);
+            for (let x = startX; x < w; x += step) {
+                ctx.fillRect(x, 0, 1, h);
+            }
+            for (let y = startY; y < h; y += step) {
+                ctx.fillRect(0, y, w, 1);
+            }
+            ctx.restore();
+        }
+
+        function drawNode(n, selected = false) {
+            const { x, y, w, h, text } = n;
+            const { scale } = state.view;
+            const r = 10;
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // 以屏幕像素画阴影(更柔和)
+            const p = worldToScreen(x, y);
+            ctx.translate(p.x, p.y);
+
+            // 阴影
+            ctx.shadowColor = 'rgba(0,0,0,0.35)';
+            ctx.shadowBlur = 12; ctx.shadowOffsetY = 4;
+
+            // 外框
+            ctx.beginPath();
+            roundRect(ctx, 0, 0, w * scale, h * scale, r * scale);
+            ctx.fillStyle = COLORS.nodeFill;
+            ctx.fill();
+            ctx.lineWidth = selected ? 3 : 1.5;
+            ctx.strokeStyle = selected ? COLORS.nodeSel : COLORS.nodeStroke;
+            ctx.stroke();
+
+            // 文本
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = COLORS.nodeText;
+            ctx.font = `${Math.floor(14 * scale)}px ui-sans-serif,system-ui`;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text || '未命名节点', 12 * scale, (h * scale) / 2);
+            ctx.restore();
+        }
+
+        function drawEdge(e, selected = false) {
+            const from = getNodeById(e.from), to = getNodeById(e.to);
+            if (!from || !to) return;
+
+            const a = getRectAnchorPoint(from, to); // 起点在源矩形边界
+            const b = getRectAnchorPoint(to, from); // 终点在目的矩形边界
+            const A = worldToScreen(a.x, a.y);
+            const B = worldToScreen(b.x, b.y);
+
+            const color = selected ? COLORS.edgeSel : COLORS.edge;
+            drawArrow(A.x, A.y, B.x, B.y, color);
+        }
+
+        function drawTempEdge(fromNode, mouseWorld) {
+            const a = getRectAnchorPoint(fromNode, { x: mouseWorld.x, y: mouseWorld.y, w: 0, h: 0 });
+            const A = worldToScreen(a.x, a.y);
+            const B = worldToScreen(mouseWorld.x, mouseWorld.y);
+            drawArrow(A.x, A.y, B.x, B.y, COLORS.edgeTemp, 1.5, true);
+        }
+
+        function draw() {
+            // 清屏
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+            drawGrid();
+
+            // 画边
+            for (const e of state.edges) {
+                drawEdge(e, state.selection.edgeId === e.id);
+            }
+
+            // 画节点
+            for (const n of state.nodes) {
+                drawNode(n, state.selection.nodeId === n.id);
+            }
+
+            // 连接模式下的临时线
+            if (state.connectMode && state.connectFrom && hover.pos) {
+                const from = getNodeById(state.connectFrom);
+                drawTempEdge(from, hover.worldPos);
+            }
+        }
+
+        /* ========= 辅助绘图函数 ========= */
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.moveTo(x + r, y);
+            ctx.beginPath();
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        // 箭头
+        function drawArrow(x1, y1, x2, y2, color, width = 2, dashed = false) {
+            const head = 10; // 像素
+            ctx.save();
+            ctx.strokeStyle = color; ctx.fillStyle = color;
+            ctx.lineWidth = width;
+            if (dashed) ctx.setLineDash([8, 6]);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            // 箭头头部
+            const ang = Math.atan2(y2 - y1, x2 - x1);
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - head * Math.cos(ang - Math.PI / 6), y2 - head * Math.sin(ang - Math.PI / 6));
+            ctx.lineTo(x2 - head * Math.cos(ang + Math.PI / 6), y2 - head * Math.sin(ang + Math.PI / 6));
+            ctx.closePath(); ctx.fill();
+            ctx.restore();
+        }
+
+        // 计算矩形指向另一个点时，连线在矩形边上的交点
+        function getRectAnchorPoint(rect, towards) {
+            const cx = rect.x + rect.w / 2, cy = rect.y + rect.h / 2;
+            const dx = towards.x - cx, dy = towards.y - cy;
+            if (dx === 0 && dy === 0) return { x: cx, y: cy };
+            const m = dy / dx;
+            // 以中心射线与矩形边相交
+            let x = 0, y = 0;
+            const hw = rect.w / 2, hh = rect.h / 2;
+            if (Math.abs(m) < hh / hw) {
+                // 撞左右边
+                x = dx > 0 ? cx + hw : cx - hw;
+                y = cy + m * (x - cx);
+            } else {
+                // 撞上下边
+                y = dy > 0 ? cy + hh : cy - hh;
+                x = cx + (y - cy) / m;
+            }
+            return { x, y };
+        }
+
+        /* ====================== 命中检测 ====================== */
+        function getNodeAt(worldX, worldY) {
+            for (let i = state.nodes.length - 1; i >= 0; i--) { // 从上层往下命中
+                const n = state.nodes[i];
+                if (worldX >= n.x && worldX <= n.x + n.w && worldY >= n.y && worldY <= n.y + n.h) {
+                    return n;
+                }
+            }
+            return null;
+        }
+
+        function getEdgeAt(worldX, worldY) {
+            const px = worldToScreen(worldX, worldY); // 用屏幕像素阈值更稳定
+            const TH = 6; // 像素容差
+            for (let i = state.edges.length - 1; i >= 0; i--) {
+                const e = state.edges[i];
+                const a = getRectAnchorPoint(getNodeById(e.from), getNodeById(e.to));
+                const b = getRectAnchorPoint(getNodeById(e.to), getNodeById(e.from));
+                const A = worldToScreen(a.x, a.y);
+                const B = worldToScreen(b.x, b.y);
+                const d = pointToSegDist(px.x, px.y, A.x, A.y, B.x, B.y);
+                if (d <= TH) return e;
+            }
+            return null;
+        }
+
+        function pointToSegDist(px, py, x1, y1, x2, y2) {
+            const A = px - x1, B = py - y1, C = x2 - x1, D = y2 - y1;
+            const dot = A * C + B * D;
+            const len_sq = C * C + D * D;
+            let t = dot / len_sq;
+            t = Math.max(0, Math.min(1, t));
+            const xx = x1 + t * C, yy = y1 + t * D;
+            const dx = px - xx, dy = py - yy;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        /* ====================== 交互：添加 / 选择 / 拖拽 / 连接 ====================== */
+        function addNodeAt(worldX, worldY, label = '新节点') {
+            const node = {
+                id: state.nextNodeId++,
+                x: worldX, y: worldY,
+                w: DEFAULT_NODE.w, h: DEFAULT_NODE.h,
+                text: label
+            };
+            state.nodes.push(node);
+            selectNode(node.id);
+            syncTables();
+            draw();
+        }
+
+        function getNodeById(id) { return state.nodes.find(n => n.id === id); }
+        function getEdgeById(id) { return state.edges.find(e => e.id === id); }
+
+        function selectNode(id) {
+            state.selection.nodeId = id;
+            state.selection.edgeId = null;
+            highlightTables();
+        }
+        function selectEdge(id) {
+            state.selection.edgeId = id;
+            state.selection.nodeId = null;
+            highlightTables();
+        }
+
+        function removeSelection() {
+            if (state.selection.nodeId != null) {
+                // 删除该节点 & 相关连线
+                const id = state.selection.nodeId;
+                state.nodes = state.nodes.filter(n => n.id !== id);
+                state.edges = state.edges.filter(e => e.from !== id && e.to !== id);
+            } else if (state.selection.edgeId != null) {
+                const id = state.selection.edgeId;
+                state.edges = state.edges.filter(e => e.id !== id);
+            }
+            state.selection.nodeId = state.selection.edgeId = null;
+            syncTables();
+            draw();
+        }
+
+        /* 拖拽与平移 */
+        const drag = { active: false, nodeId: null, start: { x: 0, y: 0 }, nodeStart: { x: 0, y: 0 }, panning: false };
+        const hover = { pos: null, worldPos: { x: 0, y: 0 } };
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+            const world = screenToWorld(sx, sy);
+            hover.pos = { x: sx, y: sy }; hover.worldPos = world;
+
+            const midButton = e.button === 1;
+            const spacePan = keyState.space;
+            if (midButton || spacePan) {
+                drag.active = true; drag.panning = true;
+                drag.start = { x: e.clientX, y: e.clientY };
+                return;
+            }
+
+            const node = getNodeAt(world.x, world.y);
+            if (state.connectMode) {
+                // 连接模式：点击节点选起点 or 终点
+                if (!state.connectFrom && node) {
+                    state.connectFrom = node.id;
+                    draw();
+                } else if (state.connectFrom && node && node.id !== state.connectFrom) {
+                    // 创建边
+                    state.edges.push({ id: state.nextEdgeId++, from: state.connectFrom, to: node.id });
+                    state.connectFrom = null;
+                    syncTables(); draw();
+                }
+                return;
+            }
+
+            if (node) {
+                selectNode(node.id);
+                // 开启拖拽
+                drag.active = true; drag.nodeId = node.id; drag.panning = false;
+                drag.start = { x: sx, y: sy };
+                drag.nodeStart = { x: node.x, y: node.y };
+            } else {
+                const edge = getEdgeAt(world.x, world.y);
+                if (edge) {
+                    selectEdge(edge.id);
+                } else {
+                    // 未点到元素：清空选择
+                    state.selection.nodeId = state.selection.edgeId = null;
+                    highlightTables(); draw();
+                }
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+            hover.pos = { x: sx, y: sy };
+            hover.worldPos = screenToWorld(sx, sy);
+
+            if (drag.active) {
+                if (drag.panning) {
+                    const dx = e.clientX - drag.start.x;
+                    const dy = e.clientY - drag.start.y;
+                    drag.start = { x: e.clientX, y: e.clientY };
+                    state.view.offsetX += dx;
+                    state.view.offsetY += dy;
+                    draw();
+                    return;
+                }
+                const node = getNodeById(drag.nodeId);
+                if (node) {
+                    const dx = (sx - drag.start.x) / state.view.scale;
+                    const dy = (sy - drag.start.y) / state.view.scale;
+                    node.x = drag.nodeStart.x + dx;
+                    node.y = drag.nodeStart.y + dy;
+                    syncTables();
+                    draw();
+                }
+            } else if (state.connectMode && state.connectFrom) {
+                draw(); // 重绘临时连线
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            drag.active = false; drag.nodeId = null; drag.panning = false;
+        });
+
+        /* 双击编辑文本（使用浮层输入框） */
+        const editBox = document.getElementById('editBox');
+        const editInput = document.getElementById('editInput');
+
+        canvas.addEventListener('dblclick', (e) => {
+            const { x, y } = getCanvasRelative(e);
+            const world = screenToWorld(x, y);
+            const n = getNodeAt(world.x, world.y);
+            if (n) {
+                // 在节点上编辑
+                const p = worldToScreen(n.x + 12, n.y + n.h / 2);
+                editBox.style.left = (p.x) + 'px';
+                editBox.style.top = (p.y - 14) + 'px';
+                editInput.value = n.text || '';
+                editBox.style.display = 'block';
+                editInput.focus();
+                // 保存
+                const finish = () => {
+                    n.text = editInput.value.trim() || '未命名节点';
+                    editBox.style.display = 'none';
+                    syncTables(); draw();
+                    editInput.removeEventListener('keydown', onKey);
+                    document.removeEventListener('click', onBlur, true);
+                };
+                const onKey = (ev) => {
+                    if (ev.key === 'Enter') { finish(); }
+                    if (ev.key === 'Escape') { editBox.style.display = 'none'; editInput.removeEventListener('keydown', onKey); document.removeEventListener('click', onBlur, true); }
+                };
+                const onBlur = (ev) => {
+                    if (!editBox.contains(ev.target)) { finish(); }
+                };
+                editInput.addEventListener('keydown', onKey);
+                setTimeout(() => document.addEventListener('click', onBlur, true), 0);
+            } else {
+                // 双击空白：也可以快速新增节点
+                addNodeAt(world.x - DEFAULT_NODE.w / 2, world.y - DEFAULT_NODE.h / 2, '新节点');
+            }
+        });
+
+        /* ====================== 缩放 & 视图 ====================== */
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = -e.deltaY; // 上滚放大
+            const factor = Math.exp(delta * 0.0015);
+            zoomAt(e.offsetX, e.offsetY, factor);
+        }, { passive: false });
+
+        function zoomAt(sx, sy, factor) {
+            const { scale, offsetX, offsetY } = state.view;
+            const worldBefore = screenToWorld(sx, sy);
+            const newScale = Math.min(3, Math.max(0.25, scale * factor));
+            state.view.scale = newScale;
+            // 调整偏移，保持光标所指世界坐标不动
+            const worldAfter = worldBefore;
+            state.view.offsetX = sx - worldAfter.x * newScale;
+            state.view.offsetY = sy - worldAfter.y * newScale;
+            draw();
+        }
+
+        function resetView() {
+            state.view = { scale: 1, offsetX: 20, offsetY: 20 };
+            draw();
+        }
+
+        /* ====================== 键盘 ====================== */
+        const keyState = { space: false };
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') { keyState.space = true; }
+            if (e.key === 'Delete') { removeSelection(); }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') { keyState.space = false; }
+        });
+
+        /* ====================== 导入 / 导出 ====================== */
+        function exportJSON() {
+            const data = {
+                nodes: state.nodes.map(n => ({ id: n.id, x: n.x, y: n.y, w: n.w, h: n.h, text: n.text })),
+                edges: state.edges.map(e => ({ id: e.id, from: e.from, to: e.to })),
+                view: state.view,
+                nextNodeId: state.nextNodeId,
+                nextEdgeId: state.nextEdgeId
+            };
+            return JSON.stringify(data, null, 2);
+        }
+        function importJSON(text) {
+            const data = JSON.parse(text);
+            if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.edges)) throw new Error('无效的配置');
+            state.nodes = data.nodes;
+            state.edges = data.edges;
+            state.view = data.view || { scale: 1, offsetX: 0, offsetY: 0 };
+            state.nextNodeId = data.nextNodeId || (Math.max(0, ...state.nodes.map(n => n.id)) + 1);
+            state.nextEdgeId = data.nextEdgeId || (Math.max(0, ...state.edges.map(e => e.id)) + 1);
+            state.selection.nodeId = state.selection.edgeId = null;
+            syncTables(); draw();
+        }
+
+        /* ====================== UI & 表格 ====================== */
+        const nodesTable = document.querySelector('#nodesTable tbody');
+        const edgesTable = document.querySelector('#edgesTable tbody');
+        const ioArea = document.getElementById('ioArea');
+
+        function syncTables() {
+            // 节点
+            nodesTable.innerHTML = '';
+            for (const n of state.nodes) {
+                const tr = document.createElement('tr');
+                tr.dataset.id = n.id;
+                tr.innerHTML = `<td>${n.id}</td><td>${escapeHtml(n.text)}</td><td>${n.x.toFixed(1)}</td><td>${n.y.toFixed(1)}</td>`;
+                tr.addEventListener('click', () => { selectNode(n.id); draw(); });
+                nodesTable.appendChild(tr);
+            }
+            // 边
+            edgesTable.innerHTML = '';
+            for (const e of state.edges) {
+                const tr = document.createElement('tr');
+                tr.dataset.id = e.id;
+                tr.innerHTML = `<td>${e.id}</td><td>${e.from}</td><td>${e.to}</td>`;
+                tr.addEventListener('click', () => { selectEdge(e.id); draw(); });
+                edgesTable.appendChild(tr);
+            }
+            highlightTables();
+        }
+
+        function highlightTables() {
+            for (const tr of nodesTable.querySelectorAll('tr')) {
+                tr.classList.toggle('sel', Number(tr.dataset.id) === state.selection.nodeId);
+            }
+            for (const tr of edgesTable.querySelectorAll('tr')) {
+                tr.classList.toggle('sel', Number(tr.dataset.id) === state.selection.edgeId);
+            }
+        }
+
+        function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+        /* ====================== 顶部工具条按钮 ====================== */
+        document.getElementById('btnAdd').onclick = () => {
+            const wp = screenToWorld(canvas.clientWidth / 2, canvas.clientHeight / 2);
+            addNodeAt(wp.x - DEFAULT_NODE.w / 2, wp.y - DEFAULT_NODE.h / 2, '新节点');
+        };
+
+        document.getElementById('btnConnect').onclick = () => {
+            state.connectMode = !state.connectMode;
+            state.connectFrom = null;
+            document.getElementById('btnConnect').textContent = '连接模式：' + (state.connectMode ? '开启' : '关闭');
+            draw();
+        };
+
+        document.getElementById('btnResetView').onclick = resetView;
+
+        document.getElementById('btnExport').onclick = () => {
+            ioArea.value = exportJSON();
+        };
+
+        document.getElementById('btnImport').onclick = () => {
+            try {
+                importJSON(ioArea.value.trim());
+                alert('导入成功');
+            } catch (err) {
+                alert('导入失败：' + err.message);
+            }
+        };
+
+        document.getElementById('btnDelete').onclick = removeSelection;
+
+        document.getElementById('btnCopy').onclick = async () => {
+            const text = ioArea.value || exportJSON();
+            try {
+                await navigator.clipboard.writeText(text);
+                alert('已复制到剪贴板');
+            } catch { alert('复制失败，请手动选择文本。'); }
+        };
+
+        document.getElementById('btnLoadTextarea').onclick = () => {
+            try {
+                importJSON(ioArea.value);
+                alert('已从文本加载');
+            } catch (e) { alert('JSON 无效：' + e.message); }
+        };
+
+        document.getElementById('btnSample').onclick = () => {
+            const demo = {
+                nodes: [
+                    { id: 1, x: 80, y: 100, w: 160, h: 60, text: '数据源' },
+                    { id: 2, x: 340, y: 100, w: 180, h: 60, text: '清洗与校验' },
+                    { id: 3, x: 640, y: 100, w: 180, h: 60, text: '入库写入' },
+                    { id: 4, x: 340, y: 220, w: 240, h: 60, text: '异常处理/告警' },
+                ],
+                edges: [
+                    { id: 1, from: 1, to: 2 },
+                    { id: 2, from: 2, to: 3 },
+                    { id: 3, from: 2, to: 4 }
+                ],
+                view: { scale: 1, offsetX: 20, offsetY: 40 },
+                nextNodeId: 5, nextEdgeId: 4
+            };
+            ioArea.value = JSON.stringify(demo, null, 2);
+        };
+
+        /* ====================== 工具函数 ====================== */
+        function getCanvasRelative(evt) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+        }
+
+        /* ====================== 初始化 & 自检 ====================== */
+        function selfTest() {
+            // 基本自检：增删改查 & 导入导出 & 视图
+            state.nodes = [];
+            state.edges = [];
+            state.nextNodeId = 1;
+            state.nextEdgeId = 1;
+            resetView();
+            addNodeAt(60, 60, '输入');
+            addNodeAt(320, 60, '处理');
+            addNodeAt(580, 60, '输出');
+            state.edges.push({ id: state.nextEdgeId++, from: 1, to: 2 });
+            state.edges.push({ id: state.nextEdgeId++, from: 2, to: 3 });
+            syncTables();
+            // 导出 & 导入回放测试
+            const dump = exportJSON();
+            importJSON(dump);
+        }
+        resizeCanvas();
+        selfTest();
+    </script>
+</body>
+
+</html>
