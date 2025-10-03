@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Skeleton Loader · 原生组件</title>
+    <style>
+        :root {
+            --bg: #0f1222;
+            --panel: #121a2c;
+            --muted: #8aa0bf;
+            --border: #24324b;
+            --accent: #4f8cff;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            background: var(--bg);
+            color: #e6eefb
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, #121a2c, #0f1527)
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: #0e1627;
+            color: #e6eefb;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer
+        }
+
+        .btn:hover {
+            background: #0d1526
+        }
+
+        main {
+            max-width: 980px;
+            margin: 16px auto;
+            padding: 0 14px 40px
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+            align-items: center
+        }
+
+        .col {
+            flex: 1
+        }
+
+        small {
+            color: var(--muted)
+        }
+
+        /* 只是示例布局，不影响组件复用 */
+    </style>
+</head>
+
+<body>
+    <header>
+        <strong>Skeleton Loader · 原生组件</strong>
+        <div>
+            <button class="btn" id="demoReload">示例：重新加载</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="panel">
+            <h3 style="margin:4px 0 12px">快速示例</h3>
+
+            <sk-load id="demoCard" loading="1500">
+                <div slot="skeleton">
+                    <div class="row">
+                        <skeleton-box circle size="56px"></skeleton-box>
+                        <div class="col">
+                            <skeleton-box lines="1" height="14px" width="60%" style="margin-bottom:8px"></skeleton-box>
+                            <skeleton-box lines="1" height="12px" width="90%"></skeleton-box>
+                        </div>
+                    </div>
+                </div>
+                <div slot="content">
+                    <div class="row">
+                        <div class="col">
+                            <div style="font-weight:700">加载完毕的标题</div>
+                            <small>真实内容已展示。再次点击“重新加载”可重置。</small>
+                        </div>
+                    </div>
+                </div>
+            </sk-load>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+            <h3 style="margin:4px 0 12px">用法说明</h3>
+            <p><code>&lt;skeleton-box&gt;</code>：通用骨架块。可配置
+                <code>width</code>、<code>height</code>、<code>radius</code>、<code>duration</code>（动画时长秒）、<code>lines</code>（文本行数）、<code>gap</code>（行距），或设
+                <code>circle</code>+<code>size</code> 生成圆形。</p>
+            <p><code>&lt;sk-load loading="毫秒"&gt;</code>：骨架/内容切换容器。把骨架放到 <code>slot="skeleton"</code>，真实内容放到
+                <code>slot="content"</code>；到时自动切换，也可用 JS 控制。</p>
+
+            <pre
+                style="white-space:pre-wrap;background:#0b1322;border:1px solid var(--border);border-radius:10px;padding:10px"><code>&lt;sk-load loading="2000"&gt;
+  &lt;div slot="skeleton"&gt;
+    &lt;skeleton-box width="100%" height="16px" lines="3" gap="8px"&gt;&lt;/skeleton-box&gt;
+  &lt;/div&gt;
+  &lt;div slot="content"&gt;这里是真实内容&lt;/div&gt;
+&lt;/sk-load&gt;</code></pre>
+
+            <p>也可通过 JS 控制：</p>
+            <pre
+                style="white-space:pre-wrap;background:#0b1322;border:1px solid var(--border);border-radius:10px;padding:10px"><code>const el = document.querySelector('sk-load');
+// 重新进入加载状态，1.5s 后显示内容
+el.start(1500);
+// 立即显示内容
+el.show();</code></pre>
+        </div>
+    </main>
+
+    <script>
+        /* =============================
+           <skeleton-box> 通用骨架块
+           ============================= */
+        class SkeletonBox extends HTMLElement {
+            static get observedAttributes() { return ['width', 'height', 'radius', 'duration', 'lines', 'gap', 'circle', 'size']; }
+            constructor() { super(); this.attachShadow({ mode: 'open' }); }
+            connectedCallback() { this.render(); }
+            attributeChangedCallback() { this.render(); }
+            render() {
+                const width = this.getAttribute('width') || '100%';
+                const height = this.getAttribute('height') || '14px';
+                const radius = this.getAttribute('radius') || (this.hasAttribute('circle') ? '9999px' : '10px');
+                const dur = this.getAttribute('duration') || '1.2'; // 秒
+                const lines = parseInt(this.getAttribute('lines') || '1', 10);
+                const gap = this.getAttribute('gap') || '8px';
+                const isCircle = this.hasAttribute('circle');
+                const size = this.getAttribute('size') || height;
+
+                const style = `
+          :host{display:inline-block}
+          .wrap{display:inline-block;width:${isCircle ? size : width};}
+          .line{height:${isCircle ? size : height}; border-radius:${radius}; margin:0 0 ${gap} 0; position:relative; overflow:hidden; background:#1a2438}
+          .line:last-child{margin-bottom:0}
+          .shimmer::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.08), rgba(255,255,255,0)); transform:translateX(-100%); animation:shimmer ${dur}s linear infinite}
+          @keyframes shimmer{100%{ transform:translateX(100%); }}
+          @media (prefers-reduced-motion: reduce){ .shimmer::after{ display:none } }
+        `;
+
+                const linesHtml = [];
+                const count = Math.max(1, lines);
+                for (let i = 0; i < count; i++) {
+                    let w = width;
+                    // 对多行文本做轻微宽度变化，看起来更自然
+                    if (!isCircle && count > 1) {
+                        const pct = [100, 92, 84, 96, 88, 76][i % 6];
+                        w = width.endsWith('%') || width.endsWith('vw') ? width : pct + '%';
+                    }
+                    linesHtml.push(`<div class="line shimmer" style="width:${w}"></div>`);
+                }
+
+                this.shadowRoot.innerHTML = `
+          <style>${style}</style>
+          <div class="wrap">${linesHtml.join('')}</div>
+        `;
+            }
+        }
+        customElements.define('skeleton-box', SkeletonBox);
+
+        /* =============================
+           <sk-load> 骨架/内容切换容器
+           ============================= */
+        class SkLoad extends HTMLElement {
+            static get observedAttributes() { return ['loading']; }
+            constructor() { super(); this.attachShadow({ mode: 'open' }); this._timer = null; }
+            connectedCallback() { this._render(); this._autostart(); }
+            disconnectedCallback() { this._clear(); }
+            attributeChangedCallback() { this._autostart(); }
+            _render() {
+                this.shadowRoot.innerHTML = `
+          <style>
+            :host{display:block}
+            ::slotted([slot="content"]){ display:none }
+            :host([data-state="ready"]) ::slotted([slot="content"]){ display:block }
+            :host([data-state="ready"]) ::slotted([slot="skeleton"]){ display:none }
+          </style>
+          <slot name="skeleton"></slot>
+          <slot name="content"></slot>
+        `;
+                if (!this.hasAttribute('data-state')) this.setAttribute('data-state', 'loading');
+            }
+            _autostart() {
+                const ms = parseInt(this.getAttribute('loading') || '0', 10);
+                if (ms > 0) { this.start(ms); }
+            }
+            _clear() { if (this._timer) { clearTimeout(this._timer); this._timer = null; } }
+            // API: 重新进入加载态，ms 后展示内容
+            start(ms) { this._clear(); this.setAttribute('data-state', 'loading'); this._timer = setTimeout(() => this.show(), ms); }
+            // API: 立即展示内容
+            show() { this._clear(); this.setAttribute('data-state', 'ready'); }
+        }
+        customElements.define('sk-load', SkLoad);
+
+        // 示例按钮：重新进入 1.5s 加载
+        document.getElementById('demoReload').addEventListener('click', () => {
+            document.getElementById('demoCard').start(1500);
+        });
+    </script>
+</body>
+
+</html>
