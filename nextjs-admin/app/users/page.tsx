@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MainLayout from '@/components/layout/main-layout'
 import { Button } from '@/components/ui/button'
 import { Table } from '@/components/ui/table'
@@ -8,41 +8,37 @@ import { Modal, ConfirmModal } from '@/components/ui/modal'
 import { Form, FormField } from '@/components/ui/form'
 import { User } from '@/types'
 import { useUserStore } from '../stores/userStore'
+const API_BASE = 'http://localhost:3000/api';
 
 export default function UsersPage() {
-    const { users, addUser, updateUser, deleteUser } = useUserStore();
-
     const [showAddModal, setShowAddModal] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
-    const [selectedUser, setSelectedUser] = useState<User | null>(null)
+    const [selectedUser, setSelectedUser] = useState({id:'', name: '', age:'', email:''})
     const [loading, setLoading] = useState(false)
+    const [ulist, setulist] = useState([])
+    useEffect(()=>{
+      handlefetchUser()
+    }, [])
 
   const columns = [
     { key: 'name', title: '姓名', dataIndex: 'name', sortable: true },
+    { key: 'age', title: '年龄', dataIndex: 'age' },
     { key: 'email', title: '邮箱', dataIndex: 'email' },
     {
-      key: 'role',
-      title: '角色',
-      dataIndex: 'role',
-      render: (value: string) => (
-        <span className={`px-2 py-1 text-xs rounded-full ${
-          value === 'admin' ? 'bg-red-100 text-red-800' :
-          'bg-gray-100 text-gray-800'
-        }`}>
-          {value === 'admin' ? '管理员' : '普通用户'}
-        </span>
-      )
-    },
-    {
-      key: 'createdAt',
+      key: 'created_at',
       title: '创建时间',
       dataIndex: 'createdAt',
+    },
+    {
+      key: 'updated_at',
+      title: '更新时间',
+      dataIndex: 'updatedAt',
     },
     {
       key: 'actions',
       title: '操作',
       dataIndex: 'actions',
-      render: (_: any, record: User) => (
+      render: (_: any, record:any) => (
         <div className="space-x-2">
           <Button
             size="sm"
@@ -58,7 +54,6 @@ export default function UsersPage() {
           <Button
             size="sm"
             variant="destructive"
-            permission={{ resource: 'users', action: 'delete' }}
             onClick={(e) => deleteUser(record.id)}
           >
             删除
@@ -68,13 +63,26 @@ export default function UsersPage() {
     }
   ]
 
+  const handlefetchUser = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/users`)
+      const data = await res.json()
+      setulist(data)
+      console.log("resss: ", data)
+    } finally {
+      setLoading(false)
+    }
+  }
   const handleAddUser = async (data: any) => {
     setLoading(true)
     try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      addUser({name: uname, email: uemail, role: urole})
+      let body = {name: uname, email: uemail, age: uage}
+      const res = await fetch(`${API_BASE}/users`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(await res.text());
+      console.log('add_res: ',await res.json() )
       setShowAddModal(false)
+      handlefetchUser()
     } finally {
       setLoading(false)
     }
@@ -82,13 +90,27 @@ export default function UsersPage() {
 
   const handleEditUser = async (data: any) => {
     if (!selectedUser) return
-    
     setLoading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      updateUser(selectedUser.id, {name: selectedUser.name, email: selectedUser.email, role: selectedUser.role})
+      let uid = selectedUser.id
+      let body = {name: selectedUser.name, email: selectedUser.email, age: selectedUser.age}
+      const res = await fetch(`${API_BASE}/users/${uid}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(await res.text());
       setShowEditModal(false)
-      setSelectedUser(null)
+      setSelectedUser({id:'',name: '', age:'', email:''})
+      handlefetchUser()
+    } finally {
+      setLoading(false)
+    }
+  }
+  const deleteUser = async(uid: string)=>{
+    try{
+      setLoading(true)
+      console.warn("delete_uid: ", uid )
+      const res = await fetch(`${API_BASE}/users/${uid}`, { method:'DELETE' });
+      if (!res.ok) throw new Error(await res.text());
+      console.log('delete_res: ',await res.json() )
+      handlefetchUser()
     } finally {
       setLoading(false)
     }
@@ -96,12 +118,12 @@ export default function UsersPage() {
 
   const [uname, setuname] = useState('');
   const [uemail, setuemail] = useState('');
-  const [urole, seturole] = useState('');
+  const [uage, setuage] = useState('');
   const addNewClick = ()=>{
     setShowAddModal(true)
     setuname('');
     setuemail('');
-    seturole('');
+    setuage('');
   }
 
   return (
@@ -109,10 +131,7 @@ export default function UsersPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">用户管理</h1>
-          <Button
-            onClick={addNewClick}
-            permission={{ resource: 'users', action: 'create' }}
-          >
+          <Button onClick={addNewClick}>
             添加用户
           </Button>
         </div>
@@ -120,11 +139,11 @@ export default function UsersPage() {
         <div className="bg-white rounded-lg border border-gray-200">
           <Table
             columns={columns}
-            data={users}
+            data={ulist}
             pagination={{
               current: 1,
               pageSize: 10,
-              total: users.length,
+              total: ulist.length,
               onChange: (page, pageSize) => console.log('分页变化:', page, pageSize)
             }}
           />
@@ -145,23 +164,19 @@ export default function UsersPage() {
               value={uname} onChange={e=> setuname(e)}
             />
             <FormField
+                label="年龄"
+                name="age"
+                required
+                placeholder="请输入年龄"
+                value={uage} onChange={e=>setuage(e)}
+              />
+            <FormField
               label="邮箱"
               name="email"
               type="email"
               required
               placeholder="请输入邮箱"
               value={uemail} onChange={e=> setuemail(e)}
-            />
-            <FormField
-              label="角色"
-              name="role"
-              type="select"
-              required
-              options={[
-                { value: 'admin', label: '管理员' },
-                { value: 'user', label: '普通用户' }
-              ]}
-              value={urole} onChange={e=> seturole(e)}
             />
           </Form>
         </Modal>
@@ -171,7 +186,7 @@ export default function UsersPage() {
           open={showEditModal}
           onClose={() => {
             setShowEditModal(false)
-            setSelectedUser(null)
+            setSelectedUser({id:'',name: '', age:'', email:''})
           }}
           title="编辑用户"
         >
@@ -185,23 +200,19 @@ export default function UsersPage() {
                 value={selectedUser.name} onChange={e=>setSelectedUser({...selectedUser, name: e})}
               />
               <FormField
+                label="年龄"
+                name="age"
+                required
+                placeholder="请输入年龄"
+                value={selectedUser.age} onChange={e=>setSelectedUser({...selectedUser, age: e})}
+              />
+              <FormField
                 label="邮箱"
                 name="email"
                 type="email"
                 required
                 placeholder="请输入邮箱"
                 value={selectedUser.email} onChange={e=>setSelectedUser({...selectedUser, email: e})}
-              />
-              <FormField
-                label="角色"
-                name="role"
-                type="select"
-                required
-                value={selectedUser.role} onChange={e=>setSelectedUser({...selectedUser, role: e})}
-                options={[
-                  { value: 'admin', label: '管理员' },
-                  { value: 'user', label: '普通用户' }
-                ]}
               />
             </Form>
           )}
