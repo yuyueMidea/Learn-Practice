@@ -15,6 +15,7 @@
 二、核心技术点
 
 2.1 React SSR 核心 API
+
 ```
 // 服务端渲染 API
 import { renderToString } from 'react-dom/server';
@@ -22,10 +23,11 @@ import { renderToString } from 'react-dom/server';
 // React 18+ 新 API
 import { renderToPipeableStream } from 'react-dom/server';
 ```
-2.2 Hydration (水合)
-- Hydration 是 SSR 的关键概念,指在客户端将服务端渲染的静态 HTML "激活"为可交互的 React 应用。
+2.2 Hydration (水合)：Hydration 是 SSR 的关键概念,指在客户端将服务端渲染的静态 HTML "激活"为可交互的 React 应用。
 ```
 // 客户端 hydration
 import { hydrateRoot } from 'react-dom/client';
 hydrateRoot(document.getElementById('root'), <App />);
 ```
+
+2.3 同构渲染 (Isomorphic/Universal): 同一套 React 代码可以在服务端和客户端运行。
