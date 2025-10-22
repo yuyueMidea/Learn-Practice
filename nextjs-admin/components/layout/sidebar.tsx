@@ -3,16 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  Home, 
-  Users, 
-  Settings, 
+import {
+  Home,
+  Users,
+  Settings,
   BarChart3,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { MenuItem } from '@/types'
+import { useUserStore } from '@/app/stores/userStore'
 
 const menuItems: MenuItem[] = [
   {
@@ -44,7 +45,8 @@ const menuItems: MenuItem[] = [
 ]
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false)
+  const { collapsed, setCollapsed } = useUserStore()
+  // const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
 
   return (
@@ -58,15 +60,15 @@ export default function Sidebar() {
             {menuItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.path
-              
+
               return (
                 <Link
                   key={item.id}
                   href={item.path}
                   className={cn(
                     "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                    isActive 
-                      ? "bg-gray-800 text-white" 
+                    isActive
+                      ? "bg-gray-800 text-white"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white",
                     collapsed && "justify-center"
                   )}
@@ -80,10 +82,10 @@ export default function Sidebar() {
             })}
           </nav>
         </div>
-        
+
         <div className="border-t border-gray-700 p-2">
           <button
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => setCollapsed()}
             className="w-full flex items-center justify-center p-2 rounded-md text-gray-400 hover:bg-gray-700 hover:text-white"
           >
             {collapsed ? (
