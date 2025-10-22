@@ -12,6 +12,8 @@ export interface User {
 
 // store 类型
 interface UserState {
+  collapsed: boolean;
+  setCollapsed: () => void;
   users: User[];
   getUsers: () => User[];
   addUser: (user: Omit<User, "id" | "createdAt">) => void;
@@ -22,6 +24,8 @@ interface UserState {
 
 // Zustand Store
 export const useUserStore = create<UserState>((set, get) => ({
+  collapsed: false,
+  setCollapsed: () => set(state => ({ collapsed: !state.collapsed })),
   users: [
     // {
     //   id: "2pCe7ZPG6F8LlItLPTa5z",
