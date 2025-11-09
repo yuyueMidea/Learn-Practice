@@ -9,3 +9,17 @@
 - Web3Modal / WalletConnect（AppKit）,定位：通过 WalletConnect 标准连接 700+ 钱包 & 多链（EVM、Solana、Bitcoin…），支持 React/Vue 等。适合：多终端/多钱包覆盖、想要官方 WalletConnect 生态（社交登录/法币买币等扩展）。
 - ConnectKit（Family 出品）,定位：另一套优雅的 React 连接组件，底层也常搭 wagmi；近年更新活跃并跟进 EIP-6963 钱包发现。
 - Coinbase OnchainKit, 定位：不仅是“连钱包”，而是一套 React 组件+工具，覆盖连接、交易、身份等，偏“快速做出上链应用”的一体化 SDK（Base 文档系）。
+
+三、RPC/合约交互客户端
+- viem（强类型、组合式 TS 客户端）,特点：对 JSON-RPC 的轻量封装、原生 BigInt、ABI 工具、自动类型推断（配合 abitype）；性能与包体积优秀。何时选：希望全链路 TypeScript 类型安全、搭配 wagmi 做 React。
+- ethers.js（v6）,特点：成熟稳定、钱包/合约/Provider 功能完整，生态/示例丰富；v6 有更现代 API。何时选：已有 ethers 经验或需要其丰富的工具/示例。
+- web3.js, 特点：历史最久的以太坊 JS 库之一，API 完整、文档持续更新（也能与 Web3Modal 结合）。
+
+四、React Hooks 层（状态、缓存、链上读写）
+- wagmi（React Hooks for Ethereum）
+- 定位：在 React 里优雅完成“连钱包/读写合约/签名/余额 ENS”等常用场景，并带有缓存、请求去重、持久化。自 v2 起把 TanStack Query 设为 peer 依赖，用它提供的缓存/重试/SSR 水合等能力。
+- 何时选：做 React dApp 的主流首选，通常与 viem 组合。
+
+五、类型与代码生成（提升 DX 与安全）
+- abitype, 作用：为以太坊 ABI 提供严格的 TypeScript 类型（含 EIP-712），wagmi/viem 的类型系统基石之一。
+- TypeChain, 作用：基于 ABI 生成对应库（ethers/web3.js 等）的 TS 绑定，减少手写类型/调用出错。
