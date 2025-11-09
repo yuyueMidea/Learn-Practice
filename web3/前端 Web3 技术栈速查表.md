@@ -23,3 +23,14 @@
 五、类型与代码生成（提升 DX 与安全）
 - abitype, 作用：为以太坊 ABI 提供严格的 TypeScript 类型（含 EIP-712），wagmi/viem 的类型系统基石之一。
 - TypeChain, 作用：基于 ABI 生成对应库（ethers/web3.js 等）的 TS 绑定，减少手写类型/调用出错。
+
+**常见的组合与选型建议**
+- 主流react DApp： Next.js + Wagmi + viem + RainbowKit + the Graph，说明：类型安全+ 组件化体验好，RainbowKit UI成熟，上线快;
+- 需要WalletConnect生态、或者多链多钱包： Next.js/vite + Wagmi + （Web3Modal/AppKit）+viem/ethers， 说明：一套介入覆盖700+钱包、多网络；
+- 快速原型、或一体化上链应用：Next.js + OnchainKit（内置连接、交易、身份等组件），适合在Base生态快速落地；
+
+**快速对比**
+- @rainbow-me/rainbowkit：开箱即用的钱包连接UI，主题、网络切换、最近连接 等细节完善，与Wagmi/viem组合主流；
+- ethers： 成熟稳健、生态广，偏向丰富工具链、或者现有项目迁移。
+- viem：更轻量，原生bigInt，类型友好，与Wagmi强耦合；
+- Wagmi：React Hooks层把连接、读写、签名做成可组合的Hook，并且借助Tanstack Query 做缓存、去重、持久化。
