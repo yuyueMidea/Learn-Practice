@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义下拉选择框</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+        
+        .select-trigger {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5ee;
+            border-radius: 8px;
+            background-color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .select-trigger:hover {
+            border-color: #2575fc;
+        }
+        
+        .select-trigger:focus {
+            outline: none;
+            border-color: #2575fc;
+            box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+        }
+        
+        .select-trigger::after {
+            content: "▼";
+            font-size: 12px;
+            color: #666;
+            transition: transform 0.3s ease;
+        }
+        
+        .select-trigger.active::after {
+            transform: rotate(180deg);
+        }
+        
+        .options-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 5px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            z-index: 10;
+        }
+        
+        .options-container.active {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .option:last-child {
+            border-bottom: none;
+        }
+        
+        .option:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .option.selected {
+            background-color: #e6f0ff;
+            color: #2575fc;
+            font-weight: 500;
+        }
+        
+        .option.highlighted {
+            background-color: #e6f0ff;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            font-size: 14px;
+            color: #495057;
+            min-height: 50px;
+        }
+        
+        .status h3 {
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .keyboard-hint {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .event-log {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #495057;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>自定义下拉选择框</h1>
+        
+        <div class="form-group">
+            <label for="custom-select">选择一个选项：</label>
+            <div class="custom-select" id="custom-select">
+                <div class="select-trigger" tabindex="0">
+                    <span class="selected-text">请选择...</span>
+                </div>
+                <div class="options-container">
+                    <div class="option" data-value="option1">选项一</div>
+                    <div class="option" data-value="option2">选项二</div>
+                    <div class="option" data-value="option3">选项三</div>
+                    <div class="option" data-value="option4">选项四</div>
+                    <div class="option" data-value="option5">选项五</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status">
+            <h3>状态信息</h3>
+            <div class="current-status">当前状态：等待选择</div>
+            <div class="keyboard-hint">提示：使用 ↑ ↓ 键导航，Enter 键选择，ESC 键关闭</div>
+            <div class="event-log"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const customSelect = document.getElementById('custom-select');
+            const selectTrigger = customSelect.querySelector('.select-trigger');
+            const optionsContainer = customSelect.querySelector('.options-container');
+            const options = customSelect.querySelectorAll('.option');
+            const selectedText = customSelect.querySelector('.selected-text');
+            const currentStatus = document.querySelector('.current-status');
+            const eventLog = document.querySelector('.event-log');
+            
+            let isOpen = false;
+            let selectedIndex = -1;
+            let highlightedIndex = -1;
+            
+            // 添加事件日志
+            function addEventLog(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.textContent = `${timestamp}: ${message}`;
+                eventLog.prepend(logEntry);
+                
+                // 限制日志条目数量
+                if (eventLog.children.length > 5) {
+                    eventLog.removeChild(eventLog.lastChild);
+                }
+            }
+            
+            // 打开下拉菜单
+            function openDropdown() {
+                optionsContainer.classList.add('active');
+                selectTrigger.classList.add('active');
+                isOpen = true;
+                
+                // 如果有选中的选项，高亮显示
+                if (selectedIndex >= 0) {
+                    highlightedIndex = selectedIndex;
+                    updateHighlight();
+                }
+                
+                addEventLog('下拉菜单已打开');
+                currentStatus.textContent = '当前状态：下拉菜单已打开';
+            }
+            
+            // 关闭下拉菜单
+            function closeDropdown() {
+                optionsContainer.classList.remove('active');
+                selectTrigger.classList.remove('active');
+                isOpen = false;
+                highlightedIndex = -1;
+                updateHighlight();
+                
+                addEventLog('下拉菜单已关闭');
+                currentStatus.textContent = '当前状态：下拉菜单已关闭';
+            }
+            
+            // 切换下拉菜单状态
+            function toggleDropdown() {
+                if (isOpen) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            }
+            
+            // 选择选项
+            function selectOption(index) {
+                // 移除之前选中的选项
+                options.forEach(option => option.classList.remove('selected'));
+                
+                // 设置新的选中选项
+                options[index].classList.add('selected');
+                selectedText.textContent = options[index].textContent;
+                selectedIndex = index;
+                
+                addEventLog(`已选择: ${options[index].textContent}`);
+                currentStatus.textContent = `当前状态：已选择 "${options[index].textContent}"`;
+                
+                closeDropdown();
+            }
+            
+            // 更新高亮显示
+            function updateHighlight() {
+                options.forEach((option, index) => {
+                    if (index === highlightedIndex) {
+                        option.classList.add('highlighted');
+                        // 确保高亮选项在可视区域内
+                        option.scrollIntoView({ block: 'nearest' });
+                    } else {
+                        option.classList.remove('highlighted');
+                    }
+                });
+            }
+            
+            // 键盘导航
+            function handleKeydown(e) {
+                if (!isOpen) {
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        openDropdown();
+                    }
+                    return;
+                }
+                
+                switch(e.key) {
+                    case 'Escape':
+                        e.preventDefault();
+                        closeDropdown();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (highlightedIndex >= 0) {
+                            selectOption(highlightedIndex);
+                        }
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        highlightedIndex = (highlightedIndex + 1) % options.length;
+                        updateHighlight();
+                        addEventLog('使用 ↓ 键导航');
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        highlightedIndex = (highlightedIndex - 1 + options.length) % options.length;
+                        updateHighlight();
+                        addEventLog('使用 ↑ 键导航');
+                        break;
+                    case 'Tab':
+                        closeDropdown();
+                        break;
+                }
+            }
+            
+            // 事件监听器
+            selectTrigger.addEventListener('click', toggleDropdown);
+            
+            selectTrigger.addEventListener('keydown', handleKeydown);
+            
+            selectTrigger.addEventListener('focus', function() {
+                addEventLog('获得焦点');
+                currentStatus.textContent = '当前状态：获得焦点';
+            });
+            
+            selectTrigger.addEventListener('blur', function() {
+                // 延迟关闭，以便点击选项能正常触发
+                setTimeout(() => {
+                    if (isOpen) {
+                        closeDropdown();
+                    }
+                    addEventLog('失去焦点');
+                    currentStatus.textContent = '当前状态：失去焦点';
+                }, 150);
+            });
+            
+            // 选项点击事件
+            options.forEach((option, index) => {
+                option.addEventListener('click', function() {
+                    selectOption(index);
+                });
+                
+                option.addEventListener('mouseenter', function() {
+                    highlightedIndex = index;
+                    updateHighlight();
+                });
+            });
+            
+            // 点击外部关闭下拉菜单
+            document.addEventListener('click', function(e) {
+                if (!customSelect.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
