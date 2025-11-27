@@ -22,6 +22,38 @@ export function useTableJump(config: TableJumpConfigMap) {
    */
   const focusElementAndMaybeOpen = (el: HTMLElement | null) => {
     if (!el) return;
+if (next instanceof HTMLSelectElement) {
+  const selectEl = next as HTMLSelectElement;
+
+  // 先聚焦
+  selectEl.focus();
+
+  // ✅ Chrome 支持的方式：showPicker（新一点的版本）
+  (selectEl as any).showPicker?.();
+
+  // 再补一套鼠标事件，保证大多数 Chrome 场景都能弹开
+  setTimeout(() => {
+    const mousedown = new MouseEvent("mousedown", {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    });
+    const mouseup = new MouseEvent("mouseup", {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    });
+    const click = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    });
+
+    selectEl.dispatchEvent(mousedown);
+    selectEl.dispatchEvent(mouseup);
+    selectEl.dispatchEvent(click);
+  }, 0);
+}
 
     el.focus();
 
