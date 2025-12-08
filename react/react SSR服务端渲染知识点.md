@@ -28,3 +28,4 @@ import { hydrateRoot } from 'react-dom/client';
 
 hydrateRoot(document.getElementById('root'), <App />);
 ```
+- 同构渲染 (Isomorphic/Universal):是指同一套react代码可以在服务端和客户端运行。
