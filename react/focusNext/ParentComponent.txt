@@ -246,3 +246,650 @@ export default ParentComponent;
 
 *******************************************************
 
+// ============ EnterTableListUI.jsx ============
+import React, { useCallback, useRef } from 'react';
+import TableRow from './TableRow';
+import useTableStore from './store/useTableStore';
+import style from './style.module.css';
+
+function EnterTableListUI() {
+  // ==================== 订阅 Store ====================
+  
+  // 当前页码
+  const currentPage = useTableStore(state => state.currentPage);
+  
+  // 当前页数据（使用选择器避免不必要的重渲染）
+  const currentPageInfo = useTableStore(state => {
+    const pageData = state.pageData[state.currentPage];
+    return pageData || { dataList: [], versionCheckedInfor: {}, footerState: [] };
+  });
+  
+  const { dataList, versionCheckedInfor, footerState } = currentPageInfo;
+  
+  // 表头配置
+  const tbHeaderArg = useTableStore(state => state.tbHeaderArg);
+  
+  // 总页数
+  const totalPages = useTableStore(state => Object.keys(state.pageData).length);
+  
+  // Loading 状态
+  const isLoading = useTableStore(state => state.isLoading);
+  
+  // ==================== 订阅操作方法 ====================
+  
+  const setCurrentPage = useTableStore(state => state.setCurrentPage);
+  const insertRow = useTableStore(state => state.insertRow);
+  const insertZeroRow = useTableStore(state => state.insertZeroRow);
+  const deleteRow = useTableStore(state => state.deleteRow);
+  const updateCellValue = useTableStore(state => state.updateCellValue);
+  const updateCellProps = useTableStore(state => state.updateCellProps);
+  const setVersionError = useTableStore(state => state.setVersionError);
+  const setVersionCheck = useTableStore(state => state.setVersionCheck);
+  const toggleVersionList = useTableStore(state => state.toggleVersionList);
+  const recalculateFooter = useTableStore(state => state.recalculateFooter);
+
+  // ==================== Refs ====================
+  
+  // 输入框引用管理（用于焦点控制）
+  const inputRefs = useRef({});
+
+  // ==================== 行操作事件处理器 ====================
+  
+  /**
+   * 在表头下方插入新行
+   */
+  const handleInsertZeroRow = useCallback(() => {
+    insertZeroRow();
+    // 插入后重新计算页脚
+    setTimeout(() => {
+      recalculateFooter();
+    }, 0);
+  }, [insertZeroRow, recalculateFooter]);
+
+  /**
+   * 在指定行后插入新行
+   * @param {number} rowIndex - 当前行索引
+   */
+  const handleInsertRow = useCallback((rowIndex) => {
+    insertRow(rowIndex);
+    // 插入后重新计算页脚
+    setTimeout(() => {
+      recalculateFooter();
+    }, 0);
+  }, [insertRow, recalculateFooter]);
+
+  /**
+   * 删除指定行
+   * @param {number} rowIndex - 要删除的行索引
+   */
+  const handleDeleteRow = useCallback((rowIndex) => {
+    // 二次确认
+    if (window.confirm('确定要删除这一行吗？此操作不可撤销。')) {
+      deleteRow(rowIndex);
+      // 删除后重新计算页脚
+      setTimeout(() => {
+        recalculateFooter();
+      }, 0);
+    }
+  }, [deleteRow, recalculateFooter]);
+
+  // ==================== 输入框事件处理器 ====================
+  
+  /**
+   * 输入框内容变化
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleInputChange = useCallback((e, item, rowIndex, columnIndex) => {
+    let value = e.target.value;
+    
+    // 根据格式类型处理输入
+    if (item.format === 'money') {
+      // 金额格式：只允许数字和一个小数点
+      value = value.replace(/[^\d.]/g, '');
+      
+      // 防止多个小数点
+      const parts = value.split('.');
+      if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
+      }
+      
+      // 限制小数点后两位
+      if (parts[1] && parts[1].length > 2) {
+        value = parts[0] + '.' + parts[1].substring(0, 2);
+      }
+    } else if (item.format === 'number') {
+      // 纯数字格式
+      value = value.replace(/[^\d]/g, '');
+    } else if (item.format === 'phone') {
+      // 电话号码格式
+      value = value.replace(/[^\d-]/g, '');
+    }
+    
+    // 更新值
+    updateCellValue(rowIndex, columnIndex, value);
+    
+    // 如果是金额字段，触发页脚重新计算（防抖处理）
+    if (item.format === 'money') {
+      // 使用 setTimeout 避免频繁计算
+      if (handleInputChange.timer) {
+        clearTimeout(handleInputChange.timer);
+      }
+      handleInputChange.timer = setTimeout(() => {
+        recalculateFooter();
+      }, 300);
+    }
+  }, [updateCellValue, recalculateFooter]);
+
+  /**
+   * 输入框获得焦点
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleInputFocus = useCallback((e, item, rowIndex, columnIndex) => {
+    // 聚焦时选中全部文本（方便用户直接替换）
+    setTimeout(() => {
+      e.target.select();
+    }, 0);
+    
+    // 清除错误标记
+    if (item.valueError) {
+      updateCellProps(rowIndex, columnIndex, { valueError: false });
+    }
+    
+    // 金额格式：去掉千分位逗号，方便编辑
+    if (item.format === 'money' && item.value) {
+      const numValue = item.value.replace(/,/g, '');
+      if (numValue !== item.value) {
+        updateCellValue(rowIndex, columnIndex, numValue);
+      }
+    }
+  }, [updateCellProps, updateCellValue]);
+
+  /**
+   * 输入框失去焦点
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleInputBlur = useCallback((e, item, rowIndex, columnIndex) => {
+    const value = e.target.value.trim();
+    
+    // 验证必填项
+    if (item.required && !value) {
+      updateCellProps(rowIndex, columnIndex, { 
+        valueError: true 
+      });
+      return;
+    }
+    
+    // 金额格式化：添加千分位和固定两位小数
+    if (item.format === 'money' && value) {
+      const numValue = parseFloat(value.replace(/,/g, ''));
+      if (!isNaN(numValue)) {
+        const formatted = numValue.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        updateCellValue(rowIndex, columnIndex, formatted);
+        
+        // 格式化后重新计算页脚
+        recalculateFooter();
+      } else {
+        // 无效数字，清空
+        updateCellValue(rowIndex, columnIndex, '');
+        updateCellProps(rowIndex, columnIndex, { valueError: true });
+      }
+    }
+    
+    // 数字格式化
+    if (item.format === 'number' && value) {
+      const numValue = parseInt(value, 10);
+      if (!isNaN(numValue)) {
+        updateCellValue(rowIndex, columnIndex, numValue.toString());
+      }
+    }
+    
+    // 版本校验（如果需要）
+    if (item.needVersionCheck && value) {
+      checkVersion(value, rowIndex, columnIndex);
+    }
+  }, [updateCellProps, updateCellValue, recalculateFooter]);
+
+  /**
+   * 输入框键盘事件
+   * @param {Event} e - 键盘事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleInputKeydown = useCallback((e, item, rowIndex, columnIndex) => {
+    // Enter 键：跳转到下一行相同列
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      
+      const nextRowIndex = rowIndex + 1;
+      const nextInput = document.querySelector(
+        `[data-testid="${item.key}-${nextRowIndex}"]`
+      );
+      
+      if (nextInput) {
+        nextInput.focus();
+      } else {
+        // 如果是最后一行，自动插入新行并聚焦
+        handleInsertRow(rowIndex);
+        setTimeout(() => {
+          const newInput = document.querySelector(
+            `[data-testid="${item.key}-${nextRowIndex}"]`
+          );
+          newInput?.focus();
+        }, 50);
+      }
+    }
+    
+    // Tab 键：跳转到下一列（使用默认行为）
+    
+    // 方向键：上下左右导航
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextInput = document.querySelector(
+        `[data-testid="${item.key}-${rowIndex + 1}"]`
+      );
+      nextInput?.focus();
+    }
+    
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevInput = document.querySelector(
+        `[data-testid="${item.key}-${rowIndex - 1}"]`
+      );
+      prevInput?.focus();
+    }
+    
+    // Escape 键：取消编辑，恢复原值
+    if (e.key === 'Escape') {
+      e.target.blur();
+    }
+  }, [handleInsertRow]);
+
+  // ==================== Select 事件处理器 ====================
+  
+  /**
+   * Select 下拉框获得焦点
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleSelectFocus = useCallback((e, item, rowIndex, columnIndex) => {
+    // 清除错误标记
+    if (item.valueError) {
+      updateCellProps(rowIndex, columnIndex, { valueError: false });
+    }
+  }, [updateCellProps]);
+
+  /**
+   * Select 下拉框值变化
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleSelectChange = useCallback((e, item, rowIndex, columnIndex) => {
+    const value = e.target.value;
+    updateCellValue(rowIndex, columnIndex, value);
+    
+    // 如果 select 变化会影响其他字段，在这里处理
+    // 例如：选择分类后自动填充默认值
+    if (item.key === 'category') {
+      // 根据分类设置默认金额
+      // const defaultAmount = getDefaultAmountByCategory(value);
+      // updateCellValue(rowIndex, columnIndex + 1, defaultAmount);
+    }
+  }, [updateCellValue]);
+
+  /**
+   * Select 下拉框点击
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const handleSelectClick = useCallback((e, item, rowIndex, columnIndex) => {
+    // Select 点击时的特殊处理（如果需要）
+    // 例如：动态加载选项列表
+  }, []);
+
+  /**
+   * Select 下拉框鼠标按下
+   * @param {Event} e - 事件对象
+   */
+  const handleSelectMouseDown = useCallback((e) => {
+    // 防止某些浏览器的默认行为冲突
+  }, []);
+
+  // ==================== 版本校验相关 ====================
+  
+  /**
+   * 版本校验（异步）
+   * @param {string} value - 要校验的版本值
+   * @param {number} rowIndex - 行索引
+   * @param {number} columnIndex - 列索引
+   */
+  const checkVersion = useCallback(async (value, rowIndex, columnIndex) => {
+    if (!value) return;
+    
+    try {
+      // 调用后端接口校验版本
+      // const response = await fetch('/api/check-version', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ version: value })
+      // });
+      // const { valid, suggestions } = await response.json();
+      
+      // Mock 数据演示
+      await new Promise(resolve => setTimeout(resolve, 500)); // 模拟网络延迟
+      
+      const mockValid = Math.random() > 0.3; // 70% 通过率
+      const mockSuggestions = !mockValid ? [
+        { id: 1, txt: value + '-V1.0' },
+        { id: 2, txt: value + '-V2.0' },
+        { id: 3, txt: value + '-V3.0' }
+      ] : [];
+      
+      if (!mockValid) {
+        // 版本不存在，显示建议列表
+        setVersionError(rowIndex, columnIndex, true, mockSuggestions);
+        console.log(`[版本校验失败] 行${rowIndex}, 列${columnIndex}, 值: ${value}`);
+      } else {
+        // 版本正确，标记已校验
+        setVersionCheck(rowIndex, columnIndex, 1);
+        console.log(`[版本校验通过] 行${rowIndex}, 列${columnIndex}, 值: ${value}`);
+      }
+    } catch (error) {
+      console.error('版本校验失败', error);
+      // 网络错误时也显示错误状态
+      updateCellProps(rowIndex, columnIndex, { 
+        versionError: true,
+        showList: false 
+      });
+    }
+  }, [setVersionError, setVersionCheck, updateCellProps]);
+
+  /**
+   * 点击版本建议列表项
+   * @param {Event} e - 事件对象
+   * @param {Object} item - 单元格数据对象
+   */
+  const handleVersionClick = useCallback((e, item) => {
+    const { rowIndex, columnIndex } = item;
+    const selectedVersion = e.target.textContent;
+    
+    // 更新为选中的版本
+    updateCellValue(rowIndex, columnIndex, selectedVersion);
+    
+    // 清除版本错误
+    setVersionError(rowIndex, columnIndex, false, []);
+    
+    // 标记已校验
+    setVersionCheck(rowIndex, columnIndex, 1);
+    
+    console.log(`[选择版本] 行${rowIndex}, 列${columnIndex}, 版本: ${selectedVersion}`);
+  }, [updateCellValue, setVersionError, setVersionCheck]);
+
+  // ==================== 输入框注册（焦点管理） ====================
+  
+  /**
+   * 注册输入框引用
+   * @param {string} key - 输入框唯一标识
+   * @returns {Function} ref 回调函数
+   */
+  const registerInput = useCallback((key) => {
+    return (el) => {
+      if (el) {
+        inputRefs.current[key] = el;
+      } else {
+        delete inputRefs.current[key];
+      }
+    };
+  }, []);
+
+  // ==================== 分页控制 ====================
+  
+  /**
+   * 上一页
+   */
+  const handlePrevPage = useCallback(() => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPage, setCurrentPage]);
+
+  /**
+   * 下一页
+   */
+  const handleNextPage = useCallback(() => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPage, totalPages, setCurrentPage]);
+
+  /**
+   * 跳转到指定页
+   * @param {number} pageNum - 目标页码
+   */
+  const handlePageChange = useCallback((pageNum) => {
+    if (pageNum >= 1 && pageNum <= totalPages) {
+      setCurrentPage(pageNum);
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [totalPages, setCurrentPage]);
+
+  // ==================== 渲染 ====================
+  
+  // 加载中状态
+  if (isLoading) {
+    return (
+      <div className={style.loadingContainer}>
+        <div className={style.spinner}></div>
+        <p>数据加载中...</p>
+      </div>
+    );
+  }
+
+  // 未初始化状态
+  if (!tbHeaderArg) {
+    return (
+      <div className={style.errorContainer}>
+        <p>表格配置加载失败</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className={style.tbContainer}>
+      {/* 分页导航（顶部） */}
+      <div className={style.paginationTop}>
+        <div className={style.paginationLeft}>
+          <button 
+            onClick={handlePrevPage} 
+            disabled={currentPage === 1}
+            className={`${style.pageBtn} ${currentPage === 1 ? style.disabled : ''}`}
+          >
+            ← 上一页
+          </button>
+          <span className={style.pageInfo}>
+            第 <strong>{currentPage}</strong> / {totalPages} 页
+          </span>
+          <button 
+            onClick={handleNextPage} 
+            disabled={currentPage === totalPages}
+            className={`${style.pageBtn} ${currentPage === totalPages ? style.disabled : ''}`}
+          >
+            下一页 →
+          </button>
+        </div>
+        
+        {/* 页码快捷跳转 */}
+        <div className={style.pageNumbers}>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+            <button
+              key={pageNum}
+              onClick={() => handlePageChange(pageNum)}
+              className={`${style.pageNumBtn} ${pageNum === currentPage ? style.active : ''}`}
+              title={`跳转到第 ${pageNum} 页`}
+            >
+              {pageNum}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 表格主体 */}
+      <div className={style.table_list_style}>
+        {/* Header */}
+        <div className={style.gridHeader}>
+          {tbHeaderArg?.theadList?.map((rowItem, rowIndex) => (
+            <React.Fragment key={rowItem.id}>
+              {/* 序号列（带插入按钮） */}
+              {tbHeaderArg.showIndex && rowIndex === 0 && (
+                <div
+                  key={rowItem.id + '_index'}
+                  className={`${style.selfTh} ${style.gridCell}`}
+                  style={{ 
+                    gridRow: `1 / ${tbHeaderArg.showRowSpan + 1}`,
+                    gridColumn: '1'
+                  }}
+                >
+                  <div className={style.operation_btn_wrapper}>
+                    <button
+                      className={`${style.operation_btn} ${style.header_add_btn}`}
+                      onClick={handleInsertZeroRow}
+                      title="在顶部插入新行"
+                    >
+                      +
+                    </button>
+                    <span>{tbHeaderArg.titleIndex}</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* 其他表头列 */}
+              {rowItem.rowList.map((colItem) => (
+                <div
+                  key={colItem.id}
+                  className={`${style.selfTh} ${style.gridCell}`}
+                  style={{
+                    gridRow: colItem.rowSpan > 1 
+                      ? `${rowIndex + 1} / span ${colItem.rowSpan}` 
+                      : `${rowIndex + 1}`,
+                    gridColumn: colItem.colSpan > 1 
+                      ? `span ${colItem.colSpan}` 
+                      : 'auto'
+                  }}
+                >
+                  {colItem.title}
+                  {colItem.required && <span className={style.required}>*</span>}
+                </div>
+              ))}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div className={style.gridBody}>
+          {dataList.length === 0 ? (
+            <div className={style.emptyState}>
+              <p>当前页面暂无数据</p>
+              <p>点击表头的 "+" 按钮添加新行</p>
+            </div>
+          ) : (
+            dataList.map((rowItem, rowIndex) => (
+              <TableRow
+                key={rowItem[0]?.uuid || `row-${rowIndex}`}
+                rowItem={rowItem}
+                rowIndex={rowIndex}
+                tbHeaderArg={tbHeaderArg}
+                versionCheckedInfor={versionCheckedInfor}
+                registerInput={registerInput}
+                onInsertRow={handleInsertRow}
+                onDeleteRow={handleDeleteRow}
+                onInputChange={handleInputChange}
+                onSelectFocus={handleSelectFocus}
+                onSelectChange={handleSelectChange}
+                onSelectClick={handleSelectClick}
+                onSelectMouseDown={handleSelectMouseDown}
+                onInputFocus={handleInputFocus}
+                onInputBlur={handleInputBlur}
+                onInputKeydown={handleInputKeydown}
+                onVersionClick={handleVersionClick}
+              />
+            ))
+          )}
+        </div>
+
+        {/* Footer */}
+        {footerState.length > 0 && (
+          <div className={style.gridFooter}>
+            {footerState.map((tdItem) => (
+              <div
+                key={tdItem.id}
+                className={`${style.selfTd} ${style.gridCell} ${
+                  tdItem.title && tdItem.title.length > 0
+                    ? style.selfFooterTitle
+                    : style.selfInputReadOnly
+                }`}
+                style={{
+                  gridRow: tdItem.rowSpan > 1 ? `span ${tdItem.rowSpan}` : undefined,
+                  gridColumn: tdItem.colSpan > 1 ? `span ${tdItem.colSpan}` : undefined
+                }}
+              >
+                {tdItem.title && tdItem.title.length > 0 ? tdItem.title : tdItem.value}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 分页导航（底部） */}
+      <div className={style.paginationBottom}>
+        <button 
+          onClick={handlePrevPage} 
+          disabled={currentPage === 1}
+          className={`${style.pageBtn} ${style.pageBtnLarge} ${currentPage === 1 ? style.disabled : ''}`}
+        >
+          ← 上一页
+        </button>
+        
+        <div className={style.pageInfoLarge}>
+          <span>第 <strong>{currentPage}</strong> 页</span>
+          <span className={style.separator}>|</span>
+          <span>共 {totalPages} 页</span>
+          <span className={style.separator}>|</span>
+          <span>当前页 {dataList.length} 条数据</span>
+        </div>
+        
+        <button 
+          onClick={handleNextPage} 
+          disabled={currentPage === totalPages}
+          className={`${style.pageBtn} ${style.pageBtnLarge} ${currentPage === totalPages ? style.disabled : ''}`}
+        >
+          下一页 →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default EnterTableListUI;
