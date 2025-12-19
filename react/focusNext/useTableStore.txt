@@ -1,0 +1,419 @@
+// ============ store/useTableStore.js ============
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+
+const useTableStore = create(
+  devtools(
+    persist(
+      immer((set, get) => ({
+        // ==================== 状态 ====================
+        
+        // 表格数据（二维数组）
+        dataList: [],
+        
+        // 页脚数据
+        footerState: [],
+        
+        // 版本校验信息
+        versionCheckedInfor: {},
+        
+        // 表头配置
+        tbHeaderArg: null,
+        
+        // UI 状态
+        hasUnsavedChanges: false,
+        isLoading: false,
+        
+        // ==================== 初始化 ====================
+        
+        /**
+         * 初始化表格数据
+         * @param {Array} data - 初始数据
+         * @param {Object} headerConfig - 表头配置
+         * @param {Array} footerData - 页脚数据
+         */
+        initializeTable: (data, headerConfig, footerData) => {
+          set((state) => {
+            state.dataList = data;
+            state.tbHeaderArg = headerConfig;
+            state.footerState = footerData;
+            state.versionCheckedInfor = {};
+            state.hasUnsavedChanges = false;
+          }, false, 'initializeTable');
+        },
+
+        // ==================== 行操作 ====================
+        
+        /**
+         * 在指定位置插入新行
+         * @param {number} rowIndex - 插入位置索引
+         */
+        insertRow: (rowIndex) => {
+          set((state) => {
+            const { tbHeaderArg } = state;
+            
+            // 创建新行数据（基于表头配置）
+            const newRow = tbHeaderArg.theadList[tbHeaderArg.theadList.length - 1].rowList.map((colItem, colIndex) => ({
+              uuid: `${Date.now()}_${colIndex}`,
+              rowIndex: rowIndex,
+              columnIndex: colIndex,
+              key: colItem.key || '',
+              value: '',
+              type: colItem.type || 'input',
+              format: colItem.format,
+              required: colItem.required || false,
+              disable: colItem.disable || false,
+              placeholder: colItem.placeholder || '',
+              options: colItem.options || [],
+              versionError: false,
+              valueError: false,
+              showList: false,
+              versionList: []
+            }));
+            
+            // 在指定位置插入
+            state.dataList.splice(rowIndex + 1, 0, newRow);
+            
+            // 更新后续行的 rowIndex
+            state.dataList.forEach((row, idx) => {
+              row.forEach(cell => {
+                cell.rowIndex = idx;
+              });
+            });
+            
+            state.hasUnsavedChanges = true;
+          }, false, 'insertRow');
+        },
+
+        /**
+         * 在第一行插入（表头下方）
+         */
+        insertZeroRow: () => {
+          set((state) => {
+            const { tbHeaderArg } = state;
+            
+            const newRow = tbHeaderArg.theadList[tbHeaderArg.theadList.length - 1].rowList.map((colItem, colIndex) => ({
+              uuid: `${Date.now()}_${colIndex}`,
+              rowIndex: 0,
+              columnIndex: colIndex,
+              key: colItem.key || '',
+              value: '',
+              type: colItem.type || 'input',
+              format: colItem.format,
+              required: colItem.required || false,
+              disable: colItem.disable || false,
+              placeholder: colItem.placeholder || '',
+              options: colItem.options || [],
+              versionError: false,
+              valueError: false,
+              showList: false,
+              versionList: []
+            }));
+            
+            state.dataList.unshift(newRow);
+            
+            // 更新所有行的 rowIndex
+            state.dataList.forEach((row, idx) => {
+              row.forEach(cell => {
+                cell.rowIndex = idx;
+              });
+            });
+            
+            state.hasUnsavedChanges = true;
+          }, false, 'insertZeroRow');
+        },
+
+        /**
+         * 删除指定行
+         * @param {number} rowIndex - 要删除的行索引
+         */
+        deleteRow: (rowIndex) => {
+          set((state) => {
+            if (state.dataList.length <= 1) {
+              // 至少保留一行
+              return;
+            }
+            
+            state.dataList.splice(rowIndex, 1);
+            
+            // 更新后续行的 rowIndex
+            state.dataList.forEach((row, idx) => {
+              row.forEach(cell => {
+                cell.rowIndex = idx;
+              });
+            });
+            
+            // 删除对应的版本校验信息
+            delete state.versionCheckedInfor[rowIndex];
+            
+            // 重新索引版本校验信息
+            const newVersionInfo = {};
+            Object.keys(state.versionCheckedInfor).forEach(key => {
+              const oldIndex = parseInt(key);
+              if (oldIndex > rowIndex) {
+                newVersionInfo[oldIndex - 1] = state.versionCheckedInfor[key];
+              } else if (oldIndex < rowIndex) {
+                newVersionInfo[oldIndex] = state.versionCheckedInfor[key];
+              }
+            });
+            state.versionCheckedInfor = newVersionInfo;
+            
+            state.hasUnsavedChanges = true;
+          }, false, 'deleteRow');
+        },
+
+        // ==================== 单元格操作 ====================
+        
+        /**
+         * 更新单元格值
+         * @param {number} rowIndex - 行索引
+         * @param {number} columnIndex - 列索引
+         * @param {string} value - 新值
+         */
+        updateCellValue: (rowIndex, columnIndex, value) => {
+          set((state) => {
+            const cell = state.dataList[rowIndex]?.[columnIndex];
+            if (cell) {
+              cell.value = value;
+              cell.valueError = false; // 清除错误标记
+              state.hasUnsavedChanges = true;
+            }
+          }, false, 'updateCellValue');
+        },
+
+        /**
+         * 更新单元格属性（批量更新）
+         * @param {number} rowIndex
+         * @param {number} columnIndex
+         * @param {Object} updates - 要更新的属性对象
+         */
+        updateCellProps: (rowIndex, columnIndex, updates) => {
+          set((state) => {
+            const cell = state.dataList[rowIndex]?.[columnIndex];
+            if (cell) {
+              Object.assign(cell, updates);
+              state.hasUnsavedChanges = true;
+            }
+          }, false, 'updateCellProps');
+        },
+
+        /**
+         * 设置版本错误和列表
+         * @param {number} rowIndex
+         * @param {number} columnIndex
+         * @param {boolean} hasError
+         * @param {Array} versionList
+         */
+        setVersionError: (rowIndex, columnIndex, hasError, versionList = []) => {
+          set((state) => {
+            const cell = state.dataList[rowIndex]?.[columnIndex];
+            if (cell) {
+              cell.versionError = hasError;
+              cell.versionList = versionList;
+              cell.showList = hasError && versionList.length > 0;
+            }
+          }, false, 'setVersionError');
+        },
+
+        /**
+         * 切换版本列表显示
+         * @param {number} rowIndex
+         * @param {number} columnIndex
+         */
+        toggleVersionList: (rowIndex, columnIndex) => {
+          set((state) => {
+            const cell = state.dataList[rowIndex]?.[columnIndex];
+            if (cell) {
+              cell.showList = !cell.showList;
+            }
+          }, false, 'toggleVersionList');
+        },
+
+        // ==================== 版本校验 ====================
+        
+        /**
+         * 设置版本校验标记
+         * @param {number} rowIndex
+         * @param {number} columnIndex
+         * @param {number} status - 1: 已校验, 0: 未校验
+         */
+        setVersionCheck: (rowIndex, columnIndex, status) => {
+          set((state) => {
+            if (!state.versionCheckedInfor[rowIndex]) {
+              state.versionCheckedInfor[rowIndex] = {};
+            }
+            state.versionCheckedInfor[rowIndex][columnIndex] = status;
+          }, false, 'setVersionCheck');
+        },
+
+        /**
+         * 清除某行的版本校验
+         * @param {number} rowIndex
+         */
+        clearVersionCheck: (rowIndex) => {
+          set((state) => {
+            delete state.versionCheckedInfor[rowIndex];
+          }, false, 'clearVersionCheck');
+        },
+
+        // ==================== 页脚更新 ====================
+        
+        /**
+         * 更新页脚数据（通常是汇总计算）
+         * @param {Array} newFooterData
+         */
+        updateFooter: (newFooterData) => {
+          set((state) => {
+            state.footerState = newFooterData;
+          }, false, 'updateFooter');
+        },
+
+        /**
+         * 重新计算页脚（例如总金额）
+         */
+        recalculateFooter: () => {
+          set((state) => {
+            const { dataList, footerState } = state;
+            
+            // 示例：计算总金额
+            const totalAmount = dataList.reduce((sum, row) => {
+              const amountCell = row.find(cell => cell.key === 'amount');
+              return sum + (parseFloat(amountCell?.value) || 0);
+            }, 0);
+            
+            // 更新页脚中的总金额单元格
+            const footerCopy = [...footerState];
+            const totalCell = footerCopy.find(cell => cell.key === 'total');
+            if (totalCell) {
+              totalCell.value = totalAmount.toFixed(2);
+            }
+            
+            state.footerState = footerCopy;
+          }, false, 'recalculateFooter');
+        },
+
+        // ==================== 数据导出 ====================
+        
+        /**
+         * 获取当前表格数据（用于保存）
+         * @returns {Object}
+         */
+        getTableData: () => {
+          const { dataList, footerState, versionCheckedInfor } = get();
+          return {
+            dataList,
+            footerState,
+            versionCheckedInfor
+          };
+        },
+
+        /**
+         * 获取格式化的提交数据
+         * @returns {Array}
+         */
+        getSubmitData: () => {
+          const { dataList } = get();
+          
+          // 转换为后端需要的格式
+          return dataList.map(row => {
+            const rowData = {};
+            row.forEach(cell => {
+              if (cell.key) {
+                rowData[cell.key] = cell.value;
+              }
+            });
+            return rowData;
+          });
+        },
+
+        // ==================== 数据验证 ====================
+        
+        /**
+         * 验证所有必填项
+         * @returns {Object} { valid: boolean, errors: Array }
+         */
+        validateAll: () => {
+          const { dataList } = get();
+          const errors = [];
+          
+          dataList.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+              if (cell.required && !cell.value) {
+                errors.push({
+                  rowIndex,
+                  columnIndex: colIndex,
+                  key: cell.key,
+                  message: `第 ${rowIndex + 1} 行 ${cell.key} 为必填项`
+                });
+                
+                // 标记错误
+                set((state) => {
+                  state.dataList[rowIndex][colIndex].valueError = true;
+                }, false, 'validateError');
+              }
+            });
+          });
+          
+          return {
+            valid: errors.length === 0,
+            errors
+          };
+        },
+
+        /**
+         * 清除所有错误标记
+         */
+        clearAllErrors: () => {
+          set((state) => {
+            state.dataList.forEach(row => {
+              row.forEach(cell => {
+                cell.valueError = false;
+                cell.versionError = false;
+              });
+            });
+          }, false, 'clearAllErrors');
+        },
+
+        // ==================== 持久化操作 ====================
+        
+        /**
+         * 保存数据（标记为已保存）
+         */
+        markAsSaved: () => {
+          set({ hasUnsavedChanges: false }, false, 'markAsSaved');
+        },
+
+        /**
+         * 重置表格数据
+         */
+        resetTable: () => {
+          set({
+            dataList: [],
+            footerState: [],
+            versionCheckedInfor: {},
+            hasUnsavedChanges: false
+          }, false, 'resetTable');
+        },
+
+        // ==================== UI 状态 ====================
+        
+        setLoading: (loading) => {
+          set({ isLoading: loading }, false, 'setLoading');
+        }
+
+      })),
+      {
+        name: 'table-storage', // localStorage key
+        partialize: (state) => ({
+          // 只持久化必要的数据
+          dataList: state.dataList,
+          footerState: state.footerState
+        })
+      }
+    ),
+    { name: 'TableStore' } // Redux DevTools 名称
+  )
+);
+
+export default useTableStore;
