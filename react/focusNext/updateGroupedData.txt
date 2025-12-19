@@ -1,0 +1,140 @@
+//==========1) 更新函数：只改目标 cell，其他保持引用尽量不变（性能好）===========
+const updateCell = (
+  page: number,
+  rowIndex: number,
+  cellKey: string,
+  nextValue: any
+) => {
+  setGroupdata(prev => {
+    const pageRows = prev[page];
+    if (!pageRows) return prev;
+
+    const row = pageRows[rowIndex];
+    if (!row) return prev;
+
+    const cellIndex = row.findIndex(c => c.key === cellKey);
+    if (cellIndex < 0) return prev;
+
+    // 如果值没变，直接返回 prev，避免多余渲染
+    if (row[cellIndex].value === nextValue) return prev;
+
+    const nextCell = { ...row[cellIndex], value: nextValue };
+    const nextRow = row.slice();
+    nextRow[cellIndex] = nextCell;
+
+    const nextPageRows = pageRows.slice();
+    nextPageRows[rowIndex] = nextRow;
+
+    return {
+      ...prev,
+      [page]: nextPageRows,
+    };
+  });
+};
+
+***********************************************************
+//==========2) UI 渲染：按 currentPage 切换展示 & 绑定事件==========
+function Table() {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [groupdata, setGroupdata] = useState<GroupData>({
+    1: [
+      [
+        { key: "idNo", value: "1213", type: "input" },
+        { key: "dde1", value: "xx", type: "input" },
+        { key: "dde2", value: "xxx", type: "input" },
+      ],
+    ],
+    2: [
+      [
+        { key: "idNo", value: "222", type: "input" },
+        { key: "dde1", value: "xx2", type: "input" },
+        { key: "dde2", value: "xx2x", type: "input" },
+      ],
+    ],
+  });
+
+  const rows = groupdata[currentPage] ?? [];
+  const pages = Object.keys(groupdata).map(Number).sort((a, b) => a - b);
+
+  const updateCell = (page: number, rowIndex: number, cellKey: string, nextValue: any) => {
+    setGroupdata(prev => {
+      const pageRows = prev[page];
+      if (!pageRows) return prev;
+      const row = pageRows[rowIndex];
+      if (!row) return prev;
+
+      const cellIndex = row.findIndex(c => c.key === cellKey);
+      if (cellIndex < 0) return prev;
+      if (row[cellIndex].value === nextValue) return prev;
+
+      const nextCell = { ...row[cellIndex], value: nextValue };
+      const nextRow = row.slice();
+      nextRow[cellIndex] = nextCell;
+
+      const nextPageRows = pageRows.slice();
+      nextPageRows[rowIndex] = nextRow;
+
+      return { ...prev, [page]: nextPageRows };
+    });
+  };
+
+  return (
+    <div style={{ padding: 12 }}>
+      {/* pagination */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        {pages.map(p => (
+          <button key={p} disabled={p === currentPage} onClick={() => setCurrentPage(p)}>
+            Page {p}
+          </button>
+        ))}
+      </div>
+
+      {/* table */}
+      <div style={{ display: "grid", gap: 8 }}>
+        {rows.map((row, rowIndex) => (
+          <div
+            key={rowIndex}
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${row.length}, minmax(120px, 1fr))`,
+              gap: 8,
+              padding: 8,
+              border: "1px solid #ddd",
+              borderRadius: 8,
+            }}
+          >
+            {row.map(cell => {
+              if (cell.type === "select") {
+                return (
+                  <select
+                    key={cell.key}
+                    value={cell.value ?? ""}
+                    onChange={e => updateCell(currentPage, rowIndex, cell.key, e.target.value)}
+                    style={{ padding: 6 }}
+                  >
+                    {(cell.options ?? []).map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                );
+              }
+
+              return (
+                <input
+                  key={cell.key}
+                  value={cell.value ?? ""}
+                  onChange={e => updateCell(currentPage, rowIndex, cell.key, e.target.value)}
+                  style={{ padding: 6 }}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
