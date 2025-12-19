@@ -142,3 +142,221 @@ function ParentComponent() {
 }
 
 export default ParentComponent;
+
+*********************************************************
+
+// ============ EnterTableListUI.jsx ============
+import React, { useCallback } from 'react';
+import TableRow from './TableRow';
+import useTableStore from './store/useTableStore';
+import style from './style.module.css';
+
+function EnterTableListUI() {
+  // 订阅 store
+  const dataList = useTableStore(state => state.dataList);
+  const footerState = useTableStore(state => state.footerState);
+  const tbHeaderArg = useTableStore(state => state.tbHeaderArg);
+  const versionCheckedInfor = useTableStore(state => state.versionCheckedInfor);
+  
+  // 订阅操作方法
+  const insertRow = useTableStore(state => state.insertRow);
+  const insertZeroRow = useTableStore(state => state.insertZeroRow);
+  const deleteRow = useTableStore(state => state.deleteRow);
+  const updateCellValue = useTableStore(state => state.updateCellValue);
+  const updateCellProps = useTableStore(state => state.updateCellProps);
+  const setVersionError = useTableStore(state => state.setVersionError);
+  const setVersionCheck = useTableStore(state => state.setVersionCheck);
+  const recalculateFooter = useTableStore(state => state.recalculateFooter);
+
+  // ==================== 事件处理器 ====================
+  
+  const handleInsertZeroRow = useCallback(() => {
+    insertZeroRow();
+  }, [insertZeroRow]);
+
+  const handleInsertRow = useCallback((rowIndex) => {
+    insertRow(rowIndex);
+  }, [insertRow]);
+
+  const handleDeleteRow = useCallback((rowIndex) => {
+    if (window.confirm('确定要删除这一行吗？')) {
+      deleteRow(rowIndex);
+      recalculateFooter(); // 删除后重新计算页脚
+    }
+  }, [deleteRow, recalculateFooter]);
+
+  const handleInputChange = useCallback((e, item, rowIndex, columnIndex) => {
+    const value = e.target.value;
+    updateCellValue(rowIndex, columnIndex, value);
+    
+    // 如果是金额字段，触发页脚重新计算
+    if (item.format === 'money') {
+      recalculateFooter();
+    }
+  }, [updateCellValue, recalculateFooter]);
+
+  const handleSelectChange = useCallback((e, item, rowIndex, columnIndex) => {
+    const value = e.target.value;
+    updateCellValue(rowIndex, columnIndex, value);
+  }, [updateCellValue]);
+
+  const handleInputFocus = useCallback((e, item, rowIndex, columnIndex) => {
+    // 聚焦时的逻辑（如选中文本）
+    e.target.select();
+  }, []);
+
+  const handleInputBlur = useCallback((e, item, rowIndex, columnIndex) => {
+    // 失焦时的验证逻辑
+    const value = e.target.value;
+    
+    if (item.required && !value) {
+      updateCellProps(rowIndex, columnIndex, { valueError: true });
+    }
+  }, [updateCellProps]);
+
+  const handleInputKeydown = useCallback((e, item, rowIndex, columnIndex) => {
+    // Enter 键跳转到下一个输入框
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const nextInput = document.querySelector(
+        `[name="${item.key}"][data-testid="${item.key}-${rowIndex + 1}"]`
+      );
+      nextInput?.focus();
+    }
+  }, []);
+
+  const handleSelectFocus = useCallback((e, item, rowIndex, columnIndex) => {
+    // select 聚焦逻辑
+  }, []);
+
+  const handleSelectClick = useCallback((e, item, rowIndex, columnIndex) => {
+    // select 点击逻辑
+  }, []);
+
+  const handleSelectMouseDown = useCallback((e) => {
+    // select 鼠标按下逻辑
+  }, []);
+
+  const handleVersionClick = useCallback((e, item) => {
+    // 版本选择点击
+    const { rowIndex, columnIndex, versionList } = item;
+    const selectedVersion = e.target.textContent;
+    
+    // 更新值并标记已校验
+    updateCellValue(rowIndex, columnIndex, selectedVersion);
+    setVersionError(rowIndex, columnIndex, false, []);
+    setVersionCheck(rowIndex, columnIndex, 1);
+  }, [updateCellValue, setVersionError, setVersionCheck]);
+
+  // 输入框注册（用于焦点管理）
+  const inputRefs = React.useRef({});
+  const registerInput = useCallback((key) => {
+    return (el) => {
+      if (el) {
+        inputRefs.current[key] = el;
+      }
+    };
+  }, []);
+
+  if (!tbHeaderArg) {
+    return <div>加载中...</div>;
+  }
+
+  // ==================== Render ====================
+  return (
+    <div className={style.tbContainer}>
+      <div className={style.table_list_style}>
+        {/* Header */}
+        <div className={style.gridHeader}>
+          {tbHeaderArg?.theadList?.map((rowItem, rowIndex) => (
+            <React.Fragment key={rowItem.id}>
+              {tbHeaderArg.showIndex && rowIndex === 0 && (
+                <div
+                  key={rowItem.id + '_index'}
+                  className={`${style.selfTh} ${style.gridCell}`}
+                  style={{ 
+                    gridRow: `1 / ${tbHeaderArg.showRowSpan + 1}`,
+                    gridColumn: '1'
+                  }}
+                >
+                  <div className={style.operation_btn_wrapper}>
+                    <button
+                      className={`${style.operation_btn} ${style.header_add_btn}`}
+                      onClick={handleInsertZeroRow}
+                    >
+                      +
+                    </button>
+                    <span>{tbHeaderArg.titleIndex}</span>
+                  </div>
+                </div>
+              )}
+              {rowItem.rowList.map((colItem) => (
+                <div
+                  key={colItem.id}
+                  className={`${style.selfTh} ${style.gridCell}`}
+                  style={{
+                    gridRow: colItem.rowSpan > 1 
+                      ? `${rowIndex + 1} / span ${colItem.rowSpan}` 
+                      : `${rowIndex + 1}`,
+                    gridColumn: colItem.colSpan > 1 
+                      ? `span ${colItem.colSpan}` 
+                      : 'auto'
+                  }}
+                >
+                  {colItem.title}
+                </div>
+              ))}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div className={style.gridBody}>
+          {dataList.map((rowItem, rowIndex) => (
+            <TableRow
+              key={rowItem[0].uuid}
+              rowItem={rowItem}
+              rowIndex={rowIndex}
+              tbHeaderArg={tbHeaderArg}
+              versionCheckedInfor={versionCheckedInfor}
+              registerInput={registerInput}
+              onInsertRow={handleInsertRow}
+              onDeleteRow={handleDeleteRow}
+              onInputChange={handleInputChange}
+              onSelectFocus={handleSelectFocus}
+              onSelectChange={handleSelectChange}
+              onSelectClick={handleSelectClick}
+              onSelectMouseDown={handleSelectMouseDown}
+              onInputFocus={handleInputFocus}
+              onInputBlur={handleInputBlur}
+              onInputKeydown={handleInputKeydown}
+              onVersionClick={handleVersionClick}
+            />
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className={style.gridFooter}>
+          {footerState.map((tdItem) => (
+            <div
+              key={tdItem.id}
+              className={`${style.selfTd} ${style.gridCell} ${
+                tdItem.title.length > 0
+                  ? style.selfFooterTitle
+                  : style.selfInputReadOnly
+              }`}
+              style={{
+                gridRow: tdItem.rowSpan > 1 ? `span ${tdItem.rowSpan}` : undefined,
+                gridColumn: tdItem.colSpan > 1 ? `span ${tdItem.colSpan}` : undefined
+              }}
+            >
+              {tdItem.title.length > 0 ? tdItem.title : tdItem.value}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default EnterTableListUI;
