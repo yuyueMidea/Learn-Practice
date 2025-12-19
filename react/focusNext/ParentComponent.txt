@@ -1,0 +1,144 @@
+// ============ ParentComponent.jsx ============
+import React, { useEffect } from 'react';
+import EnterTableListUI from './EnterTableListUI';
+import Payment from './Payment';
+import Signature from './Signature';
+import useTableStore from './store/useTableStore';
+
+function ParentComponent() {
+  // 订阅 store
+  const getTableData = useTableStore(state => state.getTableData);
+  const getSubmitData = useTableStore(state => state.getSubmitData);
+  const validateAll = useTableStore(state => state.validateAll);
+  const markAsSaved = useTableStore(state => state.markAsSaved);
+  const hasUnsavedChanges = useTableStore(state => state.hasUnsavedChanges);
+  const initializeTable = useTableStore(state => state.initializeTable);
+
+  // 初始化数据
+  useEffect(() => {
+    // 从接口获取初始数据
+    const fetchData = async () => {
+      try {
+        // const response = await fetch('/api/table-data');
+        // const { dataList, headerConfig, footerData } = await response.json();
+        
+        // Mock 数据示例
+        const mockData = [
+          [
+            { uuid: '1-0', rowIndex: 0, columnIndex: 0, key: 'name', value: '商品A', type: 'input', required: true },
+            { uuid: '1-1', rowIndex: 0, columnIndex: 1, key: 'amount', value: '100', type: 'input', format: 'money' },
+            { uuid: '1-2', rowIndex: 0, columnIndex: 2, key: 'category', value: 'A', type: 'select', options: [
+              { value: 'A', label: '分类A' },
+              { value: 'B', label: '分类B' }
+            ]}
+          ]
+        ];
+        
+        const headerConfig = {
+          showIndex: true,
+          titleIndex: '序号',
+          showRowSpan: 1,
+          theadList: [
+            {
+              id: 'header-1',
+              rowList: [
+                { id: 'col-1', title: '名称', key: 'name', type: 'input', required: true },
+                { id: 'col-2', title: '金额', key: 'amount', type: 'input', format: 'money' },
+                { id: 'col-3', title: '分类', key: 'category', type: 'select' }
+              ]
+            }
+          ]
+        };
+        
+        const footerData = [
+          { id: 'footer-1', title: '合计', value: '', colSpan: 2 },
+          { id: 'footer-2', title: '', value: '0.00', key: 'total' }
+        ];
+        
+        initializeTable(mockData, headerConfig, footerData);
+      } catch (error) {
+        console.error('初始化失败', error);
+      }
+    };
+    
+    fetchData();
+  }, [initializeTable]);
+
+  // 保存（草稿）
+  const handleSave = async () => {
+    const tableData = getTableData();
+    
+    try {
+      // await fetch('/api/save-draft', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(tableData)
+      // });
+      
+      console.log('[保存草稿]', tableData);
+      markAsSaved();
+      alert('保存成功！');
+    } catch (error) {
+      console.error('保存失败', error);
+      alert('保存失败！');
+    }
+  };
+
+  // 提交
+  const handleSubmit = async () => {
+    // 先验证
+    const validation = validateAll();
+    if (!validation.valid) {
+      alert(`请填写以下必填项：\n${validation.errors.map(e => e.message).join('\n')}`);
+      return;
+    }
+    
+    const submitData = getSubmitData();
+    
+    try {
+      // await fetch('/api/submit', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(submitData)
+      // });
+      
+      console.log('[提交数据]', submitData);
+      markAsSaved();
+      alert('提交成功！');
+    } catch (error) {
+      console.error('提交失败', error);
+      alert('提交失败！');
+    }
+  };
+
+  // 离开页面提示
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '有未保存的更改，确定要离开吗？';
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  return (
+    <div>
+      <EnterTableListUI />
+      <Payment />
+      <Signature />
+      <div>
+        <button onClick={handleSave} disabled={!hasUnsavedChanges}>
+          保存 {hasUnsavedChanges && '●'}
+        </button>
+        <button onClick={handleSubmit}>
+          提交
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default ParentComponent;
