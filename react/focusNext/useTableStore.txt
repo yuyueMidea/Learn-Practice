@@ -7,18 +7,25 @@ const useTableStore = create(
   devtools(
     persist(
       immer((set, get) => ({
-        // ==================== 状态 ====================
+        // ==================== 核心状态 ====================
         
-        // 表格数据（二维数组）
-        dataList: [],
+        /**
+         * 分页数据结构
+         * {
+         *   1: {
+         *     dataList: [[{}, {}], [{}]],
+         *     versionCheckedInfor: { 0: { 1: 1 } },
+         *     footerState: [{ id, title, value }]
+         *   },
+         *   2: { ... }
+         * }
+         */
+        pageData: {},
         
-        // 页脚数据
-        footerState: [],
+        // 当前页码
+        currentPage: 1,
         
-        // 版本校验信息
-        versionCheckedInfor: {},
-        
-        // 表头配置
+        // 表头配置（所有页面共用）
         tbHeaderArg: null,
         
         // UI 状态
@@ -29,34 +36,77 @@ const useTableStore = create(
         
         /**
          * 初始化表格数据
-         * @param {Array} data - 初始数据
+         * @param {Object} pagesData - { 1: list1, 2: list2 }
          * @param {Object} headerConfig - 表头配置
-         * @param {Array} footerData - 页脚数据
          */
-        initializeTable: (data, headerConfig, footerData) => {
+        initializeTable: (pagesData, headerConfig) => {
           set((state) => {
-            state.dataList = data;
+            // 转换数据结构，确保每页都有完整的数据
+            const formattedPageData = {};
+            
+            Object.keys(pagesData).forEach(pageNum => {
+              const pageList = pagesData[pageNum];
+              
+              formattedPageData[pageNum] = {
+                dataList: pageList.dataList || pageList,
+                versionCheckedInfor: pageList.versionCheckedInfor || {},
+                footerState: pageList.footerState || []
+              };
+            });
+            
+            state.pageData = formattedPageData;
             state.tbHeaderArg = headerConfig;
-            state.footerState = footerData;
-            state.versionCheckedInfor = {};
+            state.currentPage = 1;
             state.hasUnsavedChanges = false;
           }, false, 'initializeTable');
         },
 
-        // ==================== 行操作 ====================
+        // ==================== 页面切换 ====================
         
         /**
-         * 在指定位置插入新行
+         * 切换页码
+         * @param {number} pageNum - 目标页码
+         */
+        setCurrentPage: (pageNum) => {
+          set({ currentPage: pageNum }, false, 'setCurrentPage');
+        },
+
+        /**
+         * 获取当前页数据（选择器）
+         */
+        getCurrentPageData: () => {
+          const { pageData, currentPage } = get();
+          return pageData[currentPage] || {
+            dataList: [],
+            versionCheckedInfor: {},
+            footerState: []
+          };
+        },
+
+        /**
+         * 获取总页数
+         */
+        getTotalPages: () => {
+          return Object.keys(get().pageData).length;
+        },
+
+        // ==================== 行操作（当前页） ====================
+        
+        /**
+         * 在当前页的指定位置插入新行
          * @param {number} rowIndex - 插入位置索引
          */
         insertRow: (rowIndex) => {
           set((state) => {
-            const { tbHeaderArg } = state;
+            const { currentPage, tbHeaderArg } = state;
+            const pageInfo = state.pageData[currentPage];
             
-            // 创建新行数据（基于表头配置）
+            if (!pageInfo) return;
+            
+            // 基于表头创建新行
             const newRow = tbHeaderArg.theadList[tbHeaderArg.theadList.length - 1].rowList.map((colItem, colIndex) => ({
               uuid: `${Date.now()}_${colIndex}`,
-              rowIndex: rowIndex,
+              rowIndex: rowIndex + 1,
               columnIndex: colIndex,
               key: colItem.key || '',
               value: '',
@@ -73,10 +123,10 @@ const useTableStore = create(
             }));
             
             // 在指定位置插入
-            state.dataList.splice(rowIndex + 1, 0, newRow);
+            pageInfo.dataList.splice(rowIndex + 1, 0, newRow);
             
             // 更新后续行的 rowIndex
-            state.dataList.forEach((row, idx) => {
+            pageInfo.dataList.forEach((row, idx) => {
               row.forEach(cell => {
                 cell.rowIndex = idx;
               });
@@ -87,11 +137,14 @@ const useTableStore = create(
         },
 
         /**
-         * 在第一行插入（表头下方）
+         * 在当前页第一行插入
          */
         insertZeroRow: () => {
           set((state) => {
-            const { tbHeaderArg } = state;
+            const { currentPage, tbHeaderArg } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
             
             const newRow = tbHeaderArg.theadList[tbHeaderArg.theadList.length - 1].rowList.map((colItem, colIndex) => ({
               uuid: `${Date.now()}_${colIndex}`,
@@ -111,10 +164,10 @@ const useTableStore = create(
               versionList: []
             }));
             
-            state.dataList.unshift(newRow);
+            pageInfo.dataList.unshift(newRow);
             
             // 更新所有行的 rowIndex
-            state.dataList.forEach((row, idx) => {
+            pageInfo.dataList.forEach((row, idx) => {
               row.forEach(cell => {
                 cell.rowIndex = idx;
               });
@@ -125,72 +178,84 @@ const useTableStore = create(
         },
 
         /**
-         * 删除指定行
+         * 删除当前页的指定行
          * @param {number} rowIndex - 要删除的行索引
          */
         deleteRow: (rowIndex) => {
           set((state) => {
-            if (state.dataList.length <= 1) {
-              // 至少保留一行
-              return;
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo || pageInfo.dataList.length <= 1) {
+              return; // 至少保留一行
             }
             
-            state.dataList.splice(rowIndex, 1);
+            pageInfo.dataList.splice(rowIndex, 1);
             
             // 更新后续行的 rowIndex
-            state.dataList.forEach((row, idx) => {
+            pageInfo.dataList.forEach((row, idx) => {
               row.forEach(cell => {
                 cell.rowIndex = idx;
               });
             });
             
             // 删除对应的版本校验信息
-            delete state.versionCheckedInfor[rowIndex];
+            delete pageInfo.versionCheckedInfor[rowIndex];
             
             // 重新索引版本校验信息
             const newVersionInfo = {};
-            Object.keys(state.versionCheckedInfor).forEach(key => {
+            Object.keys(pageInfo.versionCheckedInfor).forEach(key => {
               const oldIndex = parseInt(key);
               if (oldIndex > rowIndex) {
-                newVersionInfo[oldIndex - 1] = state.versionCheckedInfor[key];
+                newVersionInfo[oldIndex - 1] = pageInfo.versionCheckedInfor[key];
               } else if (oldIndex < rowIndex) {
-                newVersionInfo[oldIndex] = state.versionCheckedInfor[key];
+                newVersionInfo[oldIndex] = pageInfo.versionCheckedInfor[key];
               }
             });
-            state.versionCheckedInfor = newVersionInfo;
+            pageInfo.versionCheckedInfor = newVersionInfo;
             
             state.hasUnsavedChanges = true;
           }, false, 'deleteRow');
         },
 
-        // ==================== 单元格操作 ====================
+        // ==================== 单元格操作（当前页） ====================
         
         /**
-         * 更新单元格值
+         * 更新当前页单元格值
          * @param {number} rowIndex - 行索引
          * @param {number} columnIndex - 列索引
          * @param {string} value - 新值
          */
         updateCellValue: (rowIndex, columnIndex, value) => {
           set((state) => {
-            const cell = state.dataList[rowIndex]?.[columnIndex];
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
+            
+            const cell = pageInfo.dataList[rowIndex]?.[columnIndex];
             if (cell) {
               cell.value = value;
-              cell.valueError = false; // 清除错误标记
+              cell.valueError = false;
               state.hasUnsavedChanges = true;
             }
           }, false, 'updateCellValue');
         },
 
         /**
-         * 更新单元格属性（批量更新）
+         * 批量更新单元格属性
          * @param {number} rowIndex
          * @param {number} columnIndex
-         * @param {Object} updates - 要更新的属性对象
+         * @param {Object} updates - 要更新的属性
          */
         updateCellProps: (rowIndex, columnIndex, updates) => {
           set((state) => {
-            const cell = state.dataList[rowIndex]?.[columnIndex];
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
+            
+            const cell = pageInfo.dataList[rowIndex]?.[columnIndex];
             if (cell) {
               Object.assign(cell, updates);
               state.hasUnsavedChanges = true;
@@ -199,15 +264,16 @@ const useTableStore = create(
         },
 
         /**
-         * 设置版本错误和列表
-         * @param {number} rowIndex
-         * @param {number} columnIndex
-         * @param {boolean} hasError
-         * @param {Array} versionList
+         * 设置版本错误和版本列表
          */
         setVersionError: (rowIndex, columnIndex, hasError, versionList = []) => {
           set((state) => {
-            const cell = state.dataList[rowIndex]?.[columnIndex];
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
+            
+            const cell = pageInfo.dataList[rowIndex]?.[columnIndex];
             if (cell) {
               cell.versionError = hasError;
               cell.versionList = versionList;
@@ -218,140 +284,176 @@ const useTableStore = create(
 
         /**
          * 切换版本列表显示
-         * @param {number} rowIndex
-         * @param {number} columnIndex
          */
         toggleVersionList: (rowIndex, columnIndex) => {
           set((state) => {
-            const cell = state.dataList[rowIndex]?.[columnIndex];
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
+            
+            const cell = pageInfo.dataList[rowIndex]?.[columnIndex];
             if (cell) {
               cell.showList = !cell.showList;
             }
           }, false, 'toggleVersionList');
         },
 
-        // ==================== 版本校验 ====================
+        // ==================== 版本校验（当前页） ====================
         
         /**
-         * 设置版本校验标记
+         * 设置当前页的版本校验标记
          * @param {number} rowIndex
          * @param {number} columnIndex
          * @param {number} status - 1: 已校验, 0: 未校验
          */
         setVersionCheck: (rowIndex, columnIndex, status) => {
           set((state) => {
-            if (!state.versionCheckedInfor[rowIndex]) {
-              state.versionCheckedInfor[rowIndex] = {};
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
+            
+            if (!pageInfo.versionCheckedInfor[rowIndex]) {
+              pageInfo.versionCheckedInfor[rowIndex] = {};
             }
-            state.versionCheckedInfor[rowIndex][columnIndex] = status;
+            pageInfo.versionCheckedInfor[rowIndex][columnIndex] = status;
           }, false, 'setVersionCheck');
         },
 
         /**
-         * 清除某行的版本校验
-         * @param {number} rowIndex
+         * 清除当前页某行的版本校验
          */
         clearVersionCheck: (rowIndex) => {
           set((state) => {
-            delete state.versionCheckedInfor[rowIndex];
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (pageInfo) {
+              delete pageInfo.versionCheckedInfor[rowIndex];
+            }
           }, false, 'clearVersionCheck');
         },
 
-        // ==================== 页脚更新 ====================
+        // ==================== 页脚更新（当前页） ====================
         
         /**
-         * 更新页脚数据（通常是汇总计算）
+         * 更新当前页页脚数据
          * @param {Array} newFooterData
          */
         updateFooter: (newFooterData) => {
           set((state) => {
-            state.footerState = newFooterData;
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (pageInfo) {
+              pageInfo.footerState = newFooterData;
+            }
           }, false, 'updateFooter');
         },
 
         /**
-         * 重新计算页脚（例如总金额）
+         * 重新计算当前页页脚（例如总金额）
          */
         recalculateFooter: () => {
           set((state) => {
-            const { dataList, footerState } = state;
+            const { currentPage } = state;
+            const pageInfo = state.pageData[currentPage];
+            
+            if (!pageInfo) return;
+            
+            const { dataList, footerState } = pageInfo;
             
             // 示例：计算总金额
-            const totalAmount = dataList.reduce((sum, row) => {
-              const amountCell = row.find(cell => cell.key === 'amount');
-              return sum + (parseFloat(amountCell?.value) || 0);
-            }, 0);
+            let totalAmount = 0;
+            dataList.forEach(row => {
+              const amountCell = row.find(cell => cell.key === 'amount' || cell.format === 'money');
+              if (amountCell?.value) {
+                const numValue = parseFloat(amountCell.value.replace(/,/g, '')) || 0;
+                totalAmount += numValue;
+              }
+            });
             
-            // 更新页脚中的总金额单元格
+            // 更新页脚中的总金额
             const footerCopy = [...footerState];
             const totalCell = footerCopy.find(cell => cell.key === 'total');
             if (totalCell) {
-              totalCell.value = totalAmount.toFixed(2);
+              totalCell.value = totalAmount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              });
             }
             
-            state.footerState = footerCopy;
+            pageInfo.footerState = footerCopy;
           }, false, 'recalculateFooter');
         },
 
         // ==================== 数据导出 ====================
         
         /**
-         * 获取当前表格数据（用于保存）
-         * @returns {Object}
+         * 获取所有页面数据（用于保存）
          */
-        getTableData: () => {
-          const { dataList, footerState, versionCheckedInfor } = get();
-          return {
-            dataList,
-            footerState,
-            versionCheckedInfor
-          };
+        getAllPageData: () => {
+          return get().pageData;
         },
 
         /**
          * 获取格式化的提交数据
-         * @returns {Array}
          */
         getSubmitData: () => {
-          const { dataList } = get();
+          const { pageData } = get();
+          const result = {};
           
-          // 转换为后端需要的格式
-          return dataList.map(row => {
-            const rowData = {};
-            row.forEach(cell => {
-              if (cell.key) {
-                rowData[cell.key] = cell.value;
-              }
+          Object.keys(pageData).forEach(pageNum => {
+            const pageInfo = pageData[pageNum];
+            
+            // 转换为后端需要的格式
+            result[pageNum] = pageInfo.dataList.map(row => {
+              const rowData = {};
+              row.forEach(cell => {
+                if (cell.key) {
+                  rowData[cell.key] = cell.value;
+                }
+              });
+              return rowData;
             });
-            return rowData;
           });
+          
+          return result;
         },
 
         // ==================== 数据验证 ====================
         
         /**
-         * 验证所有必填项
-         * @returns {Object} { valid: boolean, errors: Array }
+         * 验证所有页面的必填项
          */
-        validateAll: () => {
-          const { dataList } = get();
+        validateAllPages: () => {
+          const { pageData } = get();
           const errors = [];
           
-          dataList.forEach((row, rowIndex) => {
-            row.forEach((cell, colIndex) => {
-              if (cell.required && !cell.value) {
-                errors.push({
-                  rowIndex,
-                  columnIndex: colIndex,
-                  key: cell.key,
-                  message: `第 ${rowIndex + 1} 行 ${cell.key} 为必填项`
-                });
-                
-                // 标记错误
-                set((state) => {
-                  state.dataList[rowIndex][colIndex].valueError = true;
-                }, false, 'validateError');
-              }
+          Object.keys(pageData).forEach(pageNum => {
+            const pageInfo = pageData[pageNum];
+            
+            pageInfo.dataList.forEach((row, rowIndex) => {
+              row.forEach((cell, colIndex) => {
+                if (cell.required && !cell.value) {
+                  errors.push({
+                    page: pageNum,
+                    rowIndex,
+                    columnIndex: colIndex,
+                    key: cell.key,
+                    message: `第 ${pageNum} 页，第 ${rowIndex + 1} 行 ${cell.key} 为必填项`
+                  });
+                  
+                  // 标记错误
+                  set((state) => {
+                    const pi = state.pageData[pageNum];
+                    if (pi) {
+                      pi.dataList[rowIndex][colIndex].valueError = true;
+                    }
+                  }, false, 'validateError');
+                }
+              });
             });
           });
           
@@ -366,10 +468,13 @@ const useTableStore = create(
          */
         clearAllErrors: () => {
           set((state) => {
-            state.dataList.forEach(row => {
-              row.forEach(cell => {
-                cell.valueError = false;
-                cell.versionError = false;
+            Object.keys(state.pageData).forEach(pageNum => {
+              const pageInfo = state.pageData[pageNum];
+              pageInfo.dataList.forEach(row => {
+                row.forEach(cell => {
+                  cell.valueError = false;
+                  cell.versionError = false;
+                });
               });
             });
           }, false, 'clearAllErrors');
@@ -377,42 +482,32 @@ const useTableStore = create(
 
         // ==================== 持久化操作 ====================
         
-        /**
-         * 保存数据（标记为已保存）
-         */
         markAsSaved: () => {
           set({ hasUnsavedChanges: false }, false, 'markAsSaved');
         },
 
-        /**
-         * 重置表格数据
-         */
         resetTable: () => {
           set({
-            dataList: [],
-            footerState: [],
-            versionCheckedInfor: {},
+            pageData: {},
+            currentPage: 1,
             hasUnsavedChanges: false
           }, false, 'resetTable');
         },
 
-        // ==================== UI 状态 ====================
-        
         setLoading: (loading) => {
           set({ isLoading: loading }, false, 'setLoading');
         }
 
       })),
       {
-        name: 'table-storage', // localStorage key
+        name: 'table-storage',
         partialize: (state) => ({
-          // 只持久化必要的数据
-          dataList: state.dataList,
-          footerState: state.footerState
+          pageData: state.pageData,
+          currentPage: state.currentPage
         })
       }
     ),
-    { name: 'TableStore' } // Redux DevTools 名称
+    { name: 'TableStore' }
   )
 );
 
