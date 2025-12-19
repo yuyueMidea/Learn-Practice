@@ -7,32 +7,87 @@ import useTableStore from './store/useTableStore';
 
 function ParentComponent() {
   // 订阅 store
-  const getTableData = useTableStore(state => state.getTableData);
+  const getAllPageData = useTableStore(state => state.getAllPageData);
   const getSubmitData = useTableStore(state => state.getSubmitData);
-  const validateAll = useTableStore(state => state.validateAll);
+  const validateAllPages = useTableStore(state => state.validateAllPages);
   const markAsSaved = useTableStore(state => state.markAsSaved);
+  const clearAllErrors = useTableStore(state => state.clearAllErrors);
   const hasUnsavedChanges = useTableStore(state => state.hasUnsavedChanges);
   const initializeTable = useTableStore(state => state.initializeTable);
+  const setLoading = useTableStore(state => state.setLoading);
 
   // 初始化数据
   useEffect(() => {
-    // 从接口获取初始数据
     const fetchData = async () => {
+      setLoading(true);
+      
       try {
+        // 从接口获取数据
         // const response = await fetch('/api/table-data');
-        // const { dataList, headerConfig, footerData } = await response.json();
+        // const { pageData, headerConfig } = await response.json();
         
-        // Mock 数据示例
-        const mockData = [
-          [
-            { uuid: '1-0', rowIndex: 0, columnIndex: 0, key: 'name', value: '商品A', type: 'input', required: true },
-            { uuid: '1-1', rowIndex: 0, columnIndex: 1, key: 'amount', value: '100', type: 'input', format: 'money' },
-            { uuid: '1-2', rowIndex: 0, columnIndex: 2, key: 'category', value: 'A', type: 'select', options: [
-              { value: 'A', label: '分类A' },
-              { value: 'B', label: '分类B' }
-            ]}
-          ]
-        ];
+        // Mock 数据示例（符合你的数据结构）
+        const mockPageData = {
+          1: {
+            dataList: [
+              [
+                { uuid: '1-0-0', rowIndex: 0, columnIndex: 0, key: 'name', value: '商品A1', type: 'input', required: true },
+                { uuid: '1-0-1', rowIndex: 0, columnIndex: 1, key: 'amount', value: '100.00', type: 'input', format: 'money' },
+                { uuid: '1-0-2', rowIndex: 0, columnIndex: 2, key: 'category', value: 'A', type: 'select', options: [
+                  { value: 'A', label: '分类A' },
+                  { value: 'B', label: '分类B' }
+                ]}
+              ],
+              [
+                { uuid: '1-1-0', rowIndex: 1, columnIndex: 0, key: 'name', value: '商品A2', type: 'input', required: true },
+                { uuid: '1-1-1', rowIndex: 1, columnIndex: 1, key: 'amount', value: '200.00', type: 'input', format: 'money' },
+                { uuid: '1-1-2', rowIndex: 1, columnIndex: 2, key: 'category', value: 'B', type: 'select', options: [
+                  { value: 'A', label: '分类A' },
+                  { value: 'B', label: '分类B' }
+                ]}
+              ]
+            ],
+            versionCheckedInfor: {},
+            footerState: [
+              { id: 'footer-1-1', title: '合计', value: '', colSpan: 2 },
+              { id: 'footer-1-2', title: '', value: '300.00', key: 'total' }
+            ]
+          },
+          2: {
+            dataList: [
+              [
+                { uuid: '2-0-0', rowIndex: 0, columnIndex: 0, key: 'name', value: '商品B1', type: 'input', required: true },
+                { uuid: '2-0-1', rowIndex: 0, columnIndex: 1, key: 'amount', value: '500.00', type: 'input', format: 'money' },
+                { uuid: '2-0-2', rowIndex: 0, columnIndex: 2, key: 'category', value: 'A', type: 'select', options: [
+                  { value: 'A', label: '分类A' },
+                  { value: 'B', label: '分类B' }
+                ]}
+              ]
+            ],
+            versionCheckedInfor: {},
+            footerState: [
+              { id: 'footer-2-1', title: '合计', value: '', colSpan: 2 },
+              { id: 'footer-2-2', title: '', value: '500.00', key: 'total' }
+            ]
+          },
+          3: {
+            dataList: [
+              [
+                { uuid: '3-0-0', rowIndex: 0, columnIndex: 0, key: 'name', value: '', type: 'input', required: true },
+                { uuid: '3-0-1', rowIndex: 0, columnIndex: 1, key: 'amount', value: '', type: 'input', format: 'money' },
+                { uuid: '3-0-2', rowIndex: 0, columnIndex: 2, key: 'category', value: '', type: 'select', options: [
+                  { value: 'A', label: '分类A' },
+                  { value: 'B', label: '分类B' }
+                ]}
+              ]
+            ],
+            versionCheckedInfor: {},
+            footerState: [
+              { id: 'footer-3-1', title: '合计', value: '', colSpan: 2 },
+              { id: 'footer-3-2', title: '', value: '0.00', key: 'total' }
+            ]
+          }
+        };
         
         const headerConfig = {
           showIndex: true,
@@ -44,58 +99,79 @@ function ParentComponent() {
               rowList: [
                 { id: 'col-1', title: '名称', key: 'name', type: 'input', required: true },
                 { id: 'col-2', title: '金额', key: 'amount', type: 'input', format: 'money' },
-                { id: 'col-3', title: '分类', key: 'category', type: 'select' }
+                { id: 'col-3', title: '分类', key: 'category', type: 'select', options: [
+                  { value: 'A', label: '分类A' },
+                  { value: 'B', label: '分类B' }
+                ]}
               ]
             }
           ]
         };
         
-        const footerData = [
-          { id: 'footer-1', title: '合计', value: '', colSpan: 2 },
-          { id: 'footer-2', title: '', value: '0.00', key: 'total' }
-        ];
-        
-        initializeTable(mockData, headerConfig, footerData);
+        initializeTable(mockPageData, headerConfig);
       } catch (error) {
         console.error('初始化失败', error);
+        alert('数据加载失败');
+      } finally {
+        setLoading(false);
       }
     };
     
     fetchData();
-  }, [initializeTable]);
+  }, [initializeTable, setLoading]);
 
   // 保存（草稿）
   const handleSave = async () => {
-    const tableData = getTableData();
+    setLoading(true);
     
     try {
+      const allData = getAllPageData();
+      
+      // 发送到后端
       // await fetch('/api/save-draft', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(tableData)
+      //   body: JSON.stringify(allData)
       // });
       
-      console.log('[保存草稿]', tableData);
+      console.log('[保存草稿] 所有页面数据:', allData);
       markAsSaved();
       alert('保存成功！');
     } catch (error) {
       console.error('保存失败', error);
       alert('保存失败！');
+    } finally {
+      setLoading(false);
     }
   };
 
   // 提交
   const handleSubmit = async () => {
-    // 先验证
-    const validation = validateAll();
+    // 先验证所有页面
+    const validation = validateAllPages();
+    
     if (!validation.valid) {
-      alert(`请填写以下必填项：\n${validation.errors.map(e => e.message).join('\n')}`);
+      const errorMsg = validation.errors
+        .slice(0, 5) // 只显示前5个错误
+        .map(e => e.message)
+        .join('\n');
+      
+      alert(`请填写以下必填项：\n${errorMsg}${
+        validation.errors.length > 5 ? `\n...还有 ${validation.errors.length - 5} 个错误` : ''
+      }`);
+      
+      // 跳转到第一个错误所在的页面
+      const firstError = validation.errors[0];
+      useTableStore.getState().setCurrentPage(parseInt(firstError.page));
       return;
     }
     
-    const submitData = getSubmitData();
+    setLoading(true);
     
     try {
+      const submitData = getSubmitData();
+      
+      // 发送到后端
       // await fetch('/api/submit', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
@@ -104,10 +180,13 @@ function ParentComponent() {
       
       console.log('[提交数据]', submitData);
       markAsSaved();
+      clearAllErrors();
       alert('提交成功！');
     } catch (error) {
       console.error('提交失败', error);
       alert('提交失败！');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,11 +208,33 @@ function ParentComponent() {
       <EnterTableListUI />
       <Payment />
       <Signature />
-      <div>
-        <button onClick={handleSave} disabled={!hasUnsavedChanges}>
-          保存 {hasUnsavedChanges && '●'}
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <button 
+          onClick={handleSave} 
+          disabled={!hasUnsavedChanges}
+          style={{
+            padding: '10px 20px',
+            marginRight: '10px',
+            backgroundColor: hasUnsavedChanges ? '#4CAF50' : '#ccc',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: hasUnsavedChanges ? 'pointer' : 'not-allowed'
+          }}
+        >
+          保存草稿 {hasUnsavedChanges && '●'}
         </button>
-        <button onClick={handleSubmit}>
+        <button 
+          onClick={handleSubmit}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#2196F3',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
           提交
         </button>
       </div>
@@ -143,220 +244,5 @@ function ParentComponent() {
 
 export default ParentComponent;
 
-*********************************************************
+*******************************************************
 
-// ============ EnterTableListUI.jsx ============
-import React, { useCallback } from 'react';
-import TableRow from './TableRow';
-import useTableStore from './store/useTableStore';
-import style from './style.module.css';
-
-function EnterTableListUI() {
-  // 订阅 store
-  const dataList = useTableStore(state => state.dataList);
-  const footerState = useTableStore(state => state.footerState);
-  const tbHeaderArg = useTableStore(state => state.tbHeaderArg);
-  const versionCheckedInfor = useTableStore(state => state.versionCheckedInfor);
-  
-  // 订阅操作方法
-  const insertRow = useTableStore(state => state.insertRow);
-  const insertZeroRow = useTableStore(state => state.insertZeroRow);
-  const deleteRow = useTableStore(state => state.deleteRow);
-  const updateCellValue = useTableStore(state => state.updateCellValue);
-  const updateCellProps = useTableStore(state => state.updateCellProps);
-  const setVersionError = useTableStore(state => state.setVersionError);
-  const setVersionCheck = useTableStore(state => state.setVersionCheck);
-  const recalculateFooter = useTableStore(state => state.recalculateFooter);
-
-  // ==================== 事件处理器 ====================
-  
-  const handleInsertZeroRow = useCallback(() => {
-    insertZeroRow();
-  }, [insertZeroRow]);
-
-  const handleInsertRow = useCallback((rowIndex) => {
-    insertRow(rowIndex);
-  }, [insertRow]);
-
-  const handleDeleteRow = useCallback((rowIndex) => {
-    if (window.confirm('确定要删除这一行吗？')) {
-      deleteRow(rowIndex);
-      recalculateFooter(); // 删除后重新计算页脚
-    }
-  }, [deleteRow, recalculateFooter]);
-
-  const handleInputChange = useCallback((e, item, rowIndex, columnIndex) => {
-    const value = e.target.value;
-    updateCellValue(rowIndex, columnIndex, value);
-    
-    // 如果是金额字段，触发页脚重新计算
-    if (item.format === 'money') {
-      recalculateFooter();
-    }
-  }, [updateCellValue, recalculateFooter]);
-
-  const handleSelectChange = useCallback((e, item, rowIndex, columnIndex) => {
-    const value = e.target.value;
-    updateCellValue(rowIndex, columnIndex, value);
-  }, [updateCellValue]);
-
-  const handleInputFocus = useCallback((e, item, rowIndex, columnIndex) => {
-    // 聚焦时的逻辑（如选中文本）
-    e.target.select();
-  }, []);
-
-  const handleInputBlur = useCallback((e, item, rowIndex, columnIndex) => {
-    // 失焦时的验证逻辑
-    const value = e.target.value;
-    
-    if (item.required && !value) {
-      updateCellProps(rowIndex, columnIndex, { valueError: true });
-    }
-  }, [updateCellProps]);
-
-  const handleInputKeydown = useCallback((e, item, rowIndex, columnIndex) => {
-    // Enter 键跳转到下一个输入框
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const nextInput = document.querySelector(
-        `[name="${item.key}"][data-testid="${item.key}-${rowIndex + 1}"]`
-      );
-      nextInput?.focus();
-    }
-  }, []);
-
-  const handleSelectFocus = useCallback((e, item, rowIndex, columnIndex) => {
-    // select 聚焦逻辑
-  }, []);
-
-  const handleSelectClick = useCallback((e, item, rowIndex, columnIndex) => {
-    // select 点击逻辑
-  }, []);
-
-  const handleSelectMouseDown = useCallback((e) => {
-    // select 鼠标按下逻辑
-  }, []);
-
-  const handleVersionClick = useCallback((e, item) => {
-    // 版本选择点击
-    const { rowIndex, columnIndex, versionList } = item;
-    const selectedVersion = e.target.textContent;
-    
-    // 更新值并标记已校验
-    updateCellValue(rowIndex, columnIndex, selectedVersion);
-    setVersionError(rowIndex, columnIndex, false, []);
-    setVersionCheck(rowIndex, columnIndex, 1);
-  }, [updateCellValue, setVersionError, setVersionCheck]);
-
-  // 输入框注册（用于焦点管理）
-  const inputRefs = React.useRef({});
-  const registerInput = useCallback((key) => {
-    return (el) => {
-      if (el) {
-        inputRefs.current[key] = el;
-      }
-    };
-  }, []);
-
-  if (!tbHeaderArg) {
-    return <div>加载中...</div>;
-  }
-
-  // ==================== Render ====================
-  return (
-    <div className={style.tbContainer}>
-      <div className={style.table_list_style}>
-        {/* Header */}
-        <div className={style.gridHeader}>
-          {tbHeaderArg?.theadList?.map((rowItem, rowIndex) => (
-            <React.Fragment key={rowItem.id}>
-              {tbHeaderArg.showIndex && rowIndex === 0 && (
-                <div
-                  key={rowItem.id + '_index'}
-                  className={`${style.selfTh} ${style.gridCell}`}
-                  style={{ 
-                    gridRow: `1 / ${tbHeaderArg.showRowSpan + 1}`,
-                    gridColumn: '1'
-                  }}
-                >
-                  <div className={style.operation_btn_wrapper}>
-                    <button
-                      className={`${style.operation_btn} ${style.header_add_btn}`}
-                      onClick={handleInsertZeroRow}
-                    >
-                      +
-                    </button>
-                    <span>{tbHeaderArg.titleIndex}</span>
-                  </div>
-                </div>
-              )}
-              {rowItem.rowList.map((colItem) => (
-                <div
-                  key={colItem.id}
-                  className={`${style.selfTh} ${style.gridCell}`}
-                  style={{
-                    gridRow: colItem.rowSpan > 1 
-                      ? `${rowIndex + 1} / span ${colItem.rowSpan}` 
-                      : `${rowIndex + 1}`,
-                    gridColumn: colItem.colSpan > 1 
-                      ? `span ${colItem.colSpan}` 
-                      : 'auto'
-                  }}
-                >
-                  {colItem.title}
-                </div>
-              ))}
-            </React.Fragment>
-          ))}
-        </div>
-
-        {/* Body */}
-        <div className={style.gridBody}>
-          {dataList.map((rowItem, rowIndex) => (
-            <TableRow
-              key={rowItem[0].uuid}
-              rowItem={rowItem}
-              rowIndex={rowIndex}
-              tbHeaderArg={tbHeaderArg}
-              versionCheckedInfor={versionCheckedInfor}
-              registerInput={registerInput}
-              onInsertRow={handleInsertRow}
-              onDeleteRow={handleDeleteRow}
-              onInputChange={handleInputChange}
-              onSelectFocus={handleSelectFocus}
-              onSelectChange={handleSelectChange}
-              onSelectClick={handleSelectClick}
-              onSelectMouseDown={handleSelectMouseDown}
-              onInputFocus={handleInputFocus}
-              onInputBlur={handleInputBlur}
-              onInputKeydown={handleInputKeydown}
-              onVersionClick={handleVersionClick}
-            />
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div className={style.gridFooter}>
-          {footerState.map((tdItem) => (
-            <div
-              key={tdItem.id}
-              className={`${style.selfTd} ${style.gridCell} ${
-                tdItem.title.length > 0
-                  ? style.selfFooterTitle
-                  : style.selfInputReadOnly
-              }`}
-              style={{
-                gridRow: tdItem.rowSpan > 1 ? `span ${tdItem.rowSpan}` : undefined,
-                gridColumn: tdItem.colSpan > 1 ? `span ${tdItem.colSpan}` : undefined
-              }}
-            >
-              {tdItem.title.length > 0 ? tdItem.title : tdItem.value}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default EnterTableListUI;
