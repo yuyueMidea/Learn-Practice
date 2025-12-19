@@ -1,0 +1,204 @@
+// useTableStore.ts
+import { create } from "zustand";
+
+export type BackendRow = {
+  page: number;
+  // 建议前端补一个稳定主键（后端没有也行）
+  _rid?: string;
+  [k: string]: any;
+};
+
+export type ColumnDef = {
+  key: string;                 // 对应后端字段名，比如 "idNo"、"dde1"
+  type: "text" | "number" | "select";
+  defaultValue?: any;          // 新增/插入行默认值
+  sumInFooter?: boolean;       // number 列是否参与页脚汇总
+};
+
+type FooterSums = Record<string, number>;
+
+type TableState = {
+  columns: ColumnDef[];
+
+  // 分页数据
+  byPage: Record<number, BackendRow[]>;
+  pages: number[];             // 排序后的 page 列表
+  currentPage: number;
+
+  // 页脚汇总（不入库）
+  footerByPage: Record<number, FooterSums>;
+
+  // ========== actions ==========
+  initFromBackend: (rows: BackendRow[], columns: ColumnDef[], initialPage?: number) => void;
+  setPage: (page: number) => void;
+
+  // 读取
+  getCurrentRows: () => BackendRow[];
+  getRowsByPage: (page: number) => BackendRow[];
+  getFooterByPage: (page: number) => FooterSums;
+
+  // 编辑/增删
+  updateCell: (args: { page: number; rowIndex: number; key: string; value: any }) => void;
+  insertRow: (args: { page: number; atIndex: number }) => void; // 在 atIndex 前插入
+  appendRow: (args: { page: number }) => void;
+  deleteRow: (args: { page: number; rowIndex: number }) => void;
+
+  // 提交给后端：扁平化（不带 footer）
+  toBackendFlat: () => BackendRow[];
+};
+
+// ===== helpers =====
+const rid = () =>
+  (typeof crypto !== "undefined" && "randomUUID" in crypto)
+    ? crypto.randomUUID()
+    : `rid_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+
+function groupByPage(rows: BackendRow[]) {
+  const byPage: Record<number, BackendRow[]> = {};
+  for (const r of rows) {
+    const p = Number(r.page || 1);
+    const row: BackendRow = { ...r, page: p, _rid: r._rid ?? rid() };
+    if (!byPage[p]) byPage[p] = [];
+    byPage[p].push(row);
+  }
+  const pages = Object.keys(byPage).map(Number).sort((a, b) => a - b);
+  return { byPage, pages };
+}
+
+function computeFooterSums(rows: BackendRow[], columns: ColumnDef[]): FooterSums {
+  const footer: FooterSums = {};
+  const sumCols = columns.filter(c => c.type === "number" && c.sumInFooter);
+
+  for (const col of sumCols) footer[col.key] = 0;
+
+  for (const row of rows) {
+    for (const col of sumCols) {
+      const v = row[col.key];
+      const n = typeof v === "number" ? v : (v === "" || v == null ? 0 : Number(v));
+      footer[col.key] += Number.isFinite(n) ? n : 0;
+    }
+  }
+  return footer;
+}
+
+function makeEmptyRow(page: number, columns: ColumnDef[]): BackendRow {
+  const row: BackendRow = { page, _rid: rid() };
+  for (const c of columns) {
+    row[c.key] = c.defaultValue ?? (c.type === "number" ? "" : "");
+  }
+  return row;
+}
+
+// ===== store =====
+export const useTableStore = create<TableState>((set, get) => ({
+  columns: [],
+  byPage: {},
+  pages: [],
+  currentPage: 1,
+  footerByPage: {},
+
+  initFromBackend: (rows, columns, initialPage = 1) => {
+    const { byPage, pages } = groupByPage(rows);
+    const footerByPage: Record<number, FooterSums> = {};
+    for (const p of pages) footerByPage[p] = computeFooterSums(byPage[p], columns);
+
+    const safeInitial = pages.includes(initialPage) ? initialPage : (pages[0] ?? 1);
+
+    set({
+      columns,
+      byPage,
+      pages,
+      currentPage: safeInitial,
+      footerByPage,
+    });
+  },
+
+  setPage: (page) => set((s) => ({
+    currentPage: page,
+    // 允许跳到不存在的页：你也可以在这里做保护
+  })),
+
+  getCurrentRows: () => {
+    const { byPage, currentPage } = get();
+    return byPage[currentPage] ?? [];
+  },
+
+  getRowsByPage: (page) => get().byPage[page] ?? [],
+
+  getFooterByPage: (page) => get().footerByPage[page] ?? {},
+
+  updateCell: ({ page, rowIndex, key, value }) => {
+    set((s) => {
+      const list = s.byPage[page] ?? [];
+      if (!list[rowIndex]) return s;
+
+      const nextRow = { ...list[rowIndex], [key]: value };
+      const nextList = list.slice();
+      nextList[rowIndex] = nextRow;
+
+      const nextByPage = { ...s.byPage, [page]: nextList };
+
+      // 只要你配置了 number 列 sumInFooter，就更新页脚
+      const nextFooter = computeFooterSums(nextList, s.columns);
+      const nextFooterByPage = { ...s.footerByPage, [page]: nextFooter };
+
+      return {
+        ...s,
+        byPage: nextByPage,
+        footerByPage: nextFooterByPage,
+      };
+    });
+  },
+
+  insertRow: ({ page, atIndex }) => {
+    set((s) => {
+      const list = s.byPage[page] ?? [];
+      const row = makeEmptyRow(page, s.columns);
+
+      const nextList = list.slice();
+      const idx = Math.max(0, Math.min(atIndex, nextList.length));
+      nextList.splice(idx, 0, row);
+
+      const nextByPage = { ...s.byPage, [page]: nextList };
+      const nextFooterByPage = { ...s.footerByPage, [page]: computeFooterSums(nextList, s.columns) };
+
+      const nextPages = s.pages.includes(page) ? s.pages : [...s.pages, page].sort((a, b) => a - b);
+
+      return { ...s, byPage: nextByPage, footerByPage: nextFooterByPage, pages: nextPages };
+    });
+  },
+
+  appendRow: ({ page }) => {
+    const { byPage } = get();
+    const len = (byPage[page] ?? []).length;
+    get().insertRow({ page, atIndex: len });
+  },
+
+  deleteRow: ({ page, rowIndex }) => {
+    set((s) => {
+      const list = s.byPage[page] ?? [];
+      if (!list[rowIndex]) return s;
+
+      const nextList = list.slice();
+      nextList.splice(rowIndex, 1);
+
+      const nextByPage = { ...s.byPage, [page]: nextList };
+      const nextFooterByPage = { ...s.footerByPage, [page]: computeFooterSums(nextList, s.columns) };
+
+      return { ...s, byPage: nextByPage, footerByPage: nextFooterByPage };
+    });
+  },
+
+  toBackendFlat: () => {
+    const { byPage, pages } = get();
+    const out: BackendRow[] = [];
+    for (const p of pages) {
+      for (const r of (byPage[p] ?? [])) {
+        // 提交后端时：保留后端字段 + page，不提交 _rid / footer
+        const { _rid, ...rest } = r;
+        out.push(rest);
+      }
+    }
+    return out;
+  },
+}));
