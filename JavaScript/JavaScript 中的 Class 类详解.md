@@ -2,6 +2,46 @@
 
 JavaScript中的class是ES6引入的语法糖，本质上是基于原型继承的机制；但提供了更接近于传统的面向对象语言的写法。
 
+概念以及使用：
+
+1) class 是什么：语法糖 + 原型链
+2) 最基本结构：constructor、实例方法、原型方法
+```
+class User {
+  constructor(name) {
+    this.name = name;     // 实例属性（每个实例一份）
+  }
+
+  sayHi() {               // 原型方法（所有实例共享一份）
+    return `Hi, ${this.name}`;
+  }
+}
+
+const u = new User("Ada");
+console.log(u.sayHi()); // Hi, Ada
+```
+4) Getter / Setter：像访问属性一样调用逻辑
+```
+class Person {
+  constructor(name) {
+    this._name = name;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(v) {
+    if (!v) throw new Error("name required");
+    this._name = v;
+  }
+}
+
+const p = new Person("Tom");
+console.log(p.name); // 走 getter
+p.name = "Jerry";    // 走 setter
+```
+
 汇总：
 |特性|描述|示例|
 |---|---|---|
