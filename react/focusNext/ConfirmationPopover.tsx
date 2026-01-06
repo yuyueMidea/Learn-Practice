@@ -1,14 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle, Ref } from 'react';
-import {
-  Popover,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  IconButton,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { Popover, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -22,8 +13,6 @@ interface ConfirmationPopoverProps {
   onConfirm?: (value: string) => void;
   /** 初始是否已确认 */
   defaultConfirmed?: boolean;
-  /** 弹框标题 */
-  title?: string;
 }
 
 // 暴露给父组件的方法类型
@@ -48,7 +37,6 @@ const ConfirmationPopover = forwardRef<ConfirmationPopoverRef, ConfirmationPopov
       value2 = '版本2',
       onConfirm,
       defaultConfirmed = false,
-      title = '请选择版本',
     },
     ref: Ref<ConfirmationPopoverRef>
   ) => {
@@ -155,53 +143,70 @@ const ConfirmationPopover = forwardRef<ConfirmationPopoverRef, ConfirmationPopov
           }}
           slotProps={{
             paper: {
-              elevation: 8,
+              elevation: 3,
               sx: {
                 mt: 1,
-                borderRadius: 2,
+                p: 1.5,
+                minWidth: 160,
+                borderRadius: 1,
               },
             },
           }}
         >
-          <Paper sx={{ p: 2.5, minWidth: 220 }}>
-            <Typography
-              variant="subtitle2"
-              sx={{
-                mb: 2,
-                fontWeight: 600,
-                color: 'text.primary',
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f5f5f5';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              {title}
-            </Typography>
-            <FormControl component="fieldset" fullWidth>
-              <RadioGroup value={selectedValue} onChange={handleChange}>
-                <FormControlLabel
-                  value={value1}
-                  control={<Radio size="small" />}
-                  label={<Typography variant="body2">{value1}</Typography>}
-                  sx={{
-                    mb: 1,
-                    '&:hover': {
-                      backgroundColor: 'action.hover',
-                      borderRadius: 1,
-                    },
-                  }}
-                />
-                <FormControlLabel
-                  value={value2}
-                  control={<Radio size="small" />}
-                  label={<Typography variant="body2">{value2}</Typography>}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'action.hover',
-                      borderRadius: 1,
-                    },
-                  }}
-                />
-              </RadioGroup>
-            </FormControl>
-          </Paper>
+              <input
+                type="radio"
+                name="version"
+                value={value1}
+                checked={selectedValue === value1}
+                onChange={handleChange}
+                style={{ marginRight: '8px', cursor: 'pointer' }}
+              />
+              <span style={{ fontSize: '14px', userSelect: 'none' }}>{value1}</span>
+            </label>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f5f5f5';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              <input
+                type="radio"
+                name="version"
+                value={value2}
+                checked={selectedValue === value2}
+                onChange={handleChange}
+                style={{ marginRight: '8px', cursor: 'pointer' }}
+              />
+              <span style={{ fontSize: '14px', userSelect: 'none' }}>{value2}</span>
+            </label>
+          </div>
         </Popover>
       </>
     );
