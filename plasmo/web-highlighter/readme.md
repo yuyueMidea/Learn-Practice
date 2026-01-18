@@ -17,8 +17,13 @@
 
 启动指南：
 ```
-pnpm create plasmo my-extension
-cd my-extension
-# 复制相应的代码文件
-pnpm dev
+# 创建项目
+pnpm create plasmo web-highlighter
+cd web-highlighter
+
+# 安装依赖
+pnpm install
+pnpm install @plasmohq/storage @plasmohq/messaging
+pnpm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 ```
