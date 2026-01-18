@@ -14,3 +14,11 @@
 - Storage API 持久化数据
 - React Hooks 管理状态
 - 消息通信实现跨组件交互
+
+启动指南：
+```
+pnpm create plasmo my-extension
+cd my-extension
+# 复制相应的代码文件
+pnpm dev
+```
