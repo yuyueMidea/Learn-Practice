@@ -27,3 +27,18 @@ pnpm install @plasmohq/storage @plasmohq/messaging
 pnpm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 ```
+
+运行项目:
+```
+# 开发模式
+pnpm dev
+
+# 构建生产版本
+pnpm build
+```
+
+加载到浏览器
+- 打开 Chrome，访问 chrome://extensions/
+- 启用"开发者模式"
+- 点击"加载已解压的扩展程序"
+- 选择 build/chrome-mv3-dev 文件夹
