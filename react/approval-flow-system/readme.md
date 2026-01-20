@@ -1,5 +1,7 @@
 一个真实可用的企业级审批系统。以下是详细的技术文档：
 
+📁 系统架构层次
+
 ```
 ┌─────────────────────────────────────────────────┐
 │          ApprovalFlowSystem (主应用)              │
@@ -53,5 +55,33 @@ class Database {
   - checkConditions(conditions, formData)  // 条件判断引擎
   - getMyPendingApprovals()       // 获取待我审批
   - getMyApplications()           // 获取我的申请
+}
+```
+
+2. Workflow（流程定义）
+
+```
+{
+  id: string,           // 流程ID
+  name: string,         // 流程名称
+  type: string,         // 申请类型
+  nodes: Array,         // 节点列表
+  createTime: string    // 创建时间
+}
+```
+
+3. Instance（审批实例）
+
+```
+{
+  id: string,               // 实例ID
+  workflowId: string,       // 所属流程ID
+  workflowName: string,     // 流程名称
+  applicant: User,          // 申请人
+  formData: Object,         // 表单数据
+  status: ApprovalStatus,   // 当前状态
+  currentNodeIndex: number, // 当前节点索引
+  createTime: string,       // 创建时间
+  history: Array            // 审批历史
 }
 ```
