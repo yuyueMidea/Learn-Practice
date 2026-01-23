@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>基金演示 Dashboard（ECharts 多基金对比）</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto; background:#f6f7f9; }
+    header { padding:12px; background:#1e80ff; color:#fff; text-align:center; }
+    .container { padding:12px; }
+
+    .list-page { padding-bottom:90px; }
+
+    .filters { display:flex; gap:6px; margin-bottom:10px; }
+    .filters select { flex:1; padding:6px; border-radius:6px; border:1px solid #ddd; font-size:12px; }
+
+    table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; }
+    th, td { padding:8px; font-size:12px; border-bottom:1px solid #eee; }
+    th { background:#fafafa; }
+    tr { cursor:pointer; }
+
+    .risk-low { background:#e8f7ef; color:#1f9254; padding:2px 6px; border-radius:4px; }
+    .risk-mid { background:#fff4e5; color:#b26a00; padding:2px 6px; border-radius:4px; }
+    .risk-high { background:#fdecea; color:#c0392b; padding:2px 6px; border-radius:4px; }
+
+    .bottom-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: env(safe-area-inset-bottom);
+      padding: 10px 12px;
+      background: #fff;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+
+    .bottom-bar button {
+      width: 100%;
+      height: 44px;
+      border: none;
+      border-radius: 8px;
+      background: #1e80ff;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .bottom-bar button:disabled { background:#b3d1ff; }
+
+    .hidden { display:none; }
+    .back { color:#1e80ff; margin-bottom:8px; }
+
+    .tabs { display:flex; gap:6px; margin-bottom:8px; }
+    .tabs button { flex:1; padding:6px; border:none; border-radius:6px; background:#eaeaea; font-size:12px; }
+    .tabs button.active { background:#1e80ff; color:#fff; }
+
+    #chart { height:280px; background:#fff; border-radius:8px; }
+  </style>
+</head>
+<body>
+<header>基金价格表（最多选择 5 支进行对比）</header>
+
+<div class="container list-page" id="listPage">
+  <div class="filters">
+    <select id="trustFilter"><option value="">全部机构</option><option>A</option><option>B</option></select>
+    <select id="riskFilter"><option value="">全部风险</option><option>低</option><option>中</option><option>高</option></select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>基金</th>
+        <th>近收益</th>
+        <th>风险</th>
+        <th>费率</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="bottom-bar" id="bottomBar">
+  <button id="compareBtn" onclick="goCompare()" disabled>查看已选基金对比曲线（0/5）</button>
+</div>
+
+<div class="container hidden" id="chartPage">
+  <div class="back" onclick="goBack()">← 返回列表</div>
+  <div class="tabs">
+    <button onclick="changeRange(30)" class="active">1个月</button>
+    <button onclick="changeRange(90)">3个月</button>
+    <button onclick="changeRange(365)">1年</button>
+  </div>
+  <div id="chart"></div>
+</div>
+
+<script>
+const funds = Array.from({length:25}).map((_,i)=>({
+  id:i,
+  name:'基金'+(i+1),
+  code:'F'+(1000+i),
+  trust:i%2?'A':'B',
+  risk:['低','中','高'][i%3],
+  rate:(Math.random()*10).toFixed(2)+'%',
+  fee:(0.5+Math.random()).toFixed(2)+'%'
+}))
+
+const tbody = document.getElementById('tbody')
+const compareBtn = document.getElementById('compareBtn')
+let selected = []
+let range = 30
+let chart
+
+function updateBottomBar(){
+  compareBtn.innerText = `查看已选基金对比曲线（${selected.length}/5）`
+  compareBtn.disabled = selected.length === 0
+}
+
+function render(){
+  tbody.innerHTML=''
+  funds.filter(f=>(!trustFilter.value||f.trust===trustFilter.value)&&(!riskFilter.value||f.risk===riskFilter.value))
+    .forEach(f=>{
+      const tr=document.createElement('tr')
+      tr.innerHTML=`
+        <td><input type="checkbox" ${selected.includes(f)?'checked':''}></td>
+        <td>${f.name}<br><small>${f.code}</small></td>
+        <td>${f.rate}</td>
+        <td><span class="risk-${f.risk==='低'?'low':f.risk==='中'?'mid':'high'}">${f.risk}</span></td>
+        <td>${f.fee}</td>`
+
+      tr.querySelector('input').onclick=e=>{
+        e.stopPropagation()
+        if(e.target.checked){
+          if(selected.length>=5){ alert('最多选择 5 支基金'); e.target.checked=false; return }
+          selected.push(f)
+        } else selected=selected.filter(x=>x!==f)
+        updateBottomBar()
+      }
+
+      tr.onclick=()=>{ selected=[f]; updateBottomBar(); goCompare() }
+      tbody.appendChild(tr)
+    })
+}
+
+trustFilter.onchange=riskFilter.onchange=render
+render()
+updateBottomBar()
+
+function goCompare(){
+  if(!selected.length) return
+  listPage.classList.add('hidden')
+  bottomBar.classList.add('hidden')
+  chartPage.classList.remove('hidden')
+  chart = echarts.init(document.getElementById('chart'))
+  draw()
+}
+
+function goBack(){
+  chart.dispose()
+  chartPage.classList.add('hidden')
+  listPage.classList.remove('hidden')
+  bottomBar.classList.remove('hidden')
+}
+
+function changeRange(r){ range=r; document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); draw() }
+
+function genDates(){
+  const dates=[]
+  const start=new Date()
+  start.setDate(start.getDate()-range)
+  const step = Math.floor(range/4)
+  for(let i=0;i<=4;i++){
+    const d=new Date(start)
+    d.setDate(start.getDate()+i*step)
+    dates.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'}))
+  }
+  return dates
+}
+
+function genSeries(){
+  let value=0
+  return genDates().map(()=>{
+    value += (Math.random()*2-0.5)
+    value = Math.max(-5, Math.min(12, value))
+    return value.toFixed(2)
+  })
+}
+
+function draw(){
+  const dates = genDates()
+  chart.setOption({
+    tooltip:{trigger:'axis',valueFormatter:v=>v+'%'},
+    legend:{data:selected.map(f=>f.name)},
+    xAxis:{type:'category',data:dates},
+    yAxis:{type:'value',axisLabel:{formatter:'{value}%'}},
+    series:selected.map(f=>({ name:f.name, type:'line', smooth:true, data:genSeries() }))
+  })
+}
+</script>
+</body>
+</html>
