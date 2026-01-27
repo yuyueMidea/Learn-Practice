@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Element 风格多选下拉</title>
+
+<style>
+  :root {
+    --border: #dcdfe6;
+    --active: #409eff;
+    --bg: #ffffff;
+    --tag-bg: #ecf5ff;
+    --radius: 8px;
+    --text: #303133;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    padding: 24px;
+    color: var(--text);
+  }
+
+  .multi-select {
+    position: relative;
+    max-width: 380px;
+    margin: 40px auto;
+  }
+
+  /* 输入框 */
+  .select-input {
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 36px 6px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    background: var(--bg);
+  }
+
+  .placeholder {
+    color: #a8abb2;
+    font-size: 14px;
+  }
+
+  /* Tag */
+  .tag {
+    display: flex;
+    align-items: center;
+    background: var(--tag-bg);
+    color: var(--active);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+  }
+
+  .tag span {
+    margin-left: 4px;
+    cursor: pointer;
+  }
+
+  /* 右侧按钮 */
+  .clear-btn {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #c0c4cc;
+    cursor: pointer;
+    display: none;
+  }
+
+  .arrow {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #909399;
+    pointer-events: none;
+  }
+
+  /* 下拉面板 */
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: var(--bg);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+    z-index: 20;
+  }
+
+  .dropdown.open {
+    display: block;
+  }
+
+  .option {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .option:active {
+    background: #f5f7fa;
+  }
+
+  .option input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--active);
+  }
+
+  @media (max-width: 480px) {
+    .dropdown {
+      max-height: 50vh;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<h3>Element 风格 · 多选下拉组件</h3>
+
+<div class="multi-select" id="multiSelect">
+  <div class="select-input" id="inputBox">
+    <span class="placeholder" id="placeholder">请选择</span>
+  </div>
+
+  <div class="clear-btn" id="clearBtn">✕</div>
+  <div class="arrow">▾</div>
+
+  <div class="dropdown" id="dropdown">
+    <label class="option">
+      <input type="checkbox" value="巡检" /> 巡检
+    </label>
+    <label class="option">
+      <input type="checkbox" value="维护" /> 维护
+    </label>
+    <label class="option">
+      <input type="checkbox" value="保养" /> 保养
+    </label>
+    <label class="option">
+      <input type="checkbox" value="异常" /> 异常
+    </label>
+    <label class="option">
+      <input type="checkbox" value="停机" /> 停机
+    </label>
+  </div>
+</div>
+
+<script>
+  const select = document.getElementById('multiSelect');
+  const inputBox = document.getElementById('inputBox');
+  const dropdown = document.getElementById('dropdown');
+  const placeholder = document.getElementById('placeholder');
+  const clearBtn = document.getElementById('clearBtn');
+  const checkboxes = dropdown.querySelectorAll('input[type=checkbox]');
+
+  // 打开/关闭
+  inputBox.addEventListener('click', () => {
+    dropdown.classList.toggle('open');
+  });
+
+  // 勾选即生效
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', renderTags);
+  });
+
+  // 清空
+  clearBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    checkboxes.forEach(cb => cb.checked = false);
+    renderTags();
+  });
+
+  function renderTags() {
+    inputBox.innerHTML = '';
+    const selected = [...checkboxes].filter(cb => cb.checked);
+
+    if (selected.length === 0) {
+      inputBox.appendChild(placeholder);
+      clearBtn.style.display = 'none';
+      return;
+    }
+
+    placeholder.remove();
+    clearBtn.style.display = 'block';
+
+    selected.forEach(cb => {
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.innerHTML = `${cb.value}<span>✕</span>`;
+
+      tag.querySelector('span').onclick = (e) => {
+        e.stopPropagation();
+        cb.checked = false;
+        renderTags();
+      };
+
+      inputBox.appendChild(tag);
+    });
+  }
+
+  // 点击外部关闭
+  document.addEventListener('click', (e) => {
+    if (!select.contains(e.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
+</html>
