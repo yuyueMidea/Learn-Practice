@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Form Base Components</title>
+
+<style>
+/* ===== 通用变量 ===== */
+:root {
+  --primary: #409eff;
+  --border: #dcdfe6;
+  --bg: #ffffff;
+  --radius: 8px;
+}
+
+/* ===== 页面样式 ===== */
+body {
+  font-family: system-ui, -apple-system;
+  padding: 24px;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+/* ===== RangeSlider ===== */
+.range-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 28px;
+}
+
+.range-track,
+.range-selected {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 999px;
+}
+
+.range-track {
+  width: 100%;
+  background: #e5e7eb;
+}
+
+.range-selected {
+  background: var(--primary);
+}
+
+.range-wrapper input[type=range] {
+  position: absolute;
+  width: 100%;
+  height: 28px;
+  appearance: none;
+  background: none;
+  pointer-events: none;
+}
+
+.range-wrapper input::-webkit-slider-thumb {
+  appearance: none;
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: -8px;
+}
+
+/* ===== MultiSelect ===== */
+.multi-select {
+  position: relative;
+  max-width: 380px;
+}
+
+.select-input {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 36px 6px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.placeholder {
+  color: #a8abb2;
+}
+
+.tag {
+  background: #ecf5ff;
+  color: var(--primary);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.tag span {
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #c0c4cc;
+  display: none;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  width: 100%;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  max-height: 240px;
+  overflow-y: auto;
+  display: none;
+  z-index: 10;
+}
+
+.dropdown.open {
+  display: block;
+}
+
+.option {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="section">
+  <h3>RangeSlider</h3>
+  <div id="range1"></div>
+</div>
+
+<div class="section">
+  <h3>MultiSelect</h3>
+  <div id="select1"></div>
+</div>
+
+<script>
+/* ================= RangeSlider ================= */
+class RangeSlider {
+  constructor(el, options) {
+    this.el = document.querySelector(el);
+    this.options = options;
+    this.render();
+    this.bind();
+    this.update();
+  }
+
+  render() {
+    this.el.innerHTML = `
+      <div class="range-wrapper">
+        <div class="range-track"></div>
+        <div class="range-selected"></div>
+        <input type="range" min="${this.options.min}" max="${this.options.max}" value="${this.options.start}">
+        <input type="range" min="${this.options.min}" max="${this.options.max}" value="${this.options.end}">
+      </div>
+    `;
+    const inputs = this.el.querySelectorAll('input');
+    this.startInput = inputs[0];
+    this.endInput = inputs[1];
+    this.selected = this.el.querySelector('.range-selected');
+  }
+
+  bind() {
+    const handler = () => {
+      this.update();
+      this.options.onChange?.({
+        start: +this.startInput.value,
+        end: +this.endInput.value
+      });
+    };
+    this.startInput.addEventListener('input', handler);
+    this.endInput.addEventListener('input', handler);
+  }
+
+  update() {
+    let s = Math.min(+this.startInput.value, +this.endInput.value);
+    let e = Math.max(+this.startInput.value, +this.endInput.value);
+    this.startInput.value = s;
+    this.endInput.value = e;
+    this.selected.style.left = s + '%';
+    this.selected.style.width = (e - s) + '%';
+  }
+}
+
+/* ================= MultiSelect ================= */
+class MultiSelect {
+  constructor(el, options) {
+    this.el = document.querySelector(el);
+    this.options = options;
+    this.render();
+    this.bind();
+  }
+
+  render() {
+    this.el.innerHTML = `
+      <div class="multi-select">
+        <div class="select-input"></div>
+        <div class="clear-btn">✕</div>
+        <div class="dropdown"></div>
+      </div>
+    `;
+    this.input = this.el.querySelector('.select-input');
+    this.clearBtn = this.el.querySelector('.clear-btn');
+    this.dropdown = this.el.querySelector('.dropdown');
+
+    this.placeholder = document.createElement('span');
+    this.placeholder.className = 'placeholder';
+    this.placeholder.textContent = this.options.placeholder;
+    this.input.appendChild(this.placeholder);
+
+    this.options.options.forEach(opt => {
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.innerHTML = `<input type="checkbox" value="${opt.value}"> ${opt.label}`;
+      this.dropdown.appendChild(label);
+    });
+  }
+
+  bind() {
+    this.input.onclick = () => {
+      this.dropdown.classList.toggle('open');
+    };
+
+    this.clearBtn.onclick = (e) => {
+      e.stopPropagation();
+      this.dropdown.querySelectorAll('input').forEach(i => i.checked = false);
+      this.renderTags();
+    };
+
+    this.dropdown.querySelectorAll('input').forEach(cb => {
+      cb.onchange = () => this.renderTags();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!this.el.contains(e.target)) {
+        this.dropdown.classList.remove('open');
+      }
+    });
+  }
+
+  renderTags() {
+    this.input.innerHTML = '';
+    const checked = [...this.dropdown.querySelectorAll('input')].filter(i => i.checked);
+
+    if (!checked.length) {
+      this.input.appendChild(this.placeholder);
+      this.clearBtn.style.display = 'none';
+    } else {
+      this.clearBtn.style.display = 'block';
+      checked.forEach(cb => {
+        const tag = document.createElement('div');
+        tag.className = 'tag';
+        tag.innerHTML = `${cb.value}<span>✕</span>`;
+        tag.querySelector('span').onclick = (e) => {
+          e.stopPropagation();
+          cb.checked = false;
+          this.renderTags();
+        };
+        this.input.appendChild(tag);
+      });
+    }
+
+    this.options.onChange?.(checked.map(i => i.value));
+  }
+}
+
+/* ================= 使用 ================= */
+new RangeSlider('#range1', {
+  min: 0,
+  max: 100,
+  start: 30,
+  end: 80,
+  onChange: (v) => console.log('Range:', v)
+});
+
+new MultiSelect('#select1', {
+  placeholder: '请选择类型',
+  options: [
+    { label: '巡检', value: 'inspect' },
+    { label: '维护', value: 'maintain' },
+    { label: '保养', value: 'service' },
+    { label: '异常', value: 'error' }
+  ],
+  onChange: (v) => console.log('Select:', v)
+});
+</script>
+
+</body>
+</html>
