@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>移动端区间滑块</title>
+
+<style>
+  :root {
+    --track-height: 6px;
+    --thumb-size: 22px;
+    --active-color: #0f766e;
+    --track-color: #e5e7eb;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    padding: 24px;
+  }
+
+  .range-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: var(--thumb-size);
+    margin: 40px auto;
+    touch-action: none;
+  }
+
+  /* 底层轨道 */
+  .range-track {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: var(--track-height);
+    width: 100%;
+    background: var(--track-color);
+    border-radius: 999px;
+  }
+
+  /* 选中区间 */
+  .range-selected {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: var(--track-height);
+    background: var(--active-color);
+    border-radius: 999px;
+  }
+
+  input[type="range"] {
+    position: absolute;
+    width: 100%;
+    height: var(--thumb-size);
+    appearance: none;
+    background: none;
+    pointer-events: none;
+  }
+
+  /* WebKit */
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    pointer-events: auto;
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: 50%;
+    background: var(--active-color);
+    border: none;
+    cursor: pointer;
+    margin-top: calc(
+      (var(--track-height) - var(--thumb-size)) / 2
+    );
+  }
+
+  /* Firefox */
+  input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: 50%;
+    background: var(--active-color);
+    border: none;
+    cursor: pointer;
+  }
+
+  .value {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 16px;
+    color: #374151;
+  }
+
+  /* 移动端增强 */
+  @media (max-width: 480px) {
+    :root {
+      --thumb-size: 26px;
+      --track-height: 6px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<h3>区间选择（移动端友好）</h3>
+
+<div class="range-wrapper">
+  <div class="range-track"></div>
+  <div class="range-selected" id="selected"></div>
+
+  <input id="start" type="range" min="0" max="100" value="25" />
+  <input id="end" type="range" min="0" max="100" value="75" />
+</div>
+
+<div class="value">
+  选择范围：
+  <span id="startVal">25</span> – <span id="endVal">75</span>
+</div>
+
+<script>
+  const start = document.getElementById('start');
+  const end = document.getElementById('end');
+  const selected = document.getElementById('selected');
+
+  function update() {
+    let s = Math.min(+start.value, +end.value);
+    let e = Math.max(+start.value, +end.value);
+
+    start.value = s;
+    end.value = e;
+
+    selected.style.left = s + '%';
+    selected.style.width = (e - s) + '%';
+
+    startVal.textContent = s;
+    endVal.textContent = e;
+  }
+
+  start.addEventListener('input', update);
+  end.addEventListener('input', update);
+
+  update();
+</script>
+
+</body>
+</html>
