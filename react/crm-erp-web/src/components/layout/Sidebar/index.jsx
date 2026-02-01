@@ -13,7 +13,7 @@ const menuItems = [
     icon: '🏠',
   },
   {
-    path: '/app/customer',
+    path: '/app/customer/list',
     label: '客户管理',
     icon: '👥',
   },

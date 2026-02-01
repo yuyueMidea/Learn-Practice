@@ -11,6 +11,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Router from './router';
 import { useThemeStore } from './stores/useThemeStore';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import ToastContainer from './components/common/Toast';
 
 function App() {
   const { theme, initTheme } = useThemeStore();
@@ -37,6 +38,7 @@ function App() {
       <BrowserRouter>
         <Router />
       </BrowserRouter>
+      <ToastContainer />
     </ErrorBoundary>
   );
 }

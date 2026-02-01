@@ -6,8 +6,46 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { HTTP_STATUS } from '@/config/constants';
+import { mockApi } from './mockData';
 
 const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || 'crm_erp_token';
+const ENABLE_MOCK = import.meta.env.VITE_ENABLE_MOCK === 'true';
+
+// Mock 路由映射
+const mockRoutes = {
+  'GET /customers': (params) => mockApi.getCustomers(params),
+  'GET /customers/:id': (id) => mockApi.getCustomerDetail(id),
+  'POST /customers': (data) => mockApi.createCustomer(data),
+  'PUT /customers/:id': (id, data) => mockApi.updateCustomer(id, data),
+  'DELETE /customers/:id': (id) => mockApi.deleteCustomer(id),
+  'GET /follow-ups': (params) => mockApi.getFollowUps(params),
+  'POST /follow-ups': (data) => mockApi.createFollowUp(data),
+};
+
+// 匹配 Mock 路由
+function matchMockRoute(method, url) {
+  const path = url.split('?')[0];
+  
+  // 精确匹配
+  const exactKey = `${method.toUpperCase()} ${path}`;
+  if (mockRoutes[exactKey]) {
+    return mockRoutes[exactKey];
+  }
+  
+  // 参数匹配 (如 /customers/123 匹配 /customers/:id)
+  for (const [pattern, handler] of Object.entries(mockRoutes)) {
+    const [mockMethod, mockPath] = pattern.split(' ');
+    if (mockMethod === method.toUpperCase()) {
+      const regex = new RegExp('^' + mockPath.replace(/:[\w]+/g, '([^/]+)') + '$');
+      const match = path.match(regex);
+      if (match) {
+        return (...args) => handler(match[1], ...args);
+      }
+    }
+  }
+  
+  return null;
+}
 
 // 创建 axios 实例
 const request = axios.create({
@@ -20,7 +58,18 @@ const request = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    // Mock 数据拦截
+    if (ENABLE_MOCK) {
+      const mockHandler = matchMockRoute(config.method, config.url);
+      if (mockHandler) {
+        // 模拟请求延迟
+        const result = await mockHandler(config.params || config.data);
+        // 抛出特殊对象,在响应拦截器中处理
+        throw { __mock: true, data: result };
+      }
+    }
+
     // 添加 Token
     const token = Cookies.get(TOKEN_KEY);
     if (token) {
@@ -62,6 +111,11 @@ request.interceptors.response.use(
     return Promise.reject(new Error(data.message || '请求失败'));
   },
   (error) => {
+    // 处理 Mock 数据
+    if (error.__mock) {
+      return Promise.resolve(error.data);
+    }
+
     // 错误统一处理
     if (error.response) {
       const { status, data } = error.response;

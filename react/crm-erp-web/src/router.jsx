@@ -11,6 +11,9 @@ import Loading from '@/components/common/Loading';
 // 懒加载页面组件
 const Login = lazy(() => import('@/pages/auth/Login'));
 const Dashboard = lazy(() => import('@/pages/dashboard'));
+const CustomerList = lazy(() => import('@/pages/customer/List'));
+const CustomerDetail = lazy(() => import('@/pages/customer/Detail'));
+const CustomerForm = lazy(() => import('@/pages/customer/Form'));
 const Unauthorized = lazy(() => import('@/pages/error/Unauthorized'));
 const NotFound = lazy(() => import('@/pages/error/NotFound'));
 
@@ -55,7 +58,13 @@ function Router() {
           <Route path="dashboard" element={<Dashboard />} />
           
           {/* 客户管理 */}
-          <Route path="customer/*" element={<ComingSoon module="客户管理" />} />
+          <Route path="customer">
+            <Route path="list" element={<CustomerList />} />
+            <Route path="detail/:id" element={<CustomerDetail />} />
+            <Route path="create" element={<CustomerForm />} />
+            <Route path="edit/:id" element={<CustomerForm />} />
+            <Route index element={<Navigate to="list" replace />} />
+          </Route>
           
           {/* 销售管理 */}
           <Route path="sales/*" element={<ComingSoon module="销售管理" />} />
