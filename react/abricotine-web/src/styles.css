@@ -1,0 +1,245 @@
+:root{
+  --bg:#ffffff;
+  --panel:#f6f7f9;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --accent:#2563eb;
+  --danger:#dc2626;
+  --shadow: 0 10px 30px rgba(2,6,23,.08);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --radius: 14px;
+}
+
+[data-theme="dark"]{
+  --bg:#0b1220;
+  --panel:#0f172a;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:#1f2937;
+  --accent:#60a5fa;
+  --danger:#f87171;
+  --shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select,textarea{font:inherit}
+
+.app{
+  height:100vh;
+  display:grid;
+  grid-template-columns: 280px 1fr 420px;
+  gap:12px;
+  padding:12px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+.header{
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.header h1{
+  margin:0;
+  font-size:14px;
+  letter-spacing:.2px;
+  color:var(--muted);
+  font-weight:600;
+}
+
+.toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.btn{
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  padding:7px 10px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:.12s transform, .12s background;
+}
+.btn:hover{background:rgba(100,116,139,.12)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{
+  background:var(--accent);
+  border-color:transparent;
+  color:white;
+}
+.btn.danger{
+  background:transparent;
+  border-color:rgba(220,38,38,.35);
+  color:var(--danger);
+}
+
+.small{font-size:12px;color:var(--muted)}
+
+.list{
+  padding:10px;
+  overflow:auto;
+  min-height:0;
+}
+.file{
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin-bottom:8px;
+  cursor:pointer;
+  background:rgba(255,255,255,.02);
+}
+.file.active{
+  border-color:rgba(37,99,235,.45);
+  box-shadow:0 0 0 3px rgba(37,99,235,.15);
+}
+.file .title{
+  font-weight:600;
+  font-size:14px;
+}
+.file .meta{
+  margin-top:4px;
+  font-size:12px;
+  color:var(--muted);
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.editorWrap{
+  padding:10px;
+  overflow:hidden;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.cmHost{
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  min-height:0;
+  flex:1;
+  background:rgba(255,255,255,.02);
+}
+
+/* Preview */
+.preview{
+  padding:14px;
+  overflow:auto;
+  min-height:0;
+}
+
+.preview :is(h1,h2,h3,h4){scroll-margin-top:80px}
+.preview h1{font-size:26px}
+.preview h2{font-size:20px}
+.preview h3{font-size:16px}
+.preview p, .preview li{line-height:1.65}
+.preview code{font-family:var(--mono); font-size:.95em}
+.preview pre{
+  background:rgba(15,23,42,.08);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  overflow:auto;
+}
+[data-theme="dark"] .preview pre{background:rgba(0,0,0,.25)}
+
+.katex { font-size: 1.05em; }
+
+/* CodeMirror tweaks */
+.cm-editor{height:100%}
+.cm-scroller{font-family:var(--mono)}
+/* Make Markdown "feel" more like inline preview by styling tokens (headings, strong, emphasis) */
+.cm-header{font-weight:800}
+.cm-header-1{font-size:1.6em}
+.cm-header-2{font-size:1.35em}
+.cm-header-3{font-size:1.2em}
+.cm-strong{font-weight:800}
+.cm-em{font-style:italic}
+
+/* Hide/dim original markdown syntax when inline preview widgets are shown */
+.cm-hideSyntax{
+  color: transparent !important;
+  text-shadow: 0 0 0 rgba(100,116,139,.55); /* 轻微“灰影”，防止完全不可见导致迷惑 */
+}
+
+/* Inline preview widgets */
+.cm-inlineWidget{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid var(--border);
+  background:rgba(100,116,139,.10);
+  border-radius:10px;
+  padding:2px 8px;
+  font-family:var(--sans);
+  font-size:12px;
+  color:var(--muted);
+  transform:translateY(-1px);
+}
+.cm-inlineWidget img{
+  max-height:20px;
+  border-radius:6px;
+}
+.cm-taskBox{
+  width:14px;height:14px;border-radius:4px;border:1px solid var(--border);
+  display:inline-block; background:rgba(100,116,139,.10);
+}
+.cm-taskBox.checked{
+  background:rgba(37,99,235,.3);
+  border-color:rgba(37,99,235,.5);
+}
+.dialogOverlay{
+  position:fixed; inset:0;
+  background:rgba(2,6,23,.55);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+}
+.dialog{
+  width:min(720px, 100%);
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.dialog .body{padding:14px}
+.fieldRow{display:flex; gap:10px; align-items:center; margin:10px 0}
+.input{
+  width:100%;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:12px;
+}
+.grid2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
